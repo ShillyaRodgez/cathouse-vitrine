@@ -131,13 +131,15 @@ body {
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(135deg, #e6e6fa 0%, #add8e6 50%, #ffc0cb 100%);
-  padding: 120px 0 80px;
+  background: url('./Patas.png') center/cover, linear-gradient(135deg, rgba(230, 230, 250, 0.8) 0%, rgba(173, 216, 230, 0.8) 50%, rgba(255, 192, 203, 0.8) 100%);
+  background-blend-mode: overlay;
+  padding: 100px 0 0px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 70vh;
+  min-height: 50vh;
   text-align: center;
+  position: relative;
 }
 
 .hero-content h2 {
@@ -148,7 +150,7 @@ body {
 }
 
 .hero-content p {
-  font-size: 1.3rem;
+  font-size: 1.6rem;
   color: #666;
   margin-bottom: 30px;
 }
@@ -173,10 +175,13 @@ body {
   box-shadow: 0 8px 25px rgba(106, 76, 147, 0.3);
 }
 
-.cat-emoji {
-  font-size: 8rem;
+.cat-image {
+  width: 15rem;
+  height: 15rem;
   margin-top: 30px;
   display: block;
+  object-fit: contain;
+  border-radius: 10px;
 }
 
 /* Media Queries - Responsividade */

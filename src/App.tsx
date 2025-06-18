@@ -160,12 +160,9 @@ const App: React.FC = () => {
         <div className="hero-content">
           <h2>A clínica e loja perfeita para quem ama gatos!</h2>
           <p>Cuidado especializado e produtos selecionados para o seu felino</p>
-          <button className="cta-button" onClick={() => sendWhatsApp()}>
-            <span>💬</span> Fale conosco no WhatsApp
-          </button>
         </div>
         <div className="hero-image">
-          <span className="cat-emoji">😸</span>
+          <img src="/gatinho.png" alt="Gatinho" className="cat-image" />
         </div>
       </section>
 
