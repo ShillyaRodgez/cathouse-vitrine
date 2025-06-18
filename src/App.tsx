@@ -1,10 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState('inicio');
 
-  const whatsappNumber = '5549999999999'; // Substitua pelo número real
+  // Função para detectar qual seção está visível durante o scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['inicio', 'sobre', 'catshop', 'clinica', 'contato'];
+      const scrollPosition = window.scrollY + 100; // Offset para melhor detecção
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = document.getElementById(sections[i]);
+        if (section && section.offsetTop <= scrollPosition) {
+          // Adicionar pequeno delay para suavizar a transição
+          setTimeout(() => {
+            setActiveSection(sections[i]);
+          }, 50);
+          break;
+        }
+      }
+    };
+
+    // Throttle do scroll para melhor performance
+    let ticking = false;
+    const throttledScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    // Adicionar listener de scroll
+    window.addEventListener('scroll', throttledScroll, { passive: true });
+    
+    // Chamar uma vez para definir a seção inicial
+    handleScroll();
+
+    // Cleanup do listener
+    return () => {
+      window.removeEventListener('scroll', throttledScroll);
+    };
+  }, []);
+
+  const whatsappNumber = '5549998380557'; // Substitua pelo número real
   const instagramUrl = 'https://www.instagram.com/acasadosgatos.lages/'; // Substitua pela URL real
 
   const products = [
@@ -75,8 +117,8 @@ const App: React.FC = () => {
       <header className="header">
         <div className="container">
           <div className="logo">
-            <span className="logo-icon">🐱</span>
-            <h1>A Casa dos Gatos</h1>
+            <img src="/logo editada.png" alt="Logo A Casa dos Gatos" className="logo-icon" />
+            <h1>A CASA DOS GATOS</h1>
           </div>
           <nav className="nav">
             <button 
