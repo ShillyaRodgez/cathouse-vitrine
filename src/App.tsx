@@ -5,7 +5,7 @@ const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState('inicio');
 
   const whatsappNumber = '5549999999999'; // Substitua pelo número real
-  const instagramUrl = 'https://instagram.com/acasadosgatos'; // Substitua pela URL real
+  const instagramUrl = 'https://www.instagram.com/acasadosgatos.lages/'; // Substitua pela URL real
 
   const products = [
     {
