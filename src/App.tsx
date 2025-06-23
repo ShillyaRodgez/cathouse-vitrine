@@ -193,18 +193,19 @@ const App: React.FC = () => {
                   <h3>Cuidado Humanizado</h3>
                   <p>Tratamento com carinho e respeito</p>
                 </div>
+                <div className="feature">
+                  <span>🐾</span>
+                  <h3>Ambiente acolhedor</h3>
+                  <p>Espaço confortável para os felinos</p>
+                </div>
+                <div className="feature">
+                  <span>😻</span>
+                  <h3>Gatos bem cuidados</h3>
+                  <p>Cuidado especial com cada gatinho</p>
+                </div>
               </div>
             </div>
-            <div className="about-images">
-              <div className="image-placeholder">
-                <span>🐾</span>
-                <p>Ambiente acolhedor</p>
-              </div>
-              <div className="image-placeholder">
-                <span>😻</span>
-                <p>Gatos bem cuidados</p>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
