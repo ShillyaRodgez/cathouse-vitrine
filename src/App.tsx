@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
 const App: React.FC = () => {
@@ -728,12 +728,14 @@ const App: React.FC = () => {
   // Componente da página Início
   const InicioPage = () => (
     <section className="hero">
-      <div className="hero-content">
-        <h2>A clínica e loja perfeita para quem ama gatos!</h2>
-        <p>Cuidado especializado e produtos selecionados para o seu felino</p>
-      </div>
-      <div className="hero-image">
-        <img src="/gatinho.png" alt="Gatinho" className="cat-image" />
+      <div className="container">
+        <div className="hero-image">
+          <img src="/gatinho.png" alt="Gatinho" className="cat-image" />
+        </div>
+        <div className="hero-content">
+          <h2>A clínica e loja perfeita para quem ama gatos!</h2>
+          <p>Cuidado especializado e produtos selecionados para o seu felino</p>
+        </div>
       </div>
     </section>
   );
