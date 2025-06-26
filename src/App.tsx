@@ -3,10 +3,18 @@ import './App.css';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('inicio');
+  const [isCatshopMenuOpen, setCatshopMenuOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('Todos');
 
   // Função para navegar entre páginas
-  const navigateToPage = (page: string) => {
+  const navigateToPage = (page: string, category?: string) => {
     setCurrentPage(page);
+    if (page === 'catshop' && category) {
+      // Precisamos de uma forma de passar a categoria para a CatshopPage.
+      // Uma abordagem é usar um estado compartilhado ou passar props.
+      // Por simplicidade, vamos usar um estado no App para a categoria selecionada.
+      setSelectedCategory(category);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -887,10 +895,10 @@ const App: React.FC = () => {
   );
 
   // Componente da página Catshop
-  const CatshopPage = () => {
-    const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const CatshopPage = ({ initialCategory = 'Todos', categories }: { initialCategory?: string, categories: string[] }) => {
+    const [selectedCategory, setSelectedCategory] = useState(initialCategory);
 
-    const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category))).filter((c): c is string => c !== undefined)];
+
 
     const filteredProducts = selectedCategory === 'Todos'
       ? products
@@ -1026,7 +1034,7 @@ const App: React.FC = () => {
       case 'sobre':
         return <SobrePage />;
       case 'catshop':
-        return <CatshopPage />;
+        return <CatshopPage initialCategory={selectedCategory} categories={['Todos', ...Array.from(new Set(products.map(p => p.category))).filter((c): c is string => c !== undefined)]} />;
       case 'clinica':
         return <ClinicaPage />;
       case 'contato':
@@ -1058,17 +1066,39 @@ const App: React.FC = () => {
             >
               Sobre
             </button>
-            <button 
-              className={currentPage === 'catshop' ? 'active' : ''}
-              onClick={() => navigateToPage('catshop')}
+            <div 
+              className="nav-item dropdown"
+              onMouseEnter={() => setCatshopMenuOpen(true)}
+              onMouseLeave={() => setCatshopMenuOpen(false)}
             >
-              Catshop
-            </button>
+              <button 
+                className={currentPage === 'catshop' ? 'active' : ''}
+                onClick={() => navigateToPage('catshop', 'Todos')}
+              >
+                Catshop
+              </button>
+              {isCatshopMenuOpen && (
+                <div className="dropdown-menu">
+                  {['Todos', ...Array.from(new Set(products.map(p => p.category))).filter((c): c is string => c !== undefined)].map(category => (
+                    <button 
+                      key={category} 
+                      className={selectedCategory === category ? 'active' : ''}
+                      onClick={() => {
+                        navigateToPage('catshop', category);
+                        setCatshopMenuOpen(false);
+                      }}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <button 
               className={currentPage === 'clinica' ? 'active' : ''}
               onClick={() => navigateToPage('clinica')}
             >
-              Clínica Felina
+              Clínica
             </button>
             <button 
               className={currentPage === 'contato' ? 'active' : ''}

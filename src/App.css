@@ -107,15 +107,66 @@ main {
   letter-spacing: 0.5px;
 }
 
+/* Estilos da Navegação */
 .nav {
   display: flex;
-  gap: 7px;
-  margin-left: auto;
-  margin-right: 0;
-  padding-right: 0;
+  gap: 20px;
+  align-items: center;
 }
 
-.nav button {
+.nav-item.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  padding-top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-white);
+
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  min-width: 150px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  animation: fadeInDown 0.3s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.dropdown-menu button {
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  text-align: left;
+  width: 100%;
+  color: var(--color-text-dark);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dropdown-menu button:hover, .dropdown-menu button.active {
+  background-color: #fadf98;
+  color: var(--color-primary);
+}
+
+.nav > button,
+.nav > .nav-item > button {
   background: none;
   border: none;
   color: #6D0305;
@@ -129,7 +180,8 @@ main {
   overflow: hidden;
 }
 
-.nav button::before {
+.nav > button::before,
+.nav > .nav-item > button::before {
   content: '';
   position: absolute;
   top: 0;
@@ -140,16 +192,19 @@ main {
   transition: left 0.6s ease;
 }
 
-.nav button:hover {
+.nav > button:hover,
+.nav > .nav-item > button:hover {
   background: rgba(109, 3, 5, 0.2);
   transform: translateY(-2px) scale(1.05);
 }
 
-.nav button:hover::before {
+.nav > button:hover::before,
+.nav > .nav-item > button:hover::before {
   left: 100%;
 }
 
-.nav button.active {
+.nav > button.active,
+.nav > .nav-item > button.active {
   background: linear-gradient(135deg, #6D0305 0%, #9d1b1f 100%);
   font-weight: 600;
   color: white;
