@@ -607,7 +607,10 @@ main {
   }
   
   .contact-item {
-    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
   }
   
   /* Map Mobile */
@@ -1276,22 +1279,19 @@ main {
 
 .contact-item {
   display: flex;
-  align-items: flex-start;
-  gap: 15px;
-  margin-bottom: 30px;
+  align-items: center;
+  gap: 15px; /* Aumenta o espaço entre o ícone e o texto */
+  margin-bottom: 1rem;
+  font-size: 1.1rem; /* Aumenta o tamanho da fonte para melhor leitura */
 }
 
-.contact-item span {
-  font-size: 1.5rem;
-  margin-top: 5px;
-}
-
-.contact-item h4 {
-  color: #6a4c93;
-  margin-bottom: 5px;
+.contact-item img {
+  width: 24px; /* Define um tamanho fixo para os ícones */
+  height: 24px;
 }
 
 .contact-item p {
+  margin: 0; /* Remove margens padrão do parágrafo */
   color: #666;
   line-height: 1.6;
 }

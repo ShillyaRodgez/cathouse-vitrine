@@ -1082,47 +1082,46 @@ const App: React.FC = () => {
 
   // Componente da página Contato
   const ContatoPage = () => (
-      <section className="contact">
-        <div className="container">
-          <h2>Entre em Contato</h2>
-          <p>Estamos aqui para ajudar! Seja para tirar dúvidas, agendar um serviço ou simplesmente para um bate-papo sobre gatos, nossa equipe está à disposição.</p>
-          
-          <div className="contact-details">
+    <section id="contact" className="contact-section">
+      <div className="container">
+        <h2>Entre em Contato</h2>
+        <p>Estamos aqui para ajudar! Seja para tirar dúvidas, agendar um serviço ou simplesmente para um bate-papo sobre gatos.</p>
+        
+        <div className="contact-content">
+          <div className="contact-details-container">
             <div className="contact-item">
-              <img src="/whats.png" alt="WhatsApp" className="contact-icon" />
-              <div>
-                <strong>WhatsApp</strong>
-                <p>Adicione nosso número e envie uma mensagem!</p>
-                <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="contact-link">{whatsappNumber}</a>
-              </div>
+              <img src="/whats.png" alt="WhatsApp" />
+              <p>WhatsApp: <a href={`https://wa.me/5549998380557`} target="_blank" rel="noopener noreferrer">(49) 99838-0557</a></p>
             </div>
-            
             <div className="contact-item">
-              <img src="/insta.png" alt="Instagram" className="contact-icon" />
-              <div>
-                <strong>Instagram</strong>
-                <p>Siga-nos para novidades, dicas e muitas fotos fofas!</p>
-                <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="contact-link">@acasadosgatos.lages</a>
-              </div>
+              <img src="/insta.png" alt="Instagram" />
+              <p>Instagram: <a href="https://www.instagram.com/acasadosgatos.lages/" target="_blank" rel="noopener noreferrer">@acasadosgatos.lages</a></p>
+            </div>
+            <div className="contact-item">
+              <p><strong>Horário de Funcionamento:</strong></p>
+              <p>Segunda a Sexta: 9h às 18h</p>
+              <p>Sábado: 9h às 13h</p>
             </div>
           </div>
 
-          <h3>Nossa Localização e Horários</h3>
-          <p><strong>Endereço:</strong> Rua Francisco de Paula Ramos, 104, Lages - SC – 88523-020</p>
-          <p><strong>Horário de Funcionamento:</strong> Segunda a Sexta: 8h às 18h | Sábado: 8h às 12h</p>
+          <div className="contact-buttons">
+            <a href={`https://wa.me/5549998380557`} className="btn btn-whatsapp" target="_blank" rel="noopener noreferrer">Chamar no WhatsApp</a>
+            <a href="https://www.instagram.com/acasadosgatos.lages/" className="btn btn-instagram" target="_blank" rel="noopener noreferrer">Seguir no Instagram</a>
+          </div>
 
           <div className="map-container">
-            <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3549.993113398529!2d-50.32727838494934!3d-27.80940898279305!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94e01f165c561e9d%3A0x73592424a73a443!2sRua%20Correia%20Pinto%2C%20Lages%20-%20SC!5e0!3m2!1spt-BR!2sbr!4v1678886412345!5m2!1spt-BR!2sbr"
-              width="600" 
-              height="450" 
-              style={{ border:0 }} 
-              allowFullScreen={true} 
-              loading="lazy" 
-              referrerPolicy="no-referrer-when-downgrade">
-            </iframe>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3543.9339999999997!2d-50.3258333!3d-27.8166667!4m3!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94e01f1f1f1f1f1f%3A0x94e01f1f1f1f1f1f!2sA%20Casa%20dos%20Gatos!5e0!3m2!1spt-BR!2sbr!4v1620000000000!5m2!1spt-BR!2sbr"
+              width="100%"
+              height="450"
+              style={{ border: 0 }}
+              allowFullScreen={true}
+              loading="lazy"
+              title="Mapa com a localização da A Casa dos Gatos"
+            ></iframe>
           </div>
         </div>
+      </div>
       </section>
   );
 
