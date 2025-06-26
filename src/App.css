@@ -39,11 +39,25 @@
 
 @import url('https://fonts.cdnfonts.com/css/caviar-dreams');
 
+html, body, #root {
+  height: 100%;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   color: var(--color-text-dark);
   background-color: var(--color-background);
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
 }
 
 .container {
