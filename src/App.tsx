@@ -966,10 +966,10 @@ const App: React.FC = () => {
       <footer className="footer">
         <div className="container">
           <div className="footer-content">
-            <div className="footer-logo">
-              <span>🐱</span>
-              <h3>A Casa dos Gatos</h3>
-            </div>
+                      <div className="footer-logo logo">
+            <img src="/logo editada.png" alt="Logo" className="logo-icon" />
+            <h1>A CASA DOS GATOS</h1>
+          </div>
             
             <div className="footer-social">
               <button onClick={() => sendWhatsApp()}>
