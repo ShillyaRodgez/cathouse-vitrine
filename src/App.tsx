@@ -755,27 +755,27 @@ const App: React.FC = () => {
             </p>
             <div className="features">
               <div className="feature">
-                <span>🏥</span>
+                <img src="veterinario.png" alt="Clínica Especializada" />
                 <h3>Clínica Especializada</h3>
                 <p>Atendimento exclusivo para felinos</p>
               </div>
               <div className="feature">
-                <span>🛍️</span>
+                <img src="catshop.png" alt="Catshop Completa" />
                 <h3>Catshop Completa</h3>
                 <p>Produtos selecionados para gatos</p>
               </div>
               <div className="feature">
-                <span>❤️</span>
+                <img src="humanizado.png" alt="Cuidado Humanizado" />
                 <h3>Cuidado Humanizado</h3>
                 <p>Tratamento com carinho e respeito</p>
               </div>
               <div className="feature">
-                <span>🐾</span>
+                <img src="acolhedor.png" alt="Ambiente acolhedor" />
                 <h3>Ambiente acolhedor</h3>
                 <p>Espaço confortável para os felinos</p>
               </div>
               <div className="feature">
-                <span>😻</span>
+                <img src="cuidado.png" alt="Gatos bem cuidados" />
                 <h3>Gatos bem cuidados</h3>
                 <p>Cuidado especial com cada gatinho</p>
               </div>
