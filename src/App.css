@@ -1367,14 +1367,15 @@ main {
 
 /* === NOVA SEÇÃO DE CONTATO === */
 .contact-section {
-  padding: 80px 0;
+  padding: 120px 0 40px 0;
   background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
-  min-height: 100vh;
+  min-height: auto;
 }
 
 .contact-header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-top: 20px;
+  margin-bottom: 30px;
 }
 
 .contact-header h2 {
@@ -1382,27 +1383,33 @@ main {
   color: #2c3e50;
   margin-bottom: 20px;
   font-weight: 700;
+  padding-top: 20px;
 }
 
 .contact-subtitle {
   font-size: 1.2rem;
   color: #7f8c8d;
-  max-width: 600px;
+  max-width: 800px; /* Aumentado de 600px para 800px */
   margin: 0 auto;
   line-height: 1.6;
+  padding: 0 20px; /* Adicionado padding lateral para espaçamento */
+  text-align: center; /* Garantir centralização */
+  white-space: nowrap; /* Forçar o texto a ficar em uma linha */
+  overflow: hidden; /* Esconder overflow se necessário */
+  text-overflow: ellipsis; /* Adicionar ... se o texto for muito longo */
 }
 
 .contact-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 30px;
-  margin-bottom: 60px;
+  gap: 20px;
+  margin-bottom: 30px;
 }
 
 .contact-card {
   background: white;
   border-radius: 20px;
-  padding: 30px;
+  padding: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: 1px solid #e8ecf0;
@@ -1417,8 +1424,8 @@ main {
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-bottom: 25px;
-  padding-bottom: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
   border-bottom: 2px solid #f1f3f4;
 }
 
@@ -1441,14 +1448,14 @@ main {
 .contact-methods {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 15px;
 }
 
 .contact-method {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 20px;
+  gap: 15px;
+  padding: 15px;
   background: #f8f9fa;
   border-radius: 15px;
   transition: background 0.3s ease;
@@ -1520,14 +1527,14 @@ main {
 .schedule-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
 }
 
 .schedule-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
+  padding: 12px 15px;
   background: #f8f9fa;
   border-radius: 12px;
   border-left: 4px solid #28a745;
@@ -1552,7 +1559,7 @@ main {
   color: #dc3545;
 }
 
-.emergency-note {
+/* .emergency-note {
   margin-top: 20px;
   padding: 15px;
   background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
@@ -1564,7 +1571,7 @@ main {
   margin: 0;
   color: #856404;
   font-size: 0.9rem;
-}
+} */
 
 /* Mapa */
 .map-wrapper {
@@ -1577,7 +1584,7 @@ main {
 .contact-cta {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 25px;
-  padding: 50px 40px;
+  padding: 30px 25px;
   text-align: center;
   color: white;
   position: relative;
@@ -1606,14 +1613,14 @@ main {
 }
 
 .cta-content h3 {
-  font-size: 2.2rem;
-  margin-bottom: 15px;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
   font-weight: 700;
 }
 
 .cta-content p {
-  font-size: 1.1rem;
-  margin-bottom: 30px;
+  font-size: 1rem;
+  margin-bottom: 20px;
   opacity: 0.9;
 }
 
@@ -1691,6 +1698,12 @@ main {
     width: 100%;
     max-width: 300px;
     justify-content: center;
+  }
+  
+  /* Alternativa para telas menores - permitir quebra de linha em dispositivos móveis */
+  .contact-subtitle {
+    white-space: normal; /* Permitir quebra de linha em telas pequenas */
+    max-width: 90%; /* Usar mais espaço disponível */
   }
 }
 

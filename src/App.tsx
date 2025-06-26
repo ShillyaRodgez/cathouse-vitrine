@@ -1141,9 +1141,6 @@ const App: React.FC = () => {
                 <span className="time">Fechado</span>
               </div>
             </div>
-            <div className="emergency-note">
-              <p>🚨 <strong>Emergências:</strong> Entre em contato pelo WhatsApp</p>
-            </div>
           </div>
 
           {/* Card do Mapa */}
@@ -1154,13 +1151,13 @@ const App: React.FC = () => {
             </div>
             <div className="map-wrapper">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3543.9339999999997!2d-50.3258333!3d-27.8166667!4m3!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94e01f1f1f1f1f1f%3A0x94e01f1f1f1f1f1f!2sA%20Casa%20dos%20Gatos!5e0!3m2!1spt-BR!2sbr!4v1620000000000!5m2!1spt-BR!2sbr"
+                src="https://www.google.com/maps?q=Rua+Francisco+de+Paula+Ramos,+104,+Lages,+SC,+88523-020&output=embed"
                 width="100%"
                 height="300"
                 style={{ border: 0, borderRadius: '15px' }}
                 allowFullScreen={true}
                 loading="lazy"
-                title="Localização da A Casa dos Gatos"
+                title="Localização da A Casa dos Gatos - Rua Francisco de Paula Ramos, 104, Lages"
               ></iframe>
             </div>
           </div>
@@ -1173,7 +1170,7 @@ const App: React.FC = () => {
             <p>Entre em contato conosco e agende uma consulta ou tire suas dúvidas!</p>
             <div className="cta-buttons">
               <a href="https://wa.me/5549998380557" className="btn-cta primary" target="_blank" rel="noopener noreferrer">
-                📱 Agendar pelo WhatsApp
+                📱 Conversar pelo WhatsApp
               </a>
               <a href="https://www.instagram.com/acasadosgatos.lages/" className="btn-cta secondary" target="_blank" rel="noopener noreferrer">
                 📷 Ver no Instagram
