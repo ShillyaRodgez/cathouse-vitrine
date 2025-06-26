@@ -21,6 +21,15 @@ const App: React.FC = () => {
   const whatsappNumber = '5549998380557'; // Substitua pelo número real
   const instagramUrl = 'https://www.instagram.com/acasadosgatos.lages/'; // Substitua pela URL real
 
+  // A URL `wa.me` é universal e funciona tanto em desktops (abrindo o WhatsApp Web)
+  // quanto em dispositivos móveis (abrindo o aplicativo WhatsApp diretamente).
+  const handleWhatsAppPurchase = (productName: string, productPrice: string) => {
+    const message = `Olá! Tenho interesse no produto: ${productName}, no valor de ${productPrice}.`;
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   const products = [
     {
       id: 1,
@@ -200,6 +209,86 @@ const App: React.FC = () => {
     },
     {
       id: 23,
+      name: 'Caneca Gato Preto',
+      description: 'Caneca de cerâmica com estampa de gato preto.',
+      image: '☕',
+      price: 'R$ 39,90',
+      category: 'Para Donos'
+    },
+    {
+      id: 24,
+      name: 'Camiseta "Cat Person"',
+      description: 'Camiseta de algodão com estampa divertida.',
+      image: '👕',
+      price: 'R$ 59,90',
+      category: 'Para Donos'
+    },
+    {
+      id: 25,
+      name: 'Bolsa Ecobag de Gatinho',
+      description: 'Bolsa de algodão para compras.',
+      image: '👜',
+      price: 'R$ 29,90',
+      category: 'Para Donos'
+    },
+    {
+      id: 26,
+      name: 'Chaveiro de Gato',
+      description: 'Chaveiro de metal em formato de gato.',
+      image: '🔑',
+      price: 'R$ 19,90',
+      category: 'Para Donos'
+    },
+    {
+      id: 27,
+      name: 'Meias de Gatinho',
+      description: 'Par de meias com estampa de patas de gato.',
+      image: '🧦',
+      price: 'R$ 24,90',
+      category: 'Para Donos'
+    },
+    {
+      id: 28,
+      name: 'Livro "O Encantador de Gatos"',
+      description: 'Livro sobre comportamento felino.',
+      image: '📖',
+      price: 'R$ 49,90',
+      category: 'Para Donos'
+    },
+    {
+      id: 29,
+      name: 'Quadro Decorativo de Gato',
+      description: 'Quadro com ilustração de gato para decorar a casa.',
+      image: '🖼️',
+      price: 'R$ 79,90',
+      category: 'Para Donos'
+    },
+    {
+      id: 30,
+      name: 'Adesivos de Gato para Notebook',
+      description: 'Cartela de adesivos de vinil.',
+      image: '🐱',
+      price: 'R$ 14,90',
+      category: 'Para Donos'
+    },
+    {
+      id: 31,
+      name: 'Mousepad de Gato',
+      description: 'Mousepad com estampa de gato.',
+      image: '🖱️',
+      price: 'R$ 34,90',
+      category: 'Para Donos'
+    },
+    {
+      id: 32,
+      name: 'Almofada de Gato',
+      description: 'Almofada em formato de gato.',
+      image: '😻',
+      price: 'R$ 69,90',
+      category: 'Para Donos'
+    },
+    {
+      id: 33,
       name: 'Shampoo Antipulgas',
       description: 'Shampoo especial para prevenção de pulgas',
       image: '🧼',
@@ -207,7 +296,7 @@ const App: React.FC = () => {
       category: 'Higiene'
     },
     {
-      id: 24,
+      id: 34,
       name: 'Brinquedo Pena',
       description: 'Varinha com penas para estimular caça',
       image: '🪶',
@@ -215,7 +304,7 @@ const App: React.FC = () => {
       category: 'Brinquedos'
     },
     {
-      id: 25,
+      id: 35,
       name: 'Caixa de Areia Premium',
       description: 'Areia sanitária de alta absorção',
       image: '📦',
@@ -223,7 +312,7 @@ const App: React.FC = () => {
       category: 'Higiene'
     },
     {
-      id: 26,
+      id: 36,
       name: 'Colchonete Ortopédico',
       description: 'Colchão especial para gatos idosos',
       image: '🛌',
@@ -231,7 +320,7 @@ const App: React.FC = () => {
       category: 'Conforto'
     },
     {
-      id: 27,
+      id: 37,
       name: 'Dispensador de Ração',
       description: 'Alimentador automático programável',
       image: '⏰',
@@ -239,7 +328,7 @@ const App: React.FC = () => {
       category: 'Acessórios'
     },
     {
-      id: 28,
+      id: 38,
       name: 'Escada para Gatos',
       description: 'Escada dobrável para acesso a alturas',
       image: '🪜',
@@ -247,7 +336,7 @@ const App: React.FC = () => {
       category: 'Acessórios'
     },
     {
-      id: 29,
+      id: 39,
       name: 'Kit Dental Felino',
       description: 'Escova e pasta para higiene bucal',
       image: '🦷',
@@ -255,7 +344,7 @@ const App: React.FC = () => {
       category: 'Higiene'
     },
     {
-      id: 30,
+      id: 40,
       name: 'Bolsa Transporte Luxo',
       description: 'Bolsa elegante para transporte confortável',
       image: '👜',
@@ -263,7 +352,7 @@ const App: React.FC = () => {
       category: 'Acessórios'
     },
     {
-      id: 31,
+      id: 41,
       name: 'Ração Filhote Premium',
       description: 'Ração especial para gatinhos até 12 meses',
       image: '🍼',
@@ -271,7 +360,7 @@ const App: React.FC = () => {
       category: 'Alimentação'
     },
     {
-      id: 32,
+      id: 42,
       name: 'Brinquedo Ratinho',
       description: 'Ratinho de pelúcia com catnip natural',
       image: '🐭',
@@ -279,7 +368,7 @@ const App: React.FC = () => {
       category: 'Brinquedos'
     },
     {
-      id: 33,
+      id: 85,
       name: 'Perfume Felino',
       description: 'Perfume suave e seguro para gatos',
       image: '🌸',
@@ -287,7 +376,7 @@ const App: React.FC = () => {
       category: 'Higiene'
     },
     {
-      id: 34,
+      id: 86,
       name: 'Comedouro Automático',
       description: 'Comedouro com timer e porções controladas',
       image: '🤖',
@@ -295,7 +384,7 @@ const App: React.FC = () => {
       category: 'Acessórios'
     },
     {
-      id: 35,
+      id: 87,
       name: 'Corda Sisal Natural',
       description: 'Corda para arranhadores e brinquedos',
       image: '🪢',
@@ -303,7 +392,7 @@ const App: React.FC = () => {
       category: 'Brinquedos'
     },
     {
-      id: 36,
+      id: 88,
       name: 'Almofada Relaxante',
       description: 'Almofada com ervas calmantes naturais',
       image: '🌿',
@@ -311,7 +400,7 @@ const App: React.FC = () => {
       category: 'Conforto'
     },
     {
-      id: 37,
+      id: 89,
       name: 'Bebedouro Cascata',
       description: 'Fonte de água em cascata com filtro',
       image: '🏞️',
@@ -319,7 +408,7 @@ const App: React.FC = () => {
       category: 'Acessórios'
     },
     {
-      id: 38,
+      id: 90,
       name: 'Kit Primeiros Socorros',
       description: 'Kit básico para emergências felinas',
       image: '🏥',
@@ -327,7 +416,7 @@ const App: React.FC = () => {
       category: 'Saúde'
     },
     {
-      id: 39,
+      id: 91,
       name: 'Bola Massageadora',
       description: 'Bola com texturas para automassagem',
       image: '⚽',
@@ -335,7 +424,7 @@ const App: React.FC = () => {
       category: 'Brinquedos'
     },
     {
-      id: 40,
+      id: 92,
       name: 'Casinha Iglu',
       description: 'Casa em formato iglu para descanso',
       image: '🏠',
@@ -343,7 +432,7 @@ const App: React.FC = () => {
       category: 'Conforto'
     },
     {
-      id: 41,
+      id: 93,
       name: 'Spray Educativo',
       description: 'Spray para educar comportamentos',
       image: '📚',
@@ -351,7 +440,7 @@ const App: React.FC = () => {
       category: 'Higiene'
     },
     {
-      id: 42,
+      id: 94,
       name: 'Rede Protetora',
       description: 'Rede de segurança para janelas e sacadas',
       image: '🕷️',
@@ -931,12 +1020,9 @@ const App: React.FC = () => {
                 <h3>{product.name}</h3>
                 <p>{product.description}</p>
                 <div className="product-price">{product.price}</div>
-                <button 
-                  className="buy-button"
-                  onClick={() => sendWhatsApp(product.name)}
-                >
-                  <span>💬</span> Comprar pelo WhatsApp
-                </button>
+                <button onClick={() => handleWhatsAppPurchase(product.name, product.price)} className="buy-button">
+                    Comprar pelo WhatsApp
+                  </button>
               </div>
             ))}
           </div>
@@ -956,12 +1042,12 @@ const App: React.FC = () => {
 
         <div className="vet-section">
           <div className="vet-photo">
-            <img src="/veterinaria.png" alt="Dra. Fulana de Tal" className="vet-photo" />
+            <img src="/veterinária.png" alt="Dra. Fulana de Tal" className="vet-photo" />
           </div>
           <div className="vet-info">
             <h4>Dra. Manuela da Silva Casa</h4>
             <p>CRMV 07412/SC</p>
-            <p>Apaixonada por gatos e dedicada a oferecer o melhor cuidado para seu gato.</p>
+            <p>Apaixonada por gatos e dedicada a oferecer o melhor cuidado para seu amiguinho.</p>
           </div>
         </div>
         
@@ -996,45 +1082,48 @@ const App: React.FC = () => {
 
   // Componente da página Contato
   const ContatoPage = () => (
-    <section className="contact">
-      <div className="container">
-        <h2>Contato</h2>
-        <div className="contact-content">
-          <div className="contact-info">
+      <section className="contact">
+        <div className="container">
+          <h2>Entre em Contato</h2>
+          <p>Estamos aqui para ajudar! Seja para tirar dúvidas, agendar um serviço ou simplesmente para um bate-papo sobre gatos, nossa equipe está à disposição.</p>
+          
+          <div className="contact-details">
             <div className="contact-item">
-              <span>📍</span>
+              <img src="/whats.png" alt="WhatsApp" className="contact-icon" />
               <div>
-                <h4>Endereço</h4>
-                <p>Rua Francisco de Paula Ramos, 104<br/>Lages - SC – 88523-020</p>
+                <strong>WhatsApp</strong>
+                <p>Adicione nosso número e envie uma mensagem!</p>
+                <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="contact-link">{whatsappNumber}</a>
               </div>
             </div>
             
-            <div className="contact-buttons">
-              <button className="contact-button whatsapp" onClick={() => sendWhatsApp()}>
-                <span>💬</span> WhatsApp
-              </button>
-              <button 
-                className="contact-button instagram"
-                onClick={() => window.open(instagramUrl, '_blank')}
-              >
-                <span>📸</span> Instagram
-              </button>
-            </div>
-
-            <div className="hours">
-              <h4>Horário de Funcionamento</h4>
-              <p>Segunda a Sexta: 8h às 18h<br/>Sábado: 8h às 12h</p>
+            <div className="contact-item">
+              <img src="/insta.png" alt="Instagram" className="contact-icon" />
+              <div>
+                <strong>Instagram</strong>
+                <p>Siga-nos para novidades, dicas e muitas fotos fofas!</p>
+                <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="contact-link">@acasadosgatos.lages</a>
+              </div>
             </div>
           </div>
-          
-          <div className="map-placeholder">
-            <span>🗺️</span>
-            <p>Mapa da localização</p>
-            <small>Rua Francisco de Paula Ramos, 104 - Lages/SC</small>
+
+          <h3>Nossa Localização e Horários</h3>
+          <p><strong>Endereço:</strong> Rua Francisco de Paula Ramos, 104, Lages - SC – 88523-020</p>
+          <p><strong>Horário de Funcionamento:</strong> Segunda a Sexta: 8h às 18h | Sábado: 8h às 12h</p>
+
+          <div className="map-container">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3549.993113398529!2d-50.32727838494934!3d-27.80940898279305!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94e01f165c561e9d%3A0x73592424a73a443!2sRua%20Correia%20Pinto%2C%20Lages%20-%20SC!5e0!3m2!1spt-BR!2sbr!4v1678886412345!5m2!1spt-BR!2sbr"
+              width="600" 
+              height="450" 
+              style={{ border:0 }} 
+              allowFullScreen={true} 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade">
+            </iframe>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
   );
 
   // Função para renderizar a página atual
