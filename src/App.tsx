@@ -16,703 +16,803 @@ const App: React.FC = () => {
   const products = [
     {
       id: 1,
-      name: 'Ração Premium Felina',
-      description: 'Ração super premium para gatos adultos',
-      image: '🍽️',
-      price: 'R$ 89,90'
+      name: 'Ração Premium para Gatos Adultos',
+      description: 'Ração seca sabor salmão para gatos castrados',
+      image: '🍣',
+      price: 'R$ 129,90',
+      category: 'Alimentação'
     },
     {
       id: 2,
-      name: 'Arranhador Torre',
-      description: 'Arranhador vertical com múltiplos níveis',
-      image: '🏗️',
-      price: 'R$ 159,90'
+      name: 'Arranhador Torre com Múltiplos Níveis',
+      description: 'Arranhador grande com brinquedos e tocas',
+      image: '🗼',
+      price: 'R$ 249,90',
+      category: 'Brinquedos'
     },
     {
       id: 3,
-      name: 'Cama Aconchegante',
-      description: 'Cama macia e confortável para gatos adultos',
-      image: '🛏️',
-      price: 'R$ 79,90'
+      name: 'Fonte de Água Automática',
+      description: 'Bebedouro com filtro para água sempre fresca',
+      image: '💧',
+      price: 'R$ 159,90',
+      category: 'Acessórios'
     },
     {
       id: 4,
-      name: 'Brinquedo Interativo',
-      description: 'Brinquedo estimulante para exercícios diários',
-      image: '🎾',
-      price: 'R$ 29,90'
+      name: 'Cama Nuvem Extra Macia',
+      description: 'Cama redonda de pelúcia para máximo conforto',
+      image: '☁️',
+      price: 'R$ 89,90',
+      category: 'Conforto'
     },
     {
       id: 5,
-      name: 'Coleira Elegante',
-      description: 'Coleira ajustável com design moderno e confortável',
-      image: '🎀',
-      price: 'R$ 24,90'
+      name: 'Petisco Catnip Orgânico',
+      description: 'Petisco natural de catnip para relaxamento',
+      image: '🌿',
+      price: 'R$ 24,90',
+      category: 'Alimentação'
     },
     {
       id: 6,
-      name: 'Casa de Brincar',
-      description: 'Casinha divertida para entretenimento e brincadeira',
-      image: '🏠',
-      price: 'R$ 129,90'
+      name: 'Caixa de Transporte Segura',
+      description: 'Caixa de transporte com travas de segurança',
+      image: '✈️',
+      price: 'R$ 199,90',
+      category: 'Acessórios'
     },
     {
       id: 7,
-      name: 'Fonte Automática',
-      description: 'Fonte com filtro para água sempre fresca e limpa',
-      image: '⛲',
-      price: 'R$ 199,90'
+      name: 'Varinha de Brinquedo com Penas',
+      description: 'Brinquedo interativo para estimular o instinto de caça',
+      image: '🎣',
+      price: 'R$ 19,90',
+      category: 'Brinquedos'
     },
     {
       id: 8,
-      name: 'Kit Higiene Completo',
-      description: 'Shampoo, condicionador e escova para cuidados especiais',
-      image: '🧴',
-      price: 'R$ 69,90'
+      name: 'Areia Higiênica Super Absorvente',
+      description: 'Areia sílica que elimina odores e absorve a umidade',
+      image: '✨',
+      price: 'R$ 49,90',
+      category: 'Higiene'
     },
     {
       id: 9,
-      name: 'Transportadora Confort',
-      description: 'Caixa de transporte segura e confortável para viagens',
-      image: '🎒',
-      price: 'R$ 149,90'
+      name: 'Coleira com GPS Integrado',
+      description: 'Coleira com rastreador para segurança do seu gato',
+      image: '🛰️',
+      price: 'R$ 299,90',
+      category: 'Acessórios'
     },
     {
       id: 10,
-      name: 'Comedouro Duplo Inox',
-      description: 'Comedouro e bebedouro em aço inoxidável antiderrapante',
-      image: '🥣',
-      price: 'R$ 45,90'
+      name: 'Túnel Dobrável para Gatos',
+      description: 'Túnel de tecido para diversão e esconderijo',
+      image: '🚇',
+      price: 'R$ 69,90',
+      category: 'Brinquedos'
     },
     {
       id: 11,
       name: 'Túnel de Brincar',
       description: 'Túnel dobrável para diversão e exercícios',
       image: '🌀',
-      price: 'R$ 89,90'
+      price: 'R$ 89,90',
+      category: 'Brinquedos'
     },
     {
       id: 12,
       name: 'Petisco Natural Premium',
       description: 'Snacks naturais e saudáveis para recompensas',
       image: '🦴',
-      price: 'R$ 34,90'
+      price: 'R$ 34,90',
+      category: 'Alimentação'
     },
     {
       id: 13,
       name: 'Tapete Sanitário',
       description: 'Tapete absorvente para higiene e limpeza',
       image: '🧽',
-      price: 'R$ 19,90'
+      price: 'R$ 19,90',
+      category: 'Higiene'
     },
     {
       id: 14,
       name: 'Bola Interativa LED',
       description: 'Bola com luzes LED para brincadeiras noturnas',
       image: '💡',
-      price: 'R$ 39,90'
+      price: 'R$ 39,90',
+      category: 'Brinquedos'
     },
     {
       id: 15,
       name: 'Rede de Descanso',
       description: 'Rede suspensa confortável para relaxamento',
       image: '🕸️',
-      price: 'R$ 79,90'
+      price: 'R$ 79,90',
+      category: 'Conforto'
     },
     {
       id: 16,
       name: 'Spray Calmante',
       description: 'Spray natural para reduzir stress e ansiedade',
       image: '💨',
-      price: 'R$ 54,90'
+      price: 'R$ 54,90',
+      category: 'Saúde'
     },
     {
       id: 17,
       name: 'Escova Massageadora',
       description: 'Escova com cerdas macias para massagem relaxante',
       image: '🪮',
-      price: 'R$ 29,90'
+      price: 'R$ 29,90',
+      category: 'Higiene'
     },
     {
       id: 18,
       name: 'Comedouro Elevado',
       description: 'Comedouro ergonômico em altura ideal',
       image: '🏔️',
-      price: 'R$ 89,90'
+      price: 'R$ 89,90',
+      category: 'Acessórios'
     },
     {
       id: 19,
       name: 'Manta Térmica',
       description: 'Manta aquecida para conforto nos dias frios',
       image: '🔥',
-      price: 'R$ 119,90'
+      price: 'R$ 119,90',
+      category: 'Conforto'
     },
     {
       id: 20,
       name: 'Laser Pointer',
       description: 'Ponteiro laser para exercícios e diversão',
       image: '🔴',
-      price: 'R$ 24,90'
+      price: 'R$ 24,90',
+      category: 'Brinquedos'
     },
     {
       id: 21,
       name: 'Vitamina Multifuncional',
       description: 'Suplemento vitamínico para saúde completa',
       image: '💊',
-      price: 'R$ 64,90'
+      price: 'R$ 64,90',
+      category: 'Saúde'
     },
     {
       id: 22,
       name: 'Arranhador Compacto',
       description: 'Arranhador pequeno para espaços reduzidos',
       image: '📐',
-      price: 'R$ 49,90'
+      price: 'R$ 49,90',
+      category: 'Brinquedos'
     },
     {
       id: 23,
       name: 'Shampoo Antipulgas',
       description: 'Shampoo especial para prevenção de pulgas',
       image: '🧼',
-      price: 'R$ 39,90'
+      price: 'R$ 39,90',
+      category: 'Higiene'
     },
     {
       id: 24,
       name: 'Brinquedo Pena',
       description: 'Varinha com penas para estimular caça',
       image: '🪶',
-      price: 'R$ 19,90'
+      price: 'R$ 19,90',
+      category: 'Brinquedos'
     },
     {
       id: 25,
       name: 'Caixa de Areia Premium',
       description: 'Areia sanitária de alta absorção',
       image: '📦',
-      price: 'R$ 34,90'
+      price: 'R$ 34,90',
+      category: 'Higiene'
     },
     {
       id: 26,
       name: 'Colchonete Ortopédico',
       description: 'Colchão especial para gatos idosos',
       image: '🛌',
-      price: 'R$ 159,90'
+      price: 'R$ 159,90',
+      category: 'Conforto'
     },
     {
       id: 27,
       name: 'Dispensador de Ração',
       description: 'Alimentador automático programável',
       image: '⏰',
-      price: 'R$ 179,90'
+      price: 'R$ 179,90',
+      category: 'Acessórios'
     },
     {
       id: 28,
       name: 'Escada para Gatos',
       description: 'Escada dobrável para acesso a alturas',
       image: '🪜',
-      price: 'R$ 89,90'
+      price: 'R$ 89,90',
+      category: 'Acessórios'
     },
     {
       id: 29,
       name: 'Kit Dental Felino',
       description: 'Escova e pasta para higiene bucal',
       image: '🦷',
-      price: 'R$ 44,90'
+      price: 'R$ 44,90',
+      category: 'Higiene'
     },
     {
       id: 30,
       name: 'Bolsa Transporte Luxo',
       description: 'Bolsa elegante para transporte confortável',
       image: '👜',
-      price: 'R$ 229,90'
+      price: 'R$ 229,90',
+      category: 'Acessórios'
     },
     {
       id: 31,
       name: 'Ração Filhote Premium',
       description: 'Ração especial para gatinhos até 12 meses',
       image: '🍼',
-      price: 'R$ 94,90'
+      price: 'R$ 94,90',
+      category: 'Alimentação'
     },
     {
       id: 32,
       name: 'Brinquedo Ratinho',
       description: 'Ratinho de pelúcia com catnip natural',
       image: '🐭',
-      price: 'R$ 14,90'
+      price: 'R$ 14,90',
+      category: 'Brinquedos'
     },
     {
       id: 33,
       name: 'Perfume Felino',
       description: 'Perfume suave e seguro para gatos',
       image: '🌸',
-      price: 'R$ 49,90'
+      price: 'R$ 49,90',
+      category: 'Higiene'
     },
     {
       id: 34,
       name: 'Comedouro Automático',
       description: 'Comedouro com timer e porções controladas',
       image: '🤖',
-      price: 'R$ 299,90'
+      price: 'R$ 299,90',
+      category: 'Acessórios'
     },
     {
       id: 35,
       name: 'Corda Sisal Natural',
       description: 'Corda para arranhadores e brinquedos',
       image: '🪢',
-      price: 'R$ 29,90'
+      price: 'R$ 29,90',
+      category: 'Brinquedos'
     },
     {
       id: 36,
       name: 'Almofada Relaxante',
       description: 'Almofada com ervas calmantes naturais',
       image: '🌿',
-      price: 'R$ 69,90'
+      price: 'R$ 69,90',
+      category: 'Conforto'
     },
     {
       id: 37,
       name: 'Bebedouro Cascata',
       description: 'Fonte de água em cascata com filtro',
       image: '🏞️',
-      price: 'R$ 189,90'
+      price: 'R$ 189,90',
+      category: 'Acessórios'
     },
     {
       id: 38,
       name: 'Kit Primeiros Socorros',
       description: 'Kit básico para emergências felinas',
       image: '🏥',
-      price: 'R$ 79,90'
+      price: 'R$ 79,90',
+      category: 'Saúde'
     },
     {
       id: 39,
       name: 'Bola Massageadora',
       description: 'Bola com texturas para automassagem',
       image: '⚽',
-      price: 'R$ 34,90'
+      price: 'R$ 34,90',
+      category: 'Brinquedos'
     },
     {
       id: 40,
       name: 'Casinha Iglu',
       description: 'Casa em formato iglu para descanso',
       image: '🏠',
-      price: 'R$ 149,90'
+      price: 'R$ 149,90',
+      category: 'Conforto'
     },
     {
       id: 41,
       name: 'Spray Educativo',
       description: 'Spray para educar comportamentos',
       image: '📚',
-      price: 'R$ 39,90'
+      price: 'R$ 39,90',
+      category: 'Higiene'
     },
     {
       id: 42,
       name: 'Rede Protetora',
       description: 'Rede de segurança para janelas e sacadas',
       image: '🕷️',
-      price: 'R$ 89,90'
+      price: 'R$ 89,90',
+      category: 'Acessórios'
     },
     {
       id: 43,
       name: 'Termômetro Digital',
       description: 'Termômetro específico para felinos',
       image: '🌡️',
-      price: 'R$ 59,90'
+      price: 'R$ 59,90',
+      category: 'Saúde'
     },
     {
       id: 44,
       name: 'Brinquedo Eletrônico',
       description: 'Brinquedo com movimento automático',
       image: '🔋',
-      price: 'R$ 79,90'
+      price: 'R$ 79,90',
+      category: 'Brinquedos'
     },
     {
       id: 45,
       name: 'Caixa Sanitária Fechada',
       description: 'Banheiro fechado com filtro de odor',
       image: '🚽',
-      price: 'R$ 119,90'
+      price: 'R$ 119,90',
+      category: 'Higiene'
     },
     {
       id: 46,
       name: 'Suplemento Pelo',
       description: 'Vitamina para pelagem brilhante',
       image: '✨',
-      price: 'R$ 54,90'
+      price: 'R$ 54,90',
+      category: 'Saúde'
     },
     {
       id: 47,
       name: 'Arranhador Vertical',
       description: 'Torre arranhador de 1,5m de altura',
       image: '🗼',
-      price: 'R$ 249,90'
+      price: 'R$ 249,90',
+      category: 'Brinquedos'
     },
     {
       id: 48,
       name: 'Coleira GPS',
       description: 'Coleira com rastreamento por GPS',
       image: '🛰️',
-      price: 'R$ 199,90'
+      price: 'R$ 199,90',
+      category: 'Acessórios'
     },
     {
       id: 49,
       name: 'Tapete Aquecido',
       description: 'Tapete com aquecimento elétrico seguro',
       image: '🔥',
-      price: 'R$ 139,90'
+      price: 'R$ 139,90',
+      category: 'Conforto'
     },
     {
       id: 50,
       name: 'Kit Beleza Completo',
       description: 'Kit com todos os itens para estética',
       image: '💅',
-      price: 'R$ 89,90'
+      price: 'R$ 89,90',
+      category: 'Higiene'
     },
     {
       id: 51,
       name: 'Brinquedo Inteligente',
       description: 'Brinquedo que responde ao movimento',
       image: '🧠',
-      price: 'R$ 129,90'
+      price: 'R$ 129,90',
+      category: 'Brinquedos'
     },
     {
       id: 52,
       name: 'Cama Ortopédica Luxo',
       description: 'Cama premium com espuma viscoelástica',
       image: '👑',
-      price: 'R$ 299,90'
+      price: 'R$ 299,90',
+      category: 'Conforto'
     },
     {
       id: 53,
       name: 'Sistema de Câmeras',
       description: 'Câmera para monitorar seu gato remotamente',
       image: '📹',
-      price: 'R$ 399,90'
+      price: 'R$ 399,90',
+      category: 'Acessórios'
     },
     {
       id: 54,
       name: 'Kit Completo Iniciante',
       description: 'Kit com tudo para novos tutores',
       image: '🎁',
-      price: 'R$ 199,90'
+      price: 'R$ 199,90',
+      category: 'Acessórios'
     },
     {
       id: 55,
       name: 'Ração Sênior Premium',
       description: 'Ração especial para gatos idosos',
       image: '👴',
-      price: 'R$ 109,90'
+      price: 'R$ 109,90',
+      category: 'Alimentação'
     },
     {
       id: 56,
       name: 'Brinquedo Varinha Mágica',
       description: 'Varinha com penas coloridas e guizo',
       image: '🪄',
-      price: 'R$ 24,90'
+      price: 'R$ 24,90',
+      category: 'Brinquedos'
     },
     {
       id: 57,
       name: 'Shampoo Antipulgas',
       description: 'Shampoo natural contra pulgas e carrapatos',
       image: '🧴',
-      price: 'R$ 44,90'
+      price: 'R$ 44,90',
+      category: 'Higiene'
     },
     {
       id: 58,
       name: 'Casa Árvore Gigante',
       description: 'Arranhador em formato de árvore 2m',
       image: '🌳',
-      price: 'R$ 599,90'
+      price: 'R$ 599,90',
+      category: 'Brinquedos'
     },
     {
       id: 59,
       name: 'Comedouro Elevado Duplo',
       description: 'Comedouro duplo em altura ergonômica',
       image: '🥣',
-      price: 'R$ 89,90'
+      price: 'R$ 89,90',
+      category: 'Acessórios'
     },
     {
       id: 60,
       name: 'Bola Dispensadora',
       description: 'Bola que libera petiscos durante o jogo',
       image: '🎾',
-      price: 'R$ 49,90'
+      price: 'R$ 49,90',
+      category: 'Brinquedos'
     },
     {
       id: 61,
       name: 'Kit Dental Completo',
       description: 'Escova, pasta e brinquedos dentais',
       image: '🦷',
-      price: 'R$ 64,90'
+      price: 'R$ 64,90',
+      category: 'Higiene'
     },
     {
       id: 62,
       name: 'Mochila Transporte',
       description: 'Mochila ergonômica para transporte',
       image: '🎒',
-      price: 'R$ 179,90'
+      price: 'R$ 179,90',
+      category: 'Acessórios'
     },
     {
       id: 63,
       name: 'Túnel Dobrável',
       description: 'Túnel de brincar dobrável e portátil',
       image: '🚇',
-      price: 'R$ 59,90'
+      price: 'R$ 59,90',
+      category: 'Brinquedos'
     },
     {
       id: 64,
       name: 'Vitamina Multifuncional',
       description: 'Complexo vitamínico completo',
       image: '💊',
-      price: 'R$ 74,90'
+      price: 'R$ 74,90',
+      category: 'Saúde'
     },
     {
       id: 65,
       name: 'Escada para Cama',
       description: 'Escada dobrável para acesso a móveis',
       image: '🪜',
-      price: 'R$ 119,90'
+      price: 'R$ 119,90',
+      category: 'Acessórios'
     },
     {
       id: 66,
       name: 'Dispensador de Água',
       description: 'Dispensador automático com sensor',
       image: '🚰',
-      price: 'R$ 159,90'
+      price: 'R$ 159,90',
+      category: 'Acessórios'
     },
     {
       id: 67,
       name: 'Cama Suspensa',
       description: 'Cama que se fixa em radiadores',
       image: '🛏️',
-      price: 'R$ 99,90'
+      price: 'R$ 99,90',
+      category: 'Conforto'
     },
     {
       id: 68,
       name: 'Kit Limpeza Orelhas',
       description: 'Solução e aplicadores para higiene',
       image: '👂',
-      price: 'R$ 34,90'
+      price: 'R$ 34,90',
+      category: 'Higiene'
     },
     {
       id: 69,
       name: 'Brinquedo Robô',
       description: 'Robô interativo com controle remoto',
       image: '🤖',
-      price: 'R$ 249,90'
+      price: 'R$ 249,90',
+      category: 'Brinquedos'
     },
     {
       id: 70,
       name: 'Tapete Sanitário',
       description: 'Tapete absorvente descartável',
       image: '🧽',
-      price: 'R$ 29,90'
+      price: 'R$ 29,90',
+      category: 'Higiene'
     },
     {
       id: 71,
       name: 'Coleira Antipulgas',
       description: 'Coleira com proteção de 8 meses',
       image: '🔵',
-      price: 'R$ 69,90'
+      price: 'R$ 69,90',
+      category: 'Saúde'
     },
     {
       id: 72,
       name: 'Fonte Cerâmica',
       description: 'Fonte de água em cerâmica artesanal',
       image: '🏺',
-      price: 'R$ 149,90'
+      price: 'R$ 149,90',
+      category: 'Acessórios'
     },
     {
       id: 73,
       name: 'Kit Unhas Completo',
       description: 'Cortador, lima e protetor de unhas',
       image: '💅',
-      price: 'R$ 54,90'
+      price: 'R$ 54,90',
+      category: 'Higiene'
     },
     {
       id: 74,
       name: 'Brinquedo Peixe Eletrônico',
       description: 'Peixe que se move sozinho na água',
       image: '🐠',
-      price: 'R$ 89,90'
+      price: 'R$ 89,90',
+      category: 'Brinquedos'
     },
     {
       id: 75,
       name: 'Caixa Areia Automática',
       description: 'Caixa que se limpa automaticamente',
       image: '🔄',
-      price: 'R$ 899,90'
+      price: 'R$ 899,90',
+      category: 'Higiene'
     },
     {
       id: 76,
       name: 'Suplemento Articular',
       description: 'Glucosamina para articulações saudáveis',
       image: '🦴',
-      price: 'R$ 84,90'
+      price: 'R$ 84,90',
+      category: 'Saúde'
     },
     {
       id: 77,
       name: 'Casa Inteligente',
       description: 'Casa com controle de temperatura',
       image: '🏡',
-      price: 'R$ 799,90'
+      price: 'R$ 799,90',
+      category: 'Conforto'
     },
     {
       id: 78,
       name: 'Kit Veterinário Doméstico',
       description: 'Kit completo para cuidados básicos',
       image: '⚕️',
-      price: 'R$ 149,90'
+      price: 'R$ 149,90',
+      category: 'Saúde'
     },
     {
       id: 79,
       name: 'Ração Orgânica Premium',
       description: 'Ração 100% orgânica sem conservantes',
       image: '🌱',
-      price: 'R$ 129,90'
+      price: 'R$ 129,90',
+      category: 'Alimentação'
     },
     {
       id: 80,
       name: 'Brinquedo Caça Laser',
       description: 'Dispositivo automático com laser rotativo',
       image: '🔴',
-      price: 'R$ 199,90'
+      price: 'R$ 199,90',
+      category: 'Brinquedos'
     },
     {
       id: 81,
       name: 'Perfume Desodorante',
       description: 'Spray neutralizador de odores naturais',
       image: '🌺',
-      price: 'R$ 39,90'
+      price: 'R$ 39,90',
+      category: 'Higiene'
     },
     {
       id: 82,
       name: 'Torre Arranhador Luxo',
       description: 'Torre de 2,5m com múltiplos níveis',
       image: '🏰',
-      price: 'R$ 699,90'
+      price: 'R$ 699,90',
+      category: 'Brinquedos'
     },
     {
       id: 83,
       name: 'Comedouro Inteligente',
       description: 'Comedouro com app e reconhecimento facial',
       image: '📱',
-      price: 'R$ 449,90'
+      price: 'R$ 449,90',
+      category: 'Acessórios'
     },
     {
       id: 84,
       name: 'Bola Catnip Gigante',
       description: 'Bola de 15cm recheada com catnip',
       image: '🟢',
-      price: 'R$ 34,90'
+      price: 'R$ 34,90',
+      category: 'Brinquedos'
     },
     {
       id: 85,
       name: 'Kit Spa Completo',
       description: 'Shampoo, condicionador e óleos relaxantes',
       image: '🛁',
-      price: 'R$ 89,90'
+      price: 'R$ 89,90',
+      category: 'Higiene'
     },
     {
       id: 86,
       name: 'Transportadora Aérea',
       description: 'Aprovada para viagens de avião',
       image: '✈️',
-      price: 'R$ 299,90'
+      price: 'R$ 299,90',
+      category: 'Acessórios'
     },
     {
       id: 87,
       name: 'Circuito de Bolinhas',
       description: 'Pista circular com bolinhas coloridas',
       image: '🎪',
-      price: 'R$ 79,90'
+      price: 'R$ 79,90',
+      category: 'Brinquedos'
     },
     {
       id: 88,
       name: 'Suplemento Imunidade',
       description: 'Vitaminas para fortalecer imunidade',
       image: '🛡️',
-      price: 'R$ 69,90'
+      price: 'R$ 69,90',
+      category: 'Saúde'
     },
     {
       id: 89,
       name: 'Ponte Suspensa',
       description: 'Ponte de corda para escalada',
       image: '🌉',
-      price: 'R$ 119,90'
+      price: 'R$ 119,90',
+      category: 'Conforto'
     },
     {
       id: 90,
       name: 'Bebedouro Gelado',
       description: 'Mantém água sempre fresca',
       image: '🧊',
-      price: 'R$ 179,90'
+      price: 'R$ 179,90',
+      category: 'Acessórios'
     },
     {
       id: 91,
       name: 'Almofada Térmica',
       description: 'Almofada que mantém temperatura corporal',
       image: '🌡️',
-      price: 'R$ 89,90'
+      price: 'R$ 89,90',
+      category: 'Conforto'
     },
     {
       id: 92,
       name: 'Kit Higiene Bucal',
       description: 'Escova elétrica e enxaguante',
       image: '🪥',
-      price: 'R$ 74,90'
+      price: 'R$ 74,90',
+      category: 'Higiene'
     },
     {
       id: 93,
       name: 'Brinquedo Pássaro Voador',
       description: 'Pássaro eletrônico que voa pela casa',
       image: '🦅',
-      price: 'R$ 159,90'
+      price: 'R$ 159,90',
+      category: 'Brinquedos'
     },
     {
       id: 94,
       name: 'Caixa Areia Biodegradável',
       description: 'Areia ecológica 100% natural',
       image: '♻️',
-      price: 'R$ 49,90'
+      price: 'R$ 49,90',
+      category: 'Higiene'
     },
     {
       id: 95,
       name: 'Coleira Luminosa LED',
       description: 'Coleira com luzes LED recarregáveis',
       image: '💡',
-      price: 'R$ 59,90'
+      price: 'R$ 59,90',
+      category: 'Acessórios'
     },
     {
       id: 96,
       name: 'Fonte Cascata Premium',
       description: 'Fonte de aço inox com 3 níveis',
       image: '⛲',
-      price: 'R$ 249,90'
+      price: 'R$ 249,90',
+      category: 'Acessórios'
     },
     {
       id: 97,
       name: 'Kit Manicure Profissional',
       description: 'Cortador elétrico e lixas especiais',
       image: '✂️',
-      price: 'R$ 94,90'
+      price: 'R$ 94,90',
+      category: 'Higiene'
     },
     {
       id: 98,
       name: 'Brinquedo Aquário Virtual',
       description: 'Tela com peixes virtuais interativos',
       image: '🐟',
-      price: 'R$ 299,90'
+      price: 'R$ 299,90',
+      category: 'Brinquedos'
     },
     {
       id: 99,
       name: 'Sistema Limpeza Automática',
       description: 'Robô aspirador para pelos de gato',
       image: '🤖',
-      price: 'R$ 1299,90'
+      price: 'R$ 1299,90',
+      category: 'Higiene'
     },
     {
       id: 100,
       name: 'Kit Luxo Completo',
       description: 'Conjunto premium com 20 itens essenciais',
       image: '👑',
-      price: 'R$ 999,90'
+      price: 'R$ 999,90',
+      category: 'Acessórios'
     }
   ];
 
@@ -787,32 +887,55 @@ const App: React.FC = () => {
   );
 
   // Componente da página Catshop
-  const CatshopPage = () => (
-    <section className="catshop">
-      <div className="container">
-        <h2>Catshop - Produtos Exclusivos</h2>
-        <p className="section-subtitle">Tudo que seu gatinho precisa em um só lugar</p>
-        <div className="products-grid">
-          {products.map(product => (
-            <div key={product.id} className="product-card">
-              <div className="product-image">
-                <span>{product.image}</span>
-              </div>
-              <h3>{product.name}</h3>
-              <p>{product.description}</p>
-              <div className="product-price">{product.price}</div>
-              <button 
-                className="buy-button"
-                onClick={() => sendWhatsApp(product.name)}
+  const CatshopPage = () => {
+    const [selectedCategory, setSelectedCategory] = useState('Todos');
+
+    const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category))).filter((c): c is string => c !== undefined)];
+
+    const filteredProducts = selectedCategory === 'Todos'
+      ? products
+      : products.filter(p => p.category === selectedCategory);
+
+    return (
+      <section className="catshop">
+        <div className="container">
+          <h2>Catshop - Produtos Exclusivos</h2>
+          <p className="section-subtitle">Tudo que seu gatinho precisa em um só lugar</p>
+
+          <div className="category-filters">
+            {categories.map(category => (
+              <button
+                key={category}
+                className={selectedCategory === category ? 'active' : ''}
+                onClick={() => setSelectedCategory(category)}
               >
-                <span>💬</span> Comprar pelo WhatsApp
+                {category}
               </button>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          <div className="products-grid">
+            {filteredProducts.map(product => (
+              <div key={product.id} className="product-card">
+                <div className="product-image">
+                  <span>{product.image}</span>
+                </div>
+                <h3>{product.name}</h3>
+                <p>{product.description}</p>
+                <div className="product-price">{product.price}</div>
+                <button 
+                  className="buy-button"
+                  onClick={() => sendWhatsApp(product.name)}
+                >
+                  <span>💬</span> Comprar pelo WhatsApp
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
-  );
+      </section>
+    );
+  };
 
   // Componente da página Clínica
   const ClinicaPage = () => (

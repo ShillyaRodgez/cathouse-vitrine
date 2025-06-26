@@ -877,7 +877,36 @@ main {
 /* Catshop Section */
 .catshop {
   padding: 80px 0;
-  background: linear-gradient(135deg, #f8f9ff 0%, #e6f3ff 100%);
+  background-color: #f9f9f9;
+}
+
+.category-filters {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.category-filters button {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.category-filters button:hover {
+  background-color: #f0f0f0;
+  border-color: #ccc;
+}
+
+.category-filters button.active {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
 }
 
 .catshop h2 {
