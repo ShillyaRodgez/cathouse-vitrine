@@ -973,10 +973,10 @@ const App: React.FC = () => {
             
             <div className="footer-social">
               <button onClick={() => sendWhatsApp()}>
-                <span>💬</span>
+                <img src={`${process.env.PUBLIC_URL}/whats.png`} alt="WhatsApp" />
               </button>
               <button onClick={() => window.open(instagramUrl, '_blank')}>
-                <span>📸</span>
+                <img src={`${process.env.PUBLIC_URL}/insta.png`} alt="Instagram" />
               </button>
             </div>
           </div>

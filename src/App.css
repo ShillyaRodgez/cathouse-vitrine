@@ -1192,8 +1192,17 @@ body {
   box-shadow: 0 8px 25px rgba(109, 3, 5, 0.35), 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
+.footer-social button:hover img {
+  filter: brightness(0) invert(1);
+}
+
 .footer-social button span {
   font-size: 1.2rem;
+}
+
+.footer-social button img {
+  width: 25px;
+  height: 25px;
 }
 
 .footer-bottom {
