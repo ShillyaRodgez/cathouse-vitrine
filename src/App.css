@@ -1052,6 +1052,41 @@ main {
   background-color: white;
 }
 
+.vet-section {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 50px;
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 20px;
+}
+
+.vet-photo {
+  flex-shrink: 0;
+}
+
+.vet-photo img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid white;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.vet-info h4 {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+}
+
+.vet-info p {
+  color: var(--color-text-medium);
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
 .clinic h2 {
   text-align: center;
   font-size: 2.5rem;

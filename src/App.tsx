@@ -951,7 +951,18 @@ const App: React.FC = () => {
       <div className="container">
         <h2>Clínica Felina</h2>
         <div className="clinic-highlight">
-          <h3>"Especialistas em medicina felina. Aqui, seu gato é tratado com carinho e respeito."</h3>
+          <h3>"Especialista em medicina felina. Aqui, seu gato é tratado com carinho e respeito."</h3>
+        </div>
+
+        <div className="vet-section">
+          <div className="vet-photo">
+            <img src="/veterinaria.png" alt="Dra. Fulana de Tal" className="vet-photo" />
+          </div>
+          <div className="vet-info">
+            <h4>Dra. Manuela da Silva Casa</h4>
+            <p>CRMV 07412/SC</p>
+            <p>Apaixonada por gatos e dedicada a oferecer o melhor cuidado para seu gato.</p>
+          </div>
         </div>
         
         <div className="services">
