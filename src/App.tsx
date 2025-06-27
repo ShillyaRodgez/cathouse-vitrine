@@ -45,6 +45,15 @@ const App: React.FC = () => {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+  const [isPaymentDetailsOpen, setIsPaymentDetailsOpen] = useState(false);
+  const [pixExpirationTime, setPixExpirationTime] = useState(15);
+  const [cardData, setCardData] = useState({
+    number: '',
+    name: '',
+    expiry: '',
+    cvv: '',
+    installments: '1'
+  });
   const [orders, setOrders] = useState<Order[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
@@ -1619,82 +1628,418 @@ const App: React.FC = () => {
       {isPaymentModalOpen && (
         <div className="modal-overlay" onClick={() => setIsPaymentModalOpen(false)}>
           <div className="payment-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="payment-header">
-              <h2>💳 Escolha a Forma de Pagamento</h2>
-              <button className="close-button" onClick={() => setIsPaymentModalOpen(false)}>✕</button>
-            </div>
-            
-            <div className="payment-content">
-              <div className="payment-options">
-                <div 
-                  className={`payment-option ${selectedPaymentMethod === 'pix' ? 'selected' : ''}`}
-                  onClick={() => setSelectedPaymentMethod('pix')}
-                >
-                  <div className="payment-icon">🏦</div>
-                  <div className="payment-info">
-                    <h3>PIX</h3>
-                    <p>Pagamento instantâneo</p>
-                    <span className="payment-benefit">Sem taxas</span>
-                  </div>
-                  <div className="payment-check">
-                    {selectedPaymentMethod === 'pix' && '✓'}
-                  </div>
+            {!isPaymentDetailsOpen ? (
+              <>
+                <div className="payment-header">
+                  <h2>💳 Escolha a Forma de Pagamento</h2>
+                  <button className="close-button" onClick={() => setIsPaymentModalOpen(false)}>✕</button>
                 </div>
                 
-                <div 
-                  className={`payment-option ${selectedPaymentMethod === 'credit' ? 'selected' : ''}`}
-                  onClick={() => setSelectedPaymentMethod('credit')}
-                >
-                  <div className="payment-icon">💳</div>
-                  <div className="payment-info">
-                    <h3>Cartão de Crédito</h3>
-                    <p>Parcelamento disponível</p>
-                    <span className="payment-benefit">Até 12x sem juros</span>
+                <div className="payment-content">
+                  <div className="payment-options">
+                    <div 
+                      className={`payment-option ${selectedPaymentMethod === 'pix' ? 'selected' : ''}`}
+                      onClick={() => setSelectedPaymentMethod('pix')}
+                    >
+                      <div className="payment-icon">🏦</div>
+                      <div className="payment-info">
+                        <h3>PIX</h3>
+                        <p>Pagamento instantâneo</p>
+                        <span className="payment-benefit">Sem taxas</span>
+                      </div>
+                      <div className="payment-check">
+                        {selectedPaymentMethod === 'pix' && '✓'}
+                      </div>
+                    </div>
+                    
+                    <div 
+                      className={`payment-option ${selectedPaymentMethod === 'credit' ? 'selected' : ''}`}
+                      onClick={() => setSelectedPaymentMethod('credit')}
+                    >
+                      <div className="payment-icon">💳</div>
+                      <div className="payment-info">
+                        <h3>Cartão de Crédito</h3>
+                        <p>Parcelamento disponível</p>
+                        <span className="payment-benefit">Até 12x sem juros</span>
+                      </div>
+                      <div className="payment-check">
+                        {selectedPaymentMethod === 'credit' && '✓'}
+                      </div>
+                    </div>
+                    
+                    <div 
+                      className={`payment-option ${selectedPaymentMethod === 'debit' ? 'selected' : ''}`}
+                      onClick={() => setSelectedPaymentMethod('debit')}
+                    >
+                      <div className="payment-icon">💰</div>
+                      <div className="payment-info">
+                        <h3>Cartão de Débito</h3>
+                        <p>Débito direto na conta</p>
+                        <span className="payment-benefit">Aprovação imediata</span>
+                      </div>
+                      <div className="payment-check">
+                        {selectedPaymentMethod === 'debit' && '✓'}
+                      </div>
+                    </div>
                   </div>
-                  <div className="payment-check">
-                    {selectedPaymentMethod === 'credit' && '✓'}
+                  
+                  <div className="payment-actions">
+                    <button 
+                      className="back-button"
+                      onClick={() => setIsPaymentModalOpen(false)}
+                    >
+                      Voltar
+                    </button>
+                    <button 
+                      className="confirm-payment-button"
+                      onClick={() => {
+                        if (selectedPaymentMethod) {
+                          setIsPaymentDetailsOpen(true);
+                          if (selectedPaymentMethod === 'pix') {
+                            // Iniciar countdown do PIX
+                            const timer = setInterval(() => {
+                              setPixExpirationTime(prev => {
+                                if (prev <= 1) {
+                                  clearInterval(timer);
+                                  return 0;
+                                }
+                                return prev - 1;
+                              });
+                            }, 60000); // Decrementa a cada minuto
+                          }
+                        }
+                      }}
+                      disabled={!selectedPaymentMethod}
+                    >
+                      Confirmar Pagamento
+                    </button>
                   </div>
                 </div>
+              </>
+            ) : (
+              <>
+                {/* Interface PIX */}
+                {selectedPaymentMethod === 'pix' && (
+                  <>
+                    <div className="payment-header">
+                      <h2>🏦 Pagamento via PIX</h2>
+                      <button className="close-button" onClick={() => {
+                        setIsPaymentModalOpen(false);
+                        setIsPaymentDetailsOpen(false);
+                        setPixExpirationTime(15);
+                      }}>✕</button>
+                    </div>
+                    
+                    <div className="pix-payment-content">
+                      <div className="pix-timer">
+                        <h3>⏰ Tempo para pagamento: {pixExpirationTime} minutos</h3>
+                        {pixExpirationTime === 0 && (
+                          <p className="expired-message">QR Code expirado. Gere um novo código.</p>
+                        )}
+                      </div>
+                      
+                      <div className="pix-qr-section">
+                        <div className="qr-code-placeholder">
+                          <div className="qr-code">
+                            {/* Aqui seria o QR Code real */}
+                            <div className="qr-pattern">
+                              <div className="qr-square"></div>
+                              <div className="qr-square"></div>
+                              <div className="qr-square"></div>
+                              <div className="qr-square"></div>
+                            </div>
+                          </div>
+                        </div>
+                        <p>Escaneie o QR Code com seu banco</p>
+                      </div>
+                      
+                      <div className="pix-key-section">
+                        <h4>Ou copie a chave PIX:</h4>
+                        <div className="pix-key-container">
+                          <input 
+                            type="text" 
+                            value="00020126580014BR.GOV.BCB.PIX013636c4b8c4-4c4c-4c4c-4c4c-4c4c4c4c4c4c5204000053039865802BR5925CASA DOS GATOS LAGES6009Lages62070503***6304ABCD"
+                            readOnly
+                            className="pix-key-input"
+                          />
+                          <button 
+                            className="copy-button"
+                            onClick={() => {
+                              navigator.clipboard.writeText("00020126580014BR.GOV.BCB.PIX013636c4b8c4-4c4c-4c4c-4c4c-4c4c4c4c4c4c5204000053039865802BR5925CASA DOS GATOS LAGES6009Lages62070503***6304ABCD");
+                              alert('Chave PIX copiada!');
+                            }}
+                          >
+                            📋 Copiar
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div className="pix-actions">
+                        <button 
+                          className="back-button"
+                          onClick={() => setIsPaymentDetailsOpen(false)}
+                        >
+                          Voltar
+                        </button>
+                        <button 
+                          className="confirm-payment-button"
+                          onClick={() => {
+                            alert('Aguardando confirmação do pagamento PIX...');
+                            setIsPaymentModalOpen(false);
+                            setIsPaymentDetailsOpen(false);
+                            setIsCheckoutOpen(false);
+                            setPixExpirationTime(15);
+                          }}
+                        >
+                          Confirmar Pagamento
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
                 
-                <div 
-                  className={`payment-option ${selectedPaymentMethod === 'debit' ? 'selected' : ''}`}
-                  onClick={() => setSelectedPaymentMethod('debit')}
-                >
-                  <div className="payment-icon">💰</div>
-                  <div className="payment-info">
-                    <h3>Cartão de Débito</h3>
-                    <p>Débito direto na conta</p>
-                    <span className="payment-benefit">Aprovação imediata</span>
-                  </div>
-                  <div className="payment-check">
-                    {selectedPaymentMethod === 'debit' && '✓'}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="payment-actions">
-                <button 
-                  className="back-button"
-                  onClick={() => setIsPaymentModalOpen(false)}
-                >
-                  Voltar
-                </button>
-                <button 
-                  className="confirm-payment-button"
-                  onClick={() => {
-                    if (selectedPaymentMethod) {
-                      // Aqui você pode adicionar a lógica para processar o pagamento
-                      console.log('Forma de pagamento selecionada:', selectedPaymentMethod);
-                      setIsPaymentModalOpen(false);
-                      // Pode redirecionar para finalização ou mostrar próxima etapa
-                    }
-                  }}
-                  disabled={!selectedPaymentMethod}
-                >
-                  Confirmar Pagamento
-                </button>
-              </div>
-            </div>
+                {/* Interface Cartão de Crédito */}
+                {selectedPaymentMethod === 'credit' && (
+                  <>
+                    <div className="payment-header">
+                      <h2>💳 Cartão de Crédito</h2>
+                      <button className="close-button" onClick={() => {
+                        setIsPaymentModalOpen(false);
+                        setIsPaymentDetailsOpen(false);
+                        setCardData({ number: '', name: '', expiry: '', cvv: '', installments: '1' });
+                      }}>✕</button>
+                    </div>
+                    
+                    <div className="card-payment-content">
+                      <form className="card-form">
+                        <div className="form-group">
+                          <label>Número do Cartão</label>
+                          <input 
+                            type="text" 
+                            placeholder="0000 0000 0000 0000"
+                            value={cardData.number}
+                            onChange={(e) => {
+                              let value = e.target.value.replace(/\D/g, '');
+                              value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+                              if (value.length <= 19) {
+                                setCardData({...cardData, number: value});
+                              }
+                            }}
+                            maxLength={19}
+                          />
+                        </div>
+                        
+                        <div className="form-group">
+                          <label>Nome no Cartão</label>
+                          <input 
+                            type="text" 
+                            placeholder="Nome como está no cartão"
+                            value={cardData.name}
+                            onChange={(e) => setCardData({...cardData, name: e.target.value.toUpperCase()})}
+                          />
+                        </div>
+                        
+                        <div className="form-row">
+                          <div className="form-group">
+                            <label>Validade</label>
+                            <input 
+                              type="text" 
+                              placeholder="MM/AA"
+                              value={cardData.expiry}
+                              onChange={(e) => {
+                                let value = e.target.value.replace(/\D/g, '');
+                                if (value.length >= 2) {
+                                  value = value.substring(0,2) + '/' + value.substring(2,4);
+                                }
+                                if (value.length <= 5) {
+                                  setCardData({...cardData, expiry: value});
+                                }
+                              }}
+                              maxLength={5}
+                            />
+                          </div>
+                          
+                          <div className="form-group">
+                            <label>CVV</label>
+                            <input 
+                              type="text" 
+                              placeholder="000"
+                              value={cardData.cvv}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '');
+                                if (value.length <= 3) {
+                                  setCardData({...cardData, cvv: value});
+                                }
+                              }}
+                              maxLength={3}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="form-group">
+                          <label>Parcelas</label>
+                          <select 
+                            value={cardData.installments}
+                            onChange={(e) => setCardData({...cardData, installments: e.target.value})}
+                          >
+                            <option value="1">1x sem juros</option>
+                            <option value="2">2x sem juros</option>
+                            <option value="3">3x sem juros</option>
+                            <option value="4">4x sem juros</option>
+                            <option value="5">5x sem juros</option>
+                            <option value="6">6x sem juros</option>
+                            <option value="7">7x sem juros</option>
+                            <option value="8">8x sem juros</option>
+                            <option value="9">9x sem juros</option>
+                            <option value="10">10x sem juros</option>
+                            <option value="11">11x sem juros</option>
+                            <option value="12">12x sem juros</option>
+                          </select>
+                        </div>
+                      </form>
+                      
+                      <div className="card-actions">
+                        <button 
+                          className="back-button"
+                          onClick={() => setIsPaymentDetailsOpen(false)}
+                        >
+                          Voltar
+                        </button>
+                        <button 
+                          className="confirm-payment-button"
+                          onClick={() => {
+                            if (cardData.number && cardData.name && cardData.expiry && cardData.cvv) {
+                              alert(`Pagamento processado com sucesso!\nCartão: ****${cardData.number.slice(-4)}\nParcelas: ${cardData.installments}x`);
+                              setIsPaymentModalOpen(false);
+                              setIsPaymentDetailsOpen(false);
+                              setIsCheckoutOpen(false);
+                              setCardData({ number: '', name: '', expiry: '', cvv: '', installments: '1' });
+                            } else {
+                              alert('Por favor, preencha todos os campos do cartão.');
+                            }
+                          }}
+                          disabled={!cardData.number || !cardData.name || !cardData.expiry || !cardData.cvv}
+                        >
+                          Confirmar Pagamento
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+                
+                {/* Interface Cartão de Débito */}
+                {selectedPaymentMethod === 'debit' && (
+                  <>
+                    <div className="payment-header">
+                      <h2>💰 Cartão de Débito</h2>
+                      <button className="close-button" onClick={() => {
+                        setIsPaymentModalOpen(false);
+                        setIsPaymentDetailsOpen(false);
+                        setCardData({ number: '', name: '', expiry: '', cvv: '', installments: '1' });
+                      }}>✕</button>
+                    </div>
+                    
+                    <div className="card-payment-content">
+                      <form className="card-form">
+                        <div className="form-group">
+                          <label>Número do Cartão</label>
+                          <input 
+                            type="text" 
+                            placeholder="0000 0000 0000 0000"
+                            value={cardData.number}
+                            onChange={(e) => {
+                              let value = e.target.value.replace(/\D/g, '');
+                              value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+                              if (value.length <= 19) {
+                                setCardData({...cardData, number: value});
+                              }
+                            }}
+                            maxLength={19}
+                          />
+                        </div>
+                        
+                        <div className="form-group">
+                          <label>Nome no Cartão</label>
+                          <input 
+                            type="text" 
+                            placeholder="Nome como está no cartão"
+                            value={cardData.name}
+                            onChange={(e) => setCardData({...cardData, name: e.target.value.toUpperCase()})}
+                          />
+                        </div>
+                        
+                        <div className="form-row">
+                          <div className="form-group">
+                            <label>Validade</label>
+                            <input 
+                              type="text" 
+                              placeholder="MM/AA"
+                              value={cardData.expiry}
+                              onChange={(e) => {
+                                let value = e.target.value.replace(/\D/g, '');
+                                if (value.length >= 2) {
+                                  value = value.substring(0,2) + '/' + value.substring(2,4);
+                                }
+                                if (value.length <= 5) {
+                                  setCardData({...cardData, expiry: value});
+                                }
+                              }}
+                              maxLength={5}
+                            />
+                          </div>
+                          
+                          <div className="form-group">
+                            <label>CVV</label>
+                            <input 
+                              type="text" 
+                              placeholder="000"
+                              value={cardData.cvv}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '');
+                                if (value.length <= 3) {
+                                  setCardData({...cardData, cvv: value});
+                                }
+                              }}
+                              maxLength={3}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="debit-info">
+                          <p>💡 O valor será debitado imediatamente da sua conta</p>
+                        </div>
+                      </form>
+                      
+                      <div className="card-actions">
+                        <button 
+                          className="back-button"
+                          onClick={() => setIsPaymentDetailsOpen(false)}
+                        >
+                          Voltar
+                        </button>
+                        <button 
+                          className="confirm-payment-button"
+                          onClick={() => {
+                            if (cardData.number && cardData.name && cardData.expiry && cardData.cvv) {
+                              alert(`Pagamento via débito processado com sucesso!\nCartão: ****${cardData.number.slice(-4)}`);
+                              setIsPaymentModalOpen(false);
+                              setIsPaymentDetailsOpen(false);
+                              setIsCheckoutOpen(false);
+                              setCardData({ number: '', name: '', expiry: '', cvv: '', installments: '1' });
+                            } else {
+                              alert('Por favor, preencha todos os campos do cartão.');
+                            }
+                          }}
+                          disabled={!cardData.number || !cardData.name || !cardData.expiry || !cardData.cvv}
+                        >
+                          Confirmar Pagamento
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </div>
         </div>
       )}

@@ -2965,6 +2965,198 @@ main {
   }
 }
 
+/* Estilos para PIX */
+.pix-payment-content {
+  padding: 20px;
+}
+
+.pix-timer {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  border-radius: 10px;
+  color: white;
+}
+
+.pix-timer h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.expired-message {
+  color: #ffeb3b;
+  font-weight: bold;
+  margin: 10px 0 0 0;
+}
+
+.pix-qr-section {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.qr-code-placeholder {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.qr-code {
+  width: 200px;
+  height: 200px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  position: relative;
+}
+
+.qr-pattern {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  width: 80%;
+  height: 80%;
+}
+
+.qr-square {
+  background: #333;
+  border-radius: 3px;
+}
+
+.pix-key-section {
+  margin-bottom: 25px;
+}
+
+.pix-key-section h4 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.pix-key-container {
+  display: flex;
+  gap: 10px;
+}
+
+.pix-key-input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 12px;
+  background: #f9f9f9;
+}
+
+.copy-button {
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.copy-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.pix-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+/* Estilos para Cartões */
+.card-payment-content {
+  padding: 20px;
+}
+
+.card-form {
+  margin-bottom: 25px;
+}
+
+.card-form .form-group {
+  margin-bottom: 20px;
+}
+
+.card-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.card-form input,
+.card-form select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.card-form input:focus,
+.card-form select:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.card-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.debit-info {
+  background: #e3f2fd;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.debit-info p {
+  margin: 0;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.card-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+/* Responsividade para formulários de cartão */
+@media (max-width: 768px) {
+  .card-form .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .pix-key-container {
+    flex-direction: column;
+  }
+  
+  .qr-code {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .pix-actions,
+  .card-actions {
+    flex-direction: column;
+  }
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
