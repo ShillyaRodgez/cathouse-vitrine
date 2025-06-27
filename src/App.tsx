@@ -43,6 +43,8 @@ const App: React.FC = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const [orders, setOrders] = useState<Order[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
@@ -1597,17 +1599,99 @@ const App: React.FC = () => {
                   disabled={!customerInfo.name || !customerInfo.phone || !customerInfo.address || !customerInfo.city || !customerInfo.zipCode}
                 >
                   Enviar Pedido via WhatsApp
-                </button>
-                
+                </button>                
                 {/* Botão Continuar compra para forma de pagamento */}
                 <button 
                   className="continue-purchase-payment-btn"
                   onClick={() => {
-                    // Aqui você pode adicionar a lógica para ir para a etapa de pagamento
-                    console.log('Ir para forma de pagamento');
+                    setIsPaymentModalOpen(true);
                   }}
                 >
                   💳 Continuar compra
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Formas de Pagamento */}
+      {isPaymentModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsPaymentModalOpen(false)}>
+          <div className="payment-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="payment-header">
+              <h2>💳 Escolha a Forma de Pagamento</h2>
+              <button className="close-button" onClick={() => setIsPaymentModalOpen(false)}>✕</button>
+            </div>
+            
+            <div className="payment-content">
+              <div className="payment-options">
+                <div 
+                  className={`payment-option ${selectedPaymentMethod === 'pix' ? 'selected' : ''}`}
+                  onClick={() => setSelectedPaymentMethod('pix')}
+                >
+                  <div className="payment-icon">🏦</div>
+                  <div className="payment-info">
+                    <h3>PIX</h3>
+                    <p>Pagamento instantâneo</p>
+                    <span className="payment-benefit">Sem taxas</span>
+                  </div>
+                  <div className="payment-check">
+                    {selectedPaymentMethod === 'pix' && '✓'}
+                  </div>
+                </div>
+                
+                <div 
+                  className={`payment-option ${selectedPaymentMethod === 'credit' ? 'selected' : ''}`}
+                  onClick={() => setSelectedPaymentMethod('credit')}
+                >
+                  <div className="payment-icon">💳</div>
+                  <div className="payment-info">
+                    <h3>Cartão de Crédito</h3>
+                    <p>Parcelamento disponível</p>
+                    <span className="payment-benefit">Até 12x sem juros</span>
+                  </div>
+                  <div className="payment-check">
+                    {selectedPaymentMethod === 'credit' && '✓'}
+                  </div>
+                </div>
+                
+                <div 
+                  className={`payment-option ${selectedPaymentMethod === 'debit' ? 'selected' : ''}`}
+                  onClick={() => setSelectedPaymentMethod('debit')}
+                >
+                  <div className="payment-icon">💰</div>
+                  <div className="payment-info">
+                    <h3>Cartão de Débito</h3>
+                    <p>Débito direto na conta</p>
+                    <span className="payment-benefit">Aprovação imediata</span>
+                  </div>
+                  <div className="payment-check">
+                    {selectedPaymentMethod === 'debit' && '✓'}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="payment-actions">
+                <button 
+                  className="back-button"
+                  onClick={() => setIsPaymentModalOpen(false)}
+                >
+                  Voltar
+                </button>
+                <button 
+                  className="confirm-payment-button"
+                  onClick={() => {
+                    if (selectedPaymentMethod) {
+                      // Aqui você pode adicionar a lógica para processar o pagamento
+                      console.log('Forma de pagamento selecionada:', selectedPaymentMethod);
+                      setIsPaymentModalOpen(false);
+                      // Pode redirecionar para finalização ou mostrar próxima etapa
+                    }
+                  }}
+                  disabled={!selectedPaymentMethod}
+                >
+                  Confirmar Pagamento
                 </button>
               </div>
             </div>
