@@ -1796,7 +1796,7 @@ main {
    =========================================== */
 
 /* Botão do Carrinho no Header */
-.cart-btn {
+.cart-button {
   position: relative;
   background: linear-gradient(135deg, #e74c3c, #c0392b);
   color: white;
@@ -1807,9 +1807,10 @@ main {
   cursor: pointer;
   transition: all 0.3s ease;
   margin-left: 10px;
+  font-size: 0.9rem;
 }
 
-.cart-btn:hover {
+.cart-button:hover {
   background: linear-gradient(135deg, #c0392b, #a93226);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
@@ -1829,6 +1830,20 @@ main {
   justify-content: center;
   font-size: 12px;
   font-weight: bold;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
 /* Modal do Carrinho */
@@ -1867,6 +1882,22 @@ main {
 .cart-header h2 {
   margin: 0;
   font-size: 1.5rem;
+}
+
+/* Botão de fechar */
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .close-btn {
@@ -1976,6 +2007,67 @@ main {
   font-size: 1.3rem;
   margin-bottom: 15px;
   color: #2c3e50;
+}
+
+/* Ações do Carrinho */
+.cart-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ecf0f1;
+}
+
+/* Botão Continuar Comprando */
+.continue-shopping {
+  flex: 1;
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  min-height: 40px;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 8px rgba(116, 185, 255, 0.2);
+}
+
+.continue-shopping:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(116, 185, 255, 0.3);
+  background: linear-gradient(135deg, #0984e3 0%, #0770c4 100%);
+}
+
+/* Botão Finalizar Pedido */
+.checkout-button {
+  flex: 1;
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  min-height: 40px;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.2);
+}
+
+.checkout-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+  background: linear-gradient(135deg, #229954 0%, #1e8449 100%);
 }
 
 .checkout-btn {
@@ -2180,10 +2272,43 @@ main {
   color: white;
 }
 
+/* Melhorias no container dos botões */
 .product-actions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   margin-top: 15px;
+  align-items: stretch;
+}
+
+/* Botão Adicionar ao Carrinho Moderno */
+.add-to-cart-button {
+  flex: 1;
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  min-height: 40px;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
+}
+
+.add-to-cart-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+  background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+}
+
+.add-to-cart-button:active {
+  transform: translateY(0);
+  transition: all 0.1s ease;
 }
 
 .add-to-cart-btn {
@@ -2202,6 +2327,39 @@ main {
   background: linear-gradient(135deg, #2980b9, #21618c);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+/* Botão Comprar pelo WhatsApp - Design Moderno */
+.buy-button {
+  flex: 1;
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  min-height: 40px;
+  text-transform: none;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.2);
+}
+
+.buy-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+  background: linear-gradient(135deg, #128c7e 0%, #0d7377 100%);
+}
+
+.buy-button:active {
+  transform: translateY(0);
+  transition: all 0.1s ease;
 }
 
 .buy-now-btn {
@@ -2436,6 +2594,19 @@ main {
     justify-content: flex-start;
     overflow-x: auto;
     padding: 10px 0;
+  }
+  
+  /* Responsividade para dispositivos móveis */
+  .add-to-cart-button,
+  .buy-button {
+    padding: 10px 16px;
+    font-size: 0.8rem;
+    min-height: 38px;
+  }
+  
+  .product-actions {
+    flex-direction: column;
+    gap: 6px;
   }
 }
 
