@@ -1189,11 +1189,7 @@ const App: React.FC = () => {
   );
 
   // Componente da página Catshop
-  const CatshopPage = ({ initialCategory = 'Todos', categories }: { initialCategory?: string, categories: string[] }) => {
-    const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-
-
-
+  const CatshopPage = ({ categories }: { categories: string[] }) => {
     const filteredProducts = selectedCategory === 'Todos'
       ? products
       : products.filter(p => p.category === selectedCategory);
@@ -1400,7 +1396,7 @@ const App: React.FC = () => {
       case 'sobre':
         return <SobrePage />;
       case 'catshop':
-        return <CatshopPage initialCategory={selectedCategory} categories={['Todos', ...Array.from(new Set(products.map(p => p.category))).filter((c): c is string => c !== undefined)]} />;
+        return <CatshopPage categories={['Todos', ...Array.from(new Set(products.map(p => p.category))).filter((c): c is string => c !== undefined)]} />;
       case 'clinica':
         return <ClinicaPage />;
       case 'contato':
