@@ -47,6 +47,7 @@ const App: React.FC = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const [isPaymentDetailsOpen, setIsPaymentDetailsOpen] = useState(false);
   const [pixExpirationTime, setPixExpirationTime] = useState(15);
+  const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
   const [cardData, setCardData] = useState({
     number: '',
     name: '',
@@ -148,6 +149,30 @@ const App: React.FC = () => {
 
   const getCartItemsCount = (): number => {
     return cart.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  // Função para processar pagamento com sucesso
+  const handlePaymentSuccess = (paymentMethod: string, details?: string) => {
+    // Limpar carrinho
+    setCart([]);
+    
+    // Fechar todos os modais
+    setIsPaymentModalOpen(false);
+    setIsPaymentDetailsOpen(false);
+    setIsCheckoutOpen(false);
+    
+    // Resetar estados
+    setSelectedPaymentMethod('');
+    setPixExpirationTime(15);
+    setCardData({ number: '', name: '', expiry: '', cvv: '', installments: '1' });
+    
+    // Mostrar modal de sucesso
+    setIsPaymentSuccess(true);
+    
+    // Fechar modal de sucesso após 3 segundos
+    setTimeout(() => {
+      setIsPaymentSuccess(false);
+    }, 3000);
   };
 
   // Função para finalizar pedido
@@ -1624,6 +1649,26 @@ const App: React.FC = () => {
         </div>
       )}
 
+      {/* Modal de Sucesso do Pagamento */}
+      {isPaymentSuccess && (
+        <div className="modal-overlay">
+          <div className="success-modal">
+            <div className="success-content">
+              <div className="success-icon">✅</div>
+              <h2>Pagamento efetuado com sucesso!</h2>
+              <p>Obrigado pela sua compra. Seu pedido foi processado com sucesso.</p>
+              <div className="success-animation">
+                <div className="checkmark">
+                  <div className="checkmark-circle"></div>
+                  <div className="checkmark-stem"></div>
+                  <div className="checkmark-kick"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modal de Formas de Pagamento */}
       {isPaymentModalOpen && (
         <div className="modal-overlay" onClick={() => setIsPaymentModalOpen(false)}>
@@ -1784,11 +1829,7 @@ const App: React.FC = () => {
                         <button 
                           className="confirm-payment-button"
                           onClick={() => {
-                            alert('Aguardando confirmação do pagamento PIX...');
-                            setIsPaymentModalOpen(false);
-                            setIsPaymentDetailsOpen(false);
-                            setIsCheckoutOpen(false);
-                            setPixExpirationTime(15);
+                            handlePaymentSuccess('pix');
                           }}
                         >
                           Confirmar Pagamento
@@ -1909,11 +1950,7 @@ const App: React.FC = () => {
                           className="confirm-payment-button"
                           onClick={() => {
                             if (cardData.number && cardData.name && cardData.expiry && cardData.cvv) {
-                              alert(`Pagamento processado com sucesso!\nCartão: ****${cardData.number.slice(-4)}\nParcelas: ${cardData.installments}x`);
-                              setIsPaymentModalOpen(false);
-                              setIsPaymentDetailsOpen(false);
-                              setIsCheckoutOpen(false);
-                              setCardData({ number: '', name: '', expiry: '', cvv: '', installments: '1' });
+                              handlePaymentSuccess('credit', `Cartão: ****${cardData.number.slice(-4)} - ${cardData.installments}x`);
                             } else {
                               alert('Por favor, preencha todos os campos do cartão.');
                             }
@@ -2021,11 +2058,7 @@ const App: React.FC = () => {
                           className="confirm-payment-button"
                           onClick={() => {
                             if (cardData.number && cardData.name && cardData.expiry && cardData.cvv) {
-                              alert(`Pagamento via débito processado com sucesso!\nCartão: ****${cardData.number.slice(-4)}`);
-                              setIsPaymentModalOpen(false);
-                              setIsPaymentDetailsOpen(false);
-                              setIsCheckoutOpen(false);
-                              setCardData({ number: '', name: '', expiry: '', cvv: '', installments: '1' });
+                              handlePaymentSuccess('debit', `Cartão: ****${cardData.number.slice(-4)}`);
                             } else {
                               alert('Por favor, preencha todos os campos do cartão.');
                             }
