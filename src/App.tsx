@@ -41,6 +41,7 @@ const App: React.FC = () => {
   
   // Estados do E-commerce
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartLoaded, setIsCartLoaded] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -68,26 +69,54 @@ const App: React.FC = () => {
 
   // Carregar dados do localStorage
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    const savedOrders = localStorage.getItem('orders');
-    
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
-    if (savedOrders) {
-      setOrders(JSON.parse(savedOrders));
+    try {
+      const savedCart = localStorage.getItem('cart');
+      const savedOrders = localStorage.getItem('orders');
+      
+      if (savedCart && savedCart !== 'undefined') {
+        const parsedCart = JSON.parse(savedCart);
+        if (Array.isArray(parsedCart)) {
+          setCart(parsedCart);
+          console.log('Carrinho carregado do localStorage:', parsedCart);
+        }
+      }
+      if (savedOrders && savedOrders !== 'undefined') {
+        const parsedOrders = JSON.parse(savedOrders);
+        if (Array.isArray(parsedOrders)) {
+          setOrders(parsedOrders);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados do localStorage:', error);
+      localStorage.removeItem('cart');
+      localStorage.removeItem('orders');
+    } finally {
+      setIsCartLoaded(true);
     }
   }, []);
 
-  // Salvar carrinho no localStorage
+  // Salvar carrinho no localStorage (apenas após carregamento inicial)
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
+    if (isCartLoaded) {
+      try {
+        localStorage.setItem('cart', JSON.stringify(cart));
+        console.log('Carrinho salvo no localStorage:', cart);
+      } catch (error) {
+        console.error('Erro ao salvar carrinho no localStorage:', error);
+      }
+    }
+  }, [cart, isCartLoaded]);
 
   // Salvar pedidos no localStorage
   useEffect(() => {
-    localStorage.setItem('orders', JSON.stringify(orders));
-  }, [orders]);
+    if (isCartLoaded) {
+      try {
+        localStorage.setItem('orders', JSON.stringify(orders));
+      } catch (error) {
+        console.error('Erro ao salvar pedidos no localStorage:', error);
+      }
+    }
+  }, [orders, isCartLoaded]);
 
   // Função para navegar entre páginas
   const navigateToPage = (page: string, category?: string) => {
