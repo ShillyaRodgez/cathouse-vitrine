@@ -1,28 +1,197 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+
+// Interfaces para tipagem
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  price: string;
+  category: string;
+  priceNumber?: number;
+}
+
+interface CartItem extends Product {
+  quantity: number;
+}
+
+interface Order {
+  id: string;
+  items: CartItem[];
+  total: number;
+  customerInfo: CustomerInfo;
+  status: 'pending' | 'confirmed' | 'delivered';
+  date: string;
+}
+
+interface CustomerInfo {
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+  city: string;
+  zipCode: string;
+}
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('inicio');
   const [isCatshopMenuOpen, setCatshopMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
+  
+  // Estados do E-commerce
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
+    name: '',
+    phone: '',
+    email: '',
+    address: '',
+    city: '',
+    zipCode: ''
+  });
+
+  // Carregar dados do localStorage
+  useEffect(() => {
+    const savedCart = localStorage.getItem('cart');
+    const savedOrders = localStorage.getItem('orders');
+    
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+    if (savedOrders) {
+      setOrders(JSON.parse(savedOrders));
+    }
+  }, []);
+
+  // Salvar carrinho no localStorage
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+
+  // Salvar pedidos no localStorage
+  useEffect(() => {
+    localStorage.setItem('orders', JSON.stringify(orders));
+  }, [orders]);
 
   // Função para navegar entre páginas
   const navigateToPage = (page: string, category?: string) => {
     setCurrentPage(page);
     if (page === 'catshop' && category) {
-      // Precisamos de uma forma de passar a categoria para a CatshopPage.
-      // Uma abordagem é usar um estado compartilhado ou passar props.
-      // Por simplicidade, vamos usar um estado no App para a categoria selecionada.
       setSelectedCategory(category);
     }
+    setIsCartOpen(false);
+    setIsCheckoutOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const whatsappNumber = '5549998380557'; // Substitua pelo número real
-  const instagramUrl = 'https://www.instagram.com/acasadosgatos.lages/'; // Substitua pela URL real
+  const whatsappNumber = '5549998380557';
+  const instagramUrl = 'https://www.instagram.com/acasadosgatos.lages/';
 
-  // A URL `wa.me` é universal e funciona tanto em desktops (abrindo o WhatsApp Web)
-  // quanto em dispositivos móveis (abrindo o aplicativo WhatsApp diretamente).
+  // Função para converter preço string para número
+  const parsePrice = (priceString: string): number => {
+    return parseFloat(priceString.replace('R$ ', '').replace(',', '.'));
+  };
+
+  // Funções do Carrinho
+  const addToCart = (product: Product) => {
+    const existingItem = cart.find(item => item.id === product.id);
+    
+    if (existingItem) {
+      setCart(cart.map(item => 
+        item.id === product.id 
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      ));
+    } else {
+      setCart([...cart, { ...product, quantity: 1, priceNumber: parsePrice(product.price) }]);
+    }
+  };
+
+  const removeFromCart = (productId: number) => {
+    setCart(cart.filter(item => item.id !== productId));
+  };
+
+  const updateQuantity = (productId: number, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(productId);
+      return;
+    }
+    
+    setCart(cart.map(item => 
+      item.id === productId 
+        ? { ...item, quantity }
+        : item
+    ));
+  };
+
+  const getCartTotal = (): number => {
+    return cart.reduce((total, item) => {
+      const price = item.priceNumber || parsePrice(item.price);
+      return total + (price * item.quantity);
+    }, 0);
+  };
+
+  const getCartItemsCount = (): number => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  // Função para finalizar pedido
+  const finishOrder = () => {
+    if (cart.length === 0) return;
+    
+    const newOrder: Order = {
+      id: Date.now().toString(),
+      items: [...cart],
+      total: getCartTotal(),
+      customerInfo: { ...customerInfo },
+      status: 'pending',
+      date: new Date().toLocaleDateString('pt-BR')
+    };
+    
+    setOrders([...orders, newOrder]);
+    
+    // Enviar pedido via WhatsApp
+    const orderDetails = cart.map(item => 
+      `${item.name} (Qtd: ${item.quantity}) - ${item.price}`
+    ).join('\n');
+    
+    const total = getCartTotal().toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    });
+    
+    const message = `🛒 *NOVO PEDIDO - A Casa dos Gatos*\n\n` +
+      `👤 *Cliente:* ${customerInfo.name}\n` +
+      `📱 *Telefone:* ${customerInfo.phone}\n` +
+      `📧 *Email:* ${customerInfo.email}\n` +
+      `📍 *Endereço:* ${customerInfo.address}, ${customerInfo.city} - ${customerInfo.zipCode}\n\n` +
+      `🛍️ *Produtos:*\n${orderDetails}\n\n` +
+      `💰 *Total:* ${total}`;
+    
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+    
+    // Limpar carrinho e fechar checkout
+    setCart([]);
+    setIsCheckoutOpen(false);
+    setCustomerInfo({
+      name: '',
+      phone: '',
+      email: '',
+      address: '',
+      city: '',
+      zipCode: ''
+    });
+    
+    alert('Pedido enviado com sucesso! Você será redirecionado para o WhatsApp.');
+  };
+
+  // Função WhatsApp individual (mantida para compatibilidade)
   const handleWhatsAppPurchase = (productName: string, productPrice: string) => {
     const message = `Olá! Tenho interesse no produto: ${productName}, no valor de ${productPrice}.`;
     const encodedMessage = encodeURIComponent(message);
@@ -1020,9 +1189,14 @@ const App: React.FC = () => {
                 <h3>{product.name}</h3>
                 <p>{product.description}</p>
                 <div className="product-price">{product.price}</div>
-                <button onClick={() => handleWhatsAppPurchase(product.name, product.price)} className="buy-button">
+                <div className="product-actions">
+                  <button onClick={() => addToCart(product)} className="add-to-cart-button">
+                    Adicionar ao Carrinho
+                  </button>
+                  <button onClick={() => handleWhatsAppPurchase(product.name, product.price)} className="buy-button">
                     Comprar pelo WhatsApp
                   </button>
+                </div>
               </div>
             ))}
           </div>
@@ -1262,6 +1436,12 @@ const App: React.FC = () => {
             >
               Contato
             </button>
+            <button 
+              className="cart-button"
+              onClick={() => setIsCartOpen(true)}
+            >
+              🛒 Carrinho ({getCartItemsCount()})
+            </button>
           </nav>
         </div>
       </header>
@@ -1270,6 +1450,158 @@ const App: React.FC = () => {
       <main className="main-content">
         {renderCurrentPage()}
       </main>
+
+      {/* Modal do Carrinho */}
+      {isCartOpen && (
+        <div className="modal-overlay" onClick={() => setIsCartOpen(false)}>
+          <div className="cart-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="cart-header">
+              <h2>🛒 Seu Carrinho</h2>
+              <button className="close-button" onClick={() => setIsCartOpen(false)}>✕</button>
+            </div>
+            
+            <div className="cart-content">
+              {cart.length === 0 ? (
+                <p className="empty-cart">Seu carrinho está vazio</p>
+              ) : (
+                <>
+                  <div className="cart-items">
+                    {cart.map(item => (
+                      <div key={item.id} className="cart-item">
+                        <div className="item-info">
+                          <span className="item-emoji">{item.image}</span>
+                          <div className="item-details">
+                            <h4>{item.name}</h4>
+                            <p>{item.price}</p>
+                          </div>
+                        </div>
+                        <div className="item-controls">
+                          <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
+                          <span>{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                          <button className="remove-button" onClick={() => removeFromCart(item.id)}>🗑️</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="cart-footer">
+                    <div className="cart-total">
+                      <strong>Total: {getCartTotal().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+                    </div>
+                    <div className="cart-actions">
+                      <button className="continue-shopping" onClick={() => setIsCartOpen(false)}>
+                        Continuar Comprando
+                      </button>
+                      <button className="checkout-button" onClick={() => { setIsCartOpen(false); setIsCheckoutOpen(true); }}>
+                        Finalizar Pedido
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal do Checkout */}
+      {isCheckoutOpen && (
+        <div className="modal-overlay" onClick={() => setIsCheckoutOpen(false)}>
+          <div className="checkout-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="checkout-header">
+              <h2>📋 Finalizar Pedido</h2>
+              <button className="close-button" onClick={() => setIsCheckoutOpen(false)}>✕</button>
+            </div>
+            
+            <div className="checkout-content">
+              <div className="customer-form">
+                <h3>Dados do Cliente</h3>
+                <div className="form-group">
+                  <label>Nome Completo *</label>
+                  <input
+                    type="text"
+                    value={customerInfo.name}
+                    onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Telefone *</label>
+                  <input
+                    type="tel"
+                    value={customerInfo.phone}
+                    onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    value={customerInfo.email}
+                    onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Endereço *</label>
+                  <input
+                    type="text"
+                    value={customerInfo.address}
+                    onChange={(e) => setCustomerInfo({...customerInfo, address: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Cidade *</label>
+                    <input
+                      type="text"
+                      value={customerInfo.city}
+                      onChange={(e) => setCustomerInfo({...customerInfo, city: e.target.value})}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>CEP *</label>
+                    <input
+                      type="text"
+                      value={customerInfo.zipCode}
+                      onChange={(e) => setCustomerInfo({...customerInfo, zipCode: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="order-summary">
+                <h3>Resumo do Pedido</h3>
+                <div className="summary-items">
+                  {cart.map(item => (
+                    <div key={item.id} className="summary-item">
+                      <span>{item.name} x{item.quantity}</span>
+                      <span>{(parsePrice(item.price) * item.quantity).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="summary-total">
+                  <strong>Total: {getCartTotal().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+                </div>
+              </div>
+              
+              <div className="checkout-actions">
+                <button 
+                  className="finish-order-button"
+                  onClick={finishOrder}
+                  disabled={!customerInfo.name || !customerInfo.phone || !customerInfo.address || !customerInfo.city || !customerInfo.zipCode}
+                >
+                  Enviar Pedido via WhatsApp
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Rodapé */}
       <footer className="footer">
