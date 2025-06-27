@@ -2221,6 +2221,49 @@ main {
   box-shadow: none;
 }
 
+
+
+/* Botão Enviar Pedido via WhatsApp Moderno */
+.finish-order-button {
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  min-height: 48px;
+  font-size: 0.95rem;
+  box-shadow: 0 3px 12px rgba(37, 211, 102, 0.3);
+  min-width: 250px;
+  text-transform: none;
+  letter-spacing: 0.3px;
+}
+
+.finish-order-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #128c7e 0%, #075e54 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+
+.finish-order-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+}
+
+.finish-order-button:disabled {
+  background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 8px rgba(189, 195, 199, 0.2);
+  opacity: 0.7;
+}
+
 /* Catshop Melhorada */
 .search-bar {
   margin: 20px 0;
@@ -2568,6 +2611,51 @@ main {
   }
 }
 
+
+
+/* Ajustes no container dos botões de checkout */
+.checkout-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 0 20px;
+}
+
+/* Botão Continuar compra para pagamento */
+.continue-purchase-payment-btn {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  min-height: 48px;
+  font-size: 0.95rem;
+  box-shadow: 0 3px 12px rgba(243, 156, 18, 0.3);
+  min-width: 250px;
+  text-transform: none;
+  letter-spacing: 0.3px;
+}
+
+.continue-purchase-payment-btn:hover {
+  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+}
+
+.continue-purchase-payment-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+}
+
 /* Responsividade E-commerce */
 @media (max-width: 768px) {
   .checkout-content {
@@ -2607,6 +2695,51 @@ main {
   .product-actions {
     flex-direction: column;
     gap: 6px;
+  }
+  
+  /* Responsividade para o botão de checkout */
+  .finish-order-button {
+    min-width: 200px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+  
+
+  
+  /* Responsividade para os botões de checkout */
+  .checkout-actions {
+    gap: 10px;
+    padding: 0 15px;
+  }
+  
+  .continue-purchase-payment-btn {
+    min-width: 200px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .finish-order-button {
+    min-width: 180px;
+    padding: 10px 18px;
+    font-size: 0.85rem;
+    min-height: 40px;
+  }
+  
+  .checkout-actions {
+    padding: 0 15px;
+  }
+  
+
+  
+  .continue-purchase-payment-btn {
+    min-width: 180px;
+    padding: 10px 18px;
+    font-size: 0.85rem;
+    min-height: 40px;
   }
 }
 

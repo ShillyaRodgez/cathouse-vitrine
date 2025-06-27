@@ -1489,6 +1489,7 @@ const App: React.FC = () => {
                     <div className="cart-total">
                       <strong>Total: {getCartTotal().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
                     </div>
+                    
                     <div className="cart-actions">
                       <button className="continue-shopping" onClick={() => setIsCartOpen(false)}>
                         Continuar Comprando
@@ -1596,6 +1597,17 @@ const App: React.FC = () => {
                   disabled={!customerInfo.name || !customerInfo.phone || !customerInfo.address || !customerInfo.city || !customerInfo.zipCode}
                 >
                   Enviar Pedido via WhatsApp
+                </button>
+                
+                {/* Botão Continuar compra para forma de pagamento */}
+                <button 
+                  className="continue-purchase-payment-btn"
+                  onClick={() => {
+                    // Aqui você pode adicionar a lógica para ir para a etapa de pagamento
+                    console.log('Ir para forma de pagamento');
+                  }}
+                >
+                  💳 Continuar compra
                 </button>
               </div>
             </div>
