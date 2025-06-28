@@ -1161,7 +1161,7 @@ const App: React.FC = () => {
     <section className="hero">
       <div className="container">
         <div className="hero-image">
-          <img src="/gatinho.png" alt="Gatinho" className="cat-image" />
+          <img src={`${process.env.PUBLIC_URL}/gatinho.png`} alt="Gatinho" className="cat-image" />
         </div>
         <div className="hero-content">
           <h2>A clínica e loja perfeita para quem ama gatos!</h2>
@@ -1186,27 +1186,27 @@ const App: React.FC = () => {
             </p>
             <div className="features">
               <div className="feature">
-                <img src="veterinario.png" alt="Clínica Especializada" />
+                <img src={`${process.env.PUBLIC_URL}/veterinario.png`} alt="Clínica Especializada" />
                 <h3>Clínica Especializada</h3>
                 <p>Atendimento exclusivo para felinos</p>
               </div>
               <div className="feature">
-                <img src="catshop.png" alt="Catshop Completa" />
+                <img src={`${process.env.PUBLIC_URL}/catshop.png`} alt="Catshop Completa" />
                 <h3>Catshop Completa</h3>
                 <p>Produtos selecionados para gatos</p>
               </div>
               <div className="feature">
-                <img src="humanizado.png" alt="Cuidado Humanizado" />
+                <img src={`${process.env.PUBLIC_URL}/humanizado.png`} alt="Cuidado Humanizado" />
                 <h3>Cuidado Humanizado</h3>
                 <p>Tratamento com carinho e respeito</p>
               </div>
               <div className="feature">
-                <img src="acolhedor.png" alt="Ambiente acolhedor" />
+                <img src={`${process.env.PUBLIC_URL}/acolhedor.png`} alt="Ambiente acolhedor" />
                 <h3>Ambiente acolhedor</h3>
                 <p>Espaço confortável para os felinos</p>
               </div>
               <div className="feature">
-                <img src="cuidado.png" alt="Gatos bem cuidados" />
+                <img src={`${process.env.PUBLIC_URL}/cuidado.png`} alt="Gatos bem cuidados" />
                 <h3>Gatos bem cuidados</h3>
                 <p>Cuidado especial com cada gatinho</p>
               </div>
@@ -1277,7 +1277,7 @@ const App: React.FC = () => {
 
         <div className="vet-section">
           <div className="vet-photo">
-            <img src="/veterinária.png" alt="Dra. Fulana de Tal" className="vet-photo" />
+            <img src={`${process.env.PUBLIC_URL}/veterinária.png`} alt="Dra. Fulana de Tal" className="vet-photo" />
           </div>
           <div className="vet-info">
             <h4>Dra. Manuela da Silva Casa</h4>
@@ -1333,7 +1333,7 @@ const App: React.FC = () => {
             </div>
             <div className="contact-methods">
               <div className="contact-method">
-                <img src="/whats.png" alt="WhatsApp" className="method-icon" />
+                <img src={`${process.env.PUBLIC_URL}/whats.png`} alt="WhatsApp" className="method-icon" />
                 <div className="method-info">
                   <h4>WhatsApp</h4>
                   <p>(49) 99838-0557</p>
@@ -1344,7 +1344,7 @@ const App: React.FC = () => {
               </div>
               
               <div className="contact-method">
-                <img src="/insta.png" alt="Instagram" className="method-icon" />
+                <img src={`${process.env.PUBLIC_URL}/insta.png`} alt="Instagram" className="method-icon" />
                 <div className="method-info">
                   <h4>Instagram</h4>
                   <p>@acasadosgatos.lages</p>
@@ -1441,7 +1441,7 @@ const App: React.FC = () => {
       <header className="header">
         <div className="container">
           <div className="logo">
-            <img src="/logo-editada.png" alt="Logo A Casa dos Gatos" className="logo-icon" />
+            <img src={`${process.env.PUBLIC_URL}/logo-editada.png`} alt="Logo A Casa dos Gatos" className="logo-icon" />
             <h1>A CASA DOS GATOS</h1>
           </div>
           <nav className="nav">
@@ -2107,7 +2107,7 @@ const App: React.FC = () => {
         <div className="container">
           <div className="footer-content">
                       <div className="footer-logo logo">
-            <img src="/logo-editada.png" alt="Logo" className="logo-icon" />
+            <img src={`${process.env.PUBLIC_URL}/logo-editada.png`} alt="Logo" className="logo-icon" />
             <h1>A CASA DOS GATOS</h1>
           </div>
             
