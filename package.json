@@ -1,7 +1,7 @@
 {
   "name": "cathouse-vitrine",
   "version": "0.1.0",
-  "homepage": "http://Shillya-Rodgez.github.io/cathouse-vitrine",
+  "homepage": "https://Shillya-Rodgez.github.io/cathouse-vitrine",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
