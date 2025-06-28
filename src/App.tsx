@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 
 // Interfaces para tipagem
@@ -36,6 +35,7 @@ interface CustomerInfo {
 }
 
 const App: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState('inicio');
   const [isCatshopMenuOpen, setCatshopMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   
@@ -118,7 +118,16 @@ const App: React.FC = () => {
     }
   }, [orders, isCartLoaded]);
 
-
+  // Função para navegar entre páginas
+  const navigateToPage = (page: string, category?: string) => {
+    setCurrentPage(page);
+    if (page === 'catshop' && category) {
+      setSelectedCategory(category);
+    }
+    setIsCartOpen(false);
+    setIsCheckoutOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const whatsappNumber = '5549998380557';
   const instagramUrl = 'https://www.instagram.com/acasadosgatos.lages/';
@@ -751,231 +760,1373 @@ const App: React.FC = () => {
       image: '👑',
       price: 'R$ 299,90',
       category: 'Conforto'
+    },
+    {
+      id: 53,
+      name: 'Sistema de Câmeras',
+      description: 'Câmera para monitorar seu gato remotamente',
+      image: '📹',
+      price: 'R$ 399,90',
+      category: 'Acessórios'
+    },
+    {
+      id: 54,
+      name: 'Kit Completo Iniciante',
+      description: 'Kit com tudo para novos tutores',
+      image: '🎁',
+      price: 'R$ 199,90',
+      category: 'Acessórios'
+    },
+    {
+      id: 55,
+      name: 'Ração Sênior Premium',
+      description: 'Ração especial para gatos idosos',
+      image: '👴',
+      price: 'R$ 109,90',
+      category: 'Alimentação'
+    },
+    {
+      id: 56,
+      name: 'Brinquedo Varinha Mágica',
+      description: 'Varinha com penas coloridas e guizo',
+      image: '🪄',
+      price: 'R$ 24,90',
+      category: 'Brinquedos'
+    },
+    {
+      id: 57,
+      name: 'Shampoo Antipulgas',
+      description: 'Shampoo natural contra pulgas e carrapatos',
+      image: '🧴',
+      price: 'R$ 44,90',
+      category: 'Higiene'
+    },
+    {
+      id: 58,
+      name: 'Casa Árvore Gigante',
+      description: 'Arranhador em formato de árvore 2m',
+      image: '🌳',
+      price: 'R$ 599,90',
+      category: 'Brinquedos'
+    },
+    {
+      id: 59,
+      name: 'Comedouro Elevado Duplo',
+      description: 'Comedouro duplo em altura ergonômica',
+      image: '🥣',
+      price: 'R$ 89,90',
+      category: 'Acessórios'
+    },
+    {
+      id: 60,
+      name: 'Bola Dispensadora',
+      description: 'Bola que libera petiscos durante o jogo',
+      image: '🎾',
+      price: 'R$ 49,90',
+      category: 'Brinquedos'
+    },
+    {
+      id: 61,
+      name: 'Kit Dental Completo',
+      description: 'Escova, pasta e brinquedos dentais',
+      image: '🦷',
+      price: 'R$ 64,90',
+      category: 'Higiene'
+    },
+    {
+      id: 62,
+      name: 'Mochila Transporte',
+      description: 'Mochila ergonômica para transporte',
+      image: '🎒',
+      price: 'R$ 179,90',
+      category: 'Acessórios'
+    },
+    {
+      id: 63,
+      name: 'Túnel Dobrável',
+      description: 'Túnel de brincar dobrável e portátil',
+      image: '🚇',
+      price: 'R$ 59,90',
+      category: 'Brinquedos'
+    },
+    {
+      id: 64,
+      name: 'Vitamina Multifuncional',
+      description: 'Complexo vitamínico completo',
+      image: '💊',
+      price: 'R$ 74,90',
+      category: 'Saúde'
+    },
+    {
+      id: 65,
+      name: 'Escada para Cama',
+      description: 'Escada dobrável para acesso a móveis',
+      image: '🪜',
+      price: 'R$ 119,90',
+      category: 'Acessórios'
+    },
+    {
+      id: 66,
+      name: 'Dispensador de Água',
+      description: 'Dispensador automático com sensor',
+      image: '🚰',
+      price: 'R$ 159,90',
+      category: 'Acessórios'
+    },
+    {
+      id: 67,
+      name: 'Cama Suspensa',
+      description: 'Cama que se fixa em radiadores',
+      image: '🛏️',
+      price: 'R$ 99,90',
+      category: 'Conforto'
+    },
+    {
+      id: 68,
+      name: 'Kit Limpeza Orelhas',
+      description: 'Solução e aplicadores para higiene',
+      image: '👂',
+      price: 'R$ 34,90',
+      category: 'Higiene'
+    },
+    {
+      id: 69,
+      name: 'Brinquedo Robô',
+      description: 'Robô interativo com controle remoto',
+      image: '🤖',
+      price: 'R$ 249,90',
+      category: 'Brinquedos'
+    },
+    {
+      id: 70,
+      name: 'Tapete Sanitário',
+      description: 'Tapete absorvente descartável',
+      image: '🧽',
+      price: 'R$ 29,90',
+      category: 'Higiene'
+    },
+    {
+      id: 71,
+      name: 'Coleira Antipulgas',
+      description: 'Coleira com proteção de 8 meses',
+      image: '🔵',
+      price: 'R$ 69,90',
+      category: 'Saúde'
+    },
+    {
+      id: 72,
+      name: 'Fonte Cerâmica',
+      description: 'Fonte de água em cerâmica artesanal',
+      image: '🏺',
+      price: 'R$ 149,90',
+      category: 'Acessórios'
+    },
+    {
+      id: 73,
+      name: 'Kit Unhas Completo',
+      description: 'Cortador, lima e protetor de unhas',
+      image: '💅',
+      price: 'R$ 54,90',
+      category: 'Higiene'
+    },
+    {
+      id: 74,
+      name: 'Brinquedo Peixe Eletrônico',
+      description: 'Peixe que se move sozinho na água',
+      image: '🐠',
+      price: 'R$ 89,90',
+      category: 'Brinquedos'
+    },
+    {
+      id: 75,
+      name: 'Caixa Areia Automática',
+      description: 'Caixa que se limpa automaticamente',
+      image: '🔄',
+      price: 'R$ 899,90',
+      category: 'Higiene'
+    },
+    {
+      id: 76,
+      name: 'Suplemento Articular',
+      description: 'Glucosamina para articulações saudáveis',
+      image: '🦴',
+      price: 'R$ 84,90',
+      category: 'Saúde'
+    },
+    {
+      id: 77,
+      name: 'Casa Inteligente',
+      description: 'Casa com controle de temperatura',
+      image: '🏡',
+      price: 'R$ 799,90',
+      category: 'Conforto'
+    },
+    {
+      id: 78,
+      name: 'Kit Veterinário Doméstico',
+      description: 'Kit completo para cuidados básicos',
+      image: '⚕️',
+      price: 'R$ 149,90',
+      category: 'Saúde'
+    },
+    {
+      id: 79,
+      name: 'Ração Orgânica Premium',
+      description: 'Ração 100% orgânica sem conservantes',
+      image: '🌱',
+      price: 'R$ 129,90',
+      category: 'Alimentação'
+    },
+    {
+      id: 80,
+      name: 'Brinquedo Caça Laser',
+      description: 'Dispositivo automático com laser rotativo',
+      image: '🔴',
+      price: 'R$ 199,90',
+      category: 'Brinquedos'
+    },
+    {
+      id: 81,
+      name: 'Perfume Desodorante',
+      description: 'Spray neutralizador de odores naturais',
+      image: '🌺',
+      price: 'R$ 39,90',
+      category: 'Higiene'
+    },
+    {
+      id: 82,
+      name: 'Torre Arranhador Luxo',
+      description: 'Torre de 2,5m com múltiplos níveis',
+      image: '🏰',
+      price: 'R$ 699,90',
+      category: 'Brinquedos'
+    },
+    {
+      id: 83,
+      name: 'Comedouro Inteligente',
+      description: 'Comedouro com app e reconhecimento facial',
+      image: '📱',
+      price: 'R$ 449,90',
+      category: 'Acessórios'
+    },
+    {
+      id: 84,
+      name: 'Bola Catnip Gigante',
+      description: 'Bola de 15cm recheada com catnip',
+      image: '🟢',
+      price: 'R$ 34,90',
+      category: 'Brinquedos'
+    },
+    {
+      id: 85,
+      name: 'Kit Spa Completo',
+      description: 'Shampoo, condicionador e óleos relaxantes',
+      image: '🛁',
+      price: 'R$ 89,90',
+      category: 'Higiene'
+    },
+    {
+      id: 86,
+      name: 'Transportadora Aérea',
+      description: 'Aprovada para viagens de avião',
+      image: '✈️',
+      price: 'R$ 299,90',
+      category: 'Acessórios'
+    },
+    {
+      id: 87,
+      name: 'Circuito de Bolinhas',
+      description: 'Pista circular com bolinhas coloridas',
+      image: '🎪',
+      price: 'R$ 79,90',
+      category: 'Brinquedos'
+    },
+    {
+      id: 88,
+      name: 'Suplemento Imunidade',
+      description: 'Vitaminas para fortalecer imunidade',
+      image: '🛡️',
+      price: 'R$ 69,90',
+      category: 'Saúde'
+    },
+    {
+      id: 89,
+      name: 'Ponte Suspensa',
+      description: 'Ponte de corda para escalada',
+      image: '🌉',
+      price: 'R$ 119,90',
+      category: 'Conforto'
+    },
+    {
+      id: 90,
+      name: 'Bebedouro Gelado',
+      description: 'Mantém água sempre fresca',
+      image: '🧊',
+      price: 'R$ 179,90',
+      category: 'Acessórios'
+    },
+    {
+      id: 91,
+      name: 'Almofada Térmica',
+      description: 'Almofada que mantém temperatura corporal',
+      image: '🌡️',
+      price: 'R$ 89,90',
+      category: 'Conforto'
+    },
+    {
+      id: 92,
+      name: 'Kit Higiene Bucal',
+      description: 'Escova elétrica e enxaguante',
+      image: '🪥',
+      price: 'R$ 74,90',
+      category: 'Higiene'
+    },
+    {
+      id: 93,
+      name: 'Brinquedo Pássaro Voador',
+      description: 'Pássaro eletrônico que voa pela casa',
+      image: '🦅',
+      price: 'R$ 159,90',
+      category: 'Brinquedos'
+    },
+    {
+      id: 94,
+      name: 'Caixa Areia Biodegradável',
+      description: 'Areia ecológica 100% natural',
+      image: '♻️',
+      price: 'R$ 49,90',
+      category: 'Higiene'
+    },
+    {
+      id: 95,
+      name: 'Coleira Luminosa LED',
+      description: 'Coleira com luzes LED recarregáveis',
+      image: '💡',
+      price: 'R$ 59,90',
+      category: 'Acessórios'
+    },
+    {
+      id: 96,
+      name: 'Fonte Cascata Premium',
+      description: 'Fonte de aço inox com 3 níveis',
+      image: '⛲',
+      price: 'R$ 249,90',
+      category: 'Acessórios'
+    },
+    {
+      id: 97,
+      name: 'Kit Manicure Profissional',
+      description: 'Cortador elétrico e lixas especiais',
+      image: '✂️',
+      price: 'R$ 94,90',
+      category: 'Higiene'
+    },
+    {
+      id: 98,
+      name: 'Brinquedo Aquário Virtual',
+      description: 'Tela com peixes virtuais interativos',
+      image: '🐟',
+      price: 'R$ 299,90',
+      category: 'Brinquedos'
+    },
+    {
+      id: 99,
+      name: 'Sistema Limpeza Automática',
+      description: 'Robô aspirador para pelos de gato',
+      image: '🤖',
+      price: 'R$ 1299,90',
+      category: 'Higiene'
+    },
+    {
+      id: 100,
+      name: 'Kit Luxo Completo',
+      description: 'Conjunto premium com 20 itens essenciais',
+      image: '👑',
+      price: 'R$ 999,90',
+      category: 'Acessórios'
     }
   ];
 
-  const filteredProducts = products.filter(product => {
-    const matchesCategory = selectedCategory === 'Todos' || product.category === selectedCategory;
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const sendWhatsApp = (productName?: string) => {
+    const message = productName 
+      ? `Olá! Vi esse produto na vitrine online e gostaria de saber mais: ${productName}`
+      : 'Olá! Gostaria de saber mais sobre os serviços da Casa dos Gatos!';
+    
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  };
+
+  // Componente da página Início
+  const InicioPage = () => (
+    <section className="hero">
+      <div className="container">
+        <div className="hero-image">
+          <img src="/gatinho.png" alt="Gatinho" className="cat-image" />
+        </div>
+        <div className="hero-content">
+          <h2>A clínica e loja perfeita para quem ama gatos!</h2>
+          <p>Cuidado especializado e produtos selecionados para o seu felino</p>
+        </div>
+      </div>
+    </section>
+  );
+
+  // Componente da página Sobre
+  const SobrePage = () => (
+    <section className="about">
+      <div className="container">
+        <h2>Sobre Nós</h2>
+        <div className="about-content">
+          <div className="about-text">
+            <p>
+            Somos apaixonados por gatos e foi dessa paixão que nasceu A Casa dos Gatos. Desde sempre, sentimos na pele a dificuldade de encontrar um espaço realmente pensado para os felinos e seus tutores. Seja na busca por um brinquedo específico, um alimento de qualidade ou até mesmo um atendimento veterinário especializado, percebemos que o universo dos gatos ainda era tratado como secundário em muitos estabelecimentos.
+            Foi então que unimos amor, experiência e um sonho antigo: criar um ambiente exclusivo para gatos. Nossa fundadora, médica veterinária com vasta experiência e dedicação à medicina felina, sempre teve o desejo de abrir uma clínica onde os bichanos fossem os protagonistas. Mas ela queria ir além: montar também uma loja completa, com uma curadoria especial de produtos pensados unicamente para o bem-estar dos gatos e o conforto de seus donos.
+            Hoje, A Casa dos Gatos é esse espaço: um refúgio acolhedor e especializado, onde cada detalhe foi pensado para oferecer o melhor em saúde, bem-estar e qualidade de vida aos nossos queridos felinos. Aqui, você encontra atendimento veterinário dedicado exclusivamente aos gatos, além de uma catshop repleta de itens selecionados com carinho, variedade e qualidade.
+            Se você ama gatos como a gente, esse é o seu lugar.
+            </p>
+            <div className="features">
+              <div className="feature">
+                <img src="veterinario.png" alt="Clínica Especializada" />
+                <h3>Clínica Especializada</h3>
+                <p>Atendimento exclusivo para felinos</p>
+              </div>
+              <div className="feature">
+                <img src="catshop.png" alt="Catshop Completa" />
+                <h3>Catshop Completa</h3>
+                <p>Produtos selecionados para gatos</p>
+              </div>
+              <div className="feature">
+                <img src="humanizado.png" alt="Cuidado Humanizado" />
+                <h3>Cuidado Humanizado</h3>
+                <p>Tratamento com carinho e respeito</p>
+              </div>
+              <div className="feature">
+                <img src="acolhedor.png" alt="Ambiente acolhedor" />
+                <h3>Ambiente acolhedor</h3>
+                <p>Espaço confortável para os felinos</p>
+              </div>
+              <div className="feature">
+                <img src="cuidado.png" alt="Gatos bem cuidados" />
+                <h3>Gatos bem cuidados</h3>
+                <p>Cuidado especial com cada gatinho</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  // Componente da página Catshop
+  const CatshopPage = ({ categories }: { categories: string[] }) => {
+    const filteredProducts = selectedCategory === 'Todos'
+      ? products
+      : products.filter(p => p.category === selectedCategory);
+
+    return (
+      <section className="catshop">
+        <div className="container">
+          <h2>Catshop - Produtos Exclusivos</h2>
+          <p className="section-subtitle">Tudo que seu gatinho precisa em um só lugar</p>
+
+          <div className="category-filters">
+            {categories.map(category => (
+              <button
+                key={category}
+                className={selectedCategory === category ? 'active' : ''}
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+
+          <div className="products-grid">
+            {filteredProducts.map(product => (
+              <div key={product.id} className="product-card">
+                <div className="product-image">
+                  <span>{product.image}</span>
+                </div>
+                <h3>{product.name}</h3>
+                <p>{product.description}</p>
+                <div className="product-price">{product.price}</div>
+                <div className="product-actions">
+                  <button onClick={() => addToCart(product)} className="add-to-cart-button">
+                    Adicionar ao Carrinho
+                  </button>
+                  <button onClick={() => handleWhatsAppPurchase(product.name, product.price)} className="buy-button">
+                    Comprar pelo WhatsApp
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  };
+
+  // Componente da página Clínica
+  const ClinicaPage = () => (
+    <section className="clinic">
+      <div className="container">
+        <h2>Clínica Felina</h2>
+        <div className="clinic-highlight">
+          <h3>"Especialista em medicina felina. Aqui, seu gato é tratado com carinho e respeito."</h3>
+        </div>
+
+        <div className="vet-section">
+          <div className="vet-photo">
+            <img src="/veterinária.png" alt="Dra. Fulana de Tal" className="vet-photo" />
+          </div>
+          <div className="vet-info">
+            <h4>Dra. Manuela da Silva Casa</h4>
+            <p>CRMV 07412/SC</p>
+            <p>Apaixonada por gatos e dedicada a oferecer o melhor cuidado para seu amiguinho.</p>
+          </div>
+        </div>
+        
+        <div className="services">
+          <h4>Nossos Serviços:</h4>
+          <div className="services-grid">
+            <div className="service">
+              <span>📅</span>
+              <h5>Consultas Agendadas</h5>
+              <p>Atendimento personalizado com hora marcada</p>
+            </div>
+            <div className="service">
+              <span>💉</span>
+              <h5>Vacinações</h5>
+              <p>Protocolo completo de imunização felina</p>
+            </div>
+            <div className="service">
+              <span>🛡️</span>
+              <h5>Cuidados Preventivos</h5>
+              <p>Prevenção é o melhor remédio</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="warning">
+          <span>⚠️</span>
+          <p><strong>IMPORTANTE:</strong> Não atendemos emergências</p>
+        </div>
+      </div>
+    </section>
+  );
+
+  // Componente da página Contato
+  const ContatoPage = () => (
+    <section id="contact" className="contact-section">
+      <div className="container">
+        <div className="contact-header">
+          <h2>🐾 Entre em Contato Conosco</h2>
+          <p className="contact-subtitle">Estamos sempre prontos para cuidar do seu felino com muito amor e carinho!</p>
+        </div>
+        
+        <div className="contact-grid">
+          {/* Card de Informações */}
+          <div className="contact-card info-card">
+            <div className="card-header">
+              <span className="card-icon">📞</span>
+              <h3>Fale Conosco</h3>
+            </div>
+            <div className="contact-methods">
+              <div className="contact-method">
+                <img src="/whats.png" alt="WhatsApp" className="method-icon" />
+                <div className="method-info">
+                  <h4>WhatsApp</h4>
+                  <p>(49) 99838-0557</p>
+                  <a href="https://wa.me/5549998380557" className="btn-contact btn-whatsapp" target="_blank" rel="noopener noreferrer">
+                    💬 Conversar Agora
+                  </a>
+                </div>
+              </div>
+              
+              <div className="contact-method">
+                <img src="/insta.png" alt="Instagram" className="method-icon" />
+                <div className="method-info">
+                  <h4>Instagram</h4>
+                  <p>@acasadosgatos.lages</p>
+                  <a href="https://www.instagram.com/acasadosgatos.lages/" className="btn-contact btn-instagram" target="_blank" rel="noopener noreferrer">
+                    📸 Seguir no Instagram
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card de Horários */}
+          <div className="contact-card schedule-card">
+            <div className="card-header">
+              <span className="card-icon">🕒</span>
+              <h3>Horário de Funcionamento</h3>
+            </div>
+            <div className="schedule-list">
+              <div className="schedule-item">
+                <span className="day">Segunda a Sexta</span>
+                <span className="time">9h às 18h</span>
+              </div>
+              <div className="schedule-item">
+                <span className="day">Sábado</span>
+                <span className="time">9h às 13h</span>
+              </div>
+              <div className="schedule-item closed">
+                <span className="day">Domingo</span>
+                <span className="time">Fechado</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card do Mapa */}
+          <div className="contact-card map-card">
+            <div className="card-header">
+              <span className="card-icon">📍</span>
+              <h3>Nossa Localização</h3>
+            </div>
+            <div className="map-wrapper">
+              <iframe
+                src="https://www.google.com/maps?q=Rua+Francisco+de+Paula+Ramos,+104,+Lages,+SC,+88523-020&output=embed"
+                width="100%"
+                height="300"
+                style={{ border: 0, borderRadius: '15px' }}
+                allowFullScreen={true}
+                loading="lazy"
+                title="Localização da A Casa dos Gatos - Rua Francisco de Paula Ramos, 104, Lages"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+
+        {/* Seção de Call to Action */}
+        <div className="contact-cta">
+          <div className="cta-content">
+            <h3>🐱 Pronto para cuidar do seu felino?</h3>
+            <p>Entre em contato conosco e agende uma consulta ou tire suas dúvidas!</p>
+            <div className="cta-buttons">
+              <a href="https://wa.me/5549998380557" className="btn-cta primary" target="_blank" rel="noopener noreferrer">
+                📱 Conversar pelo WhatsApp
+              </a>
+              <a href="https://www.instagram.com/acasadosgatos.lages/" className="btn-cta secondary" target="_blank" rel="noopener noreferrer">
+                📷 Ver no Instagram
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  // Função para renderizar a página atual
+  const renderCurrentPage = () => {
+    switch (currentPage) {
+      case 'inicio':
+        return <InicioPage />;
+      case 'sobre':
+        return <SobrePage />;
+      case 'catshop':
+        return <CatshopPage categories={['Todos', ...Array.from(new Set(products.map(p => p.category))).filter((c): c is string => c !== undefined)]} />;
+      case 'clinica':
+        return <ClinicaPage />;
+      case 'contato':
+        return <ContatoPage />;
+      default:
+        return <InicioPage />;
+    }
+  };
 
   return (
     <div className="App">
-      {/* Cabeçalho */}
+      {/* Header */}
       <header className="header">
-        <div className="logo-container">
-          <img src="/gato.png" alt="Logo" className="logo" />
-          <h1 className="title">A Casa dos Gatos</h1>
-        </div>
-        <nav>
-          <Link to="/">Produtos</Link>
-          <Link to="/about">Sobre</Link>
-          <Link to="/contact">Contato</Link>
-        </nav>
-        <div className="cart-icon-container" onClick={() => setIsCartOpen(true)}>
-          <span className="cart-icon">🛒</span>
-          <span className="cart-count">{getCartItemsCount()}</span>
-        </div>
-      </header>
-
-      {/* Conteúdo Principal */}
-      <main>
-        <Routes>
-          <Route path="/" element={
-            <>
-              {/* Filtros e Pesquisa */}
-              <div className="filters">
-                <input 
-                  type="text" 
-                  placeholder="Pesquisar produtos..." 
-                  className="search-bar"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <div className="category-filter">
-                  {['Todos', 'Alimentação', 'Brinquedos', 'Acessórios', 'Higiene', 'Conforto', 'Saúde', 'Para Donos'].map(category => (
+        <div className="container">
+          <div className="logo">
+            <img src="/logo editada.png" alt="Logo A Casa dos Gatos" className="logo-icon" />
+            <h1>A CASA DOS GATOS</h1>
+          </div>
+          <nav className="nav">
+            <button 
+              className={currentPage === 'inicio' ? 'active' : ''}
+              onClick={() => navigateToPage('inicio')}
+            >
+              Início
+            </button>
+            <button 
+              className={currentPage === 'sobre' ? 'active' : ''}
+              onClick={() => navigateToPage('sobre')}
+            >
+              Sobre
+            </button>
+            <div 
+              className="nav-item dropdown"
+              onMouseEnter={() => setCatshopMenuOpen(true)}
+              onMouseLeave={() => setCatshopMenuOpen(false)}
+            >
+              <button 
+                className={currentPage === 'catshop' ? 'active' : ''}
+                onClick={() => navigateToPage('catshop', 'Todos')}
+              >
+                Catshop
+              </button>
+              {isCatshopMenuOpen && (
+                <div className="dropdown-menu">
+                  {['Todos', ...Array.from(new Set(products.map(p => p.category))).filter((c): c is string => c !== undefined)].map(category => (
                     <button 
                       key={category} 
                       className={selectedCategory === category ? 'active' : ''}
-                      onClick={() => setSelectedCategory(category)}
+                      onClick={() => {
+                        navigateToPage('catshop', category);
+                        setCatshopMenuOpen(false);
+                      }}
                     >
                       {category}
                     </button>
                   ))}
                 </div>
-              </div>
-
-              {/* Vitrine de Produtos */}
-              <div className="product-showcase">
-                {filteredProducts.map(product => (
-                  <div key={product.id} className="product-card">
-                    <div className="product-image">{product.image}</div>
-                    <h3 className="product-name">{product.name}</h3>
-                    <p className="product-description">{product.description}</p>
-                    <p className="product-price">{product.price}</p>
-                    <div className="product-buttons">
-                      <button onClick={() => addToCart(product)}>Adicionar ao Carrinho</button>
-                      <button onClick={() => handleWhatsAppPurchase(product.name, product.price)}>Comprar via WhatsApp</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>
-          } />
-          <Route path="/about" element={
-            <div className="about-page">
-              <h2>Sobre Nós</h2>
-              <p>A Casa dos Gatos é a sua loja de referência para tudo o que seu felino precisa. Oferecemos uma vasta gama de produtos de alta qualidade, desde alimentação e brinquedos a acessórios e itens de higiene. Nossa missão é garantir o bem-estar e a felicidade do seu gato, com produtos cuidadosamente selecionados e um atendimento especializado.</p>
-              <p>Visite-nos e descubra um mundo de mimos para o seu melhor amigo!</p>
+              )}
             </div>
-          } />
-          <Route path="/contact" element={
-            <div className="contact-page">
-              <h2>Contato</h2>
-              <p><strong>Telefone:</strong> <a href={`https://wa.me/${whatsappNumber}`} target="_blank">{whatsappNumber}</a></p>
-              <p><strong>Instagram:</strong> <a href={instagramUrl} target="_blank">@acasadosgatos.lages</a></p>
-              <p><strong>Endereço:</strong> Lages, SC</p>
-            </div>
-          } />
-        </Routes>
-      </main>
-
-      {/* Rodapé */}
-      <footer className="footer">
-        <p>&copy; 2024 A Casa dos Gatos. Todos os direitos reservados.</p>
-        <div className="social-links">
-          <a href={`https://wa.me/${whatsappNumber}`} target="_blank">WhatsApp</a>
-          <a href={instagramUrl} target="_blank">Instagram</a>
+            <button 
+              className={currentPage === 'clinica' ? 'active' : ''}
+              onClick={() => navigateToPage('clinica')}
+            >
+              Clínica
+            </button>
+            <button 
+              className={currentPage === 'contato' ? 'active' : ''}
+              onClick={() => navigateToPage('contato')}
+            >
+              Contato
+            </button>
+            <button 
+              className="cart-button"
+              onClick={() => setIsCartOpen(true)}
+            >
+              🛒 Carrinho ({getCartItemsCount()})
+            </button>
+          </nav>
         </div>
-      </footer>
+      </header>
+
+      {/* Conteúdo da página atual */}
+      <main className="main-content">
+        {renderCurrentPage()}
+      </main>
 
       {/* Modal do Carrinho */}
       {isCartOpen && (
+        <div className="modal-overlay" onClick={() => setIsCartOpen(false)}>
+          <div className="cart-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="cart-header">
+              <h2>🛒 Seu Carrinho</h2>
+              <button className="close-button" onClick={() => setIsCartOpen(false)}>✕</button>
+            </div>
+            
+            <div className="cart-content">
+              {cart.length === 0 ? (
+                <p className="empty-cart">Seu carrinho está vazio</p>
+              ) : (
+                <>
+                  <div className="cart-items">
+                    {cart.map(item => (
+                      <div key={item.id} className="cart-item">
+                        <div className="item-info">
+                          <span className="item-emoji">{item.image}</span>
+                          <div className="item-details">
+                            <h4>{item.name}</h4>
+                            <p>{item.price}</p>
+                          </div>
+                        </div>
+                        <div className="item-controls">
+                          <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
+                          <span>{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                          <button className="remove-button" onClick={() => removeFromCart(item.id)}>🗑️</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="cart-footer">
+                    <div className="cart-total">
+                      <strong>Total: {getCartTotal().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+                    </div>
+                    
+                    <div className="cart-actions">
+                      <button className="continue-shopping" onClick={() => setIsCartOpen(false)}>
+                        Continuar Comprando
+                      </button>
+                      <button className="checkout-button" onClick={() => { setIsCartOpen(false); setIsCheckoutOpen(true); }}>
+                        Finalizar Pedido
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal do Checkout */}
+      {isCheckoutOpen && (
+        <div className="modal-overlay" onClick={() => setIsCheckoutOpen(false)}>
+          <div className="checkout-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="checkout-header">
+              <h2>📋 Finalizar Pedido</h2>
+              <button className="close-button" onClick={() => setIsCheckoutOpen(false)}>✕</button>
+            </div>
+            
+            <div className="checkout-content">
+              <div className="customer-form">
+                <h3>Dados do Cliente</h3>
+                <div className="form-group">
+                  <label>Nome Completo *</label>
+                  <input
+                    type="text"
+                    value={customerInfo.name}
+                    onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Telefone *</label>
+                  <input
+                    type="tel"
+                    value={customerInfo.phone}
+                    onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    value={customerInfo.email}
+                    onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Endereço *</label>
+                  <input
+                    type="text"
+                    value={customerInfo.address}
+                    onChange={(e) => setCustomerInfo({...customerInfo, address: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Cidade *</label>
+                    <input
+                      type="text"
+                      value={customerInfo.city}
+                      onChange={(e) => setCustomerInfo({...customerInfo, city: e.target.value})}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>CEP *</label>
+                    <input
+                      type="text"
+                      value={customerInfo.zipCode}
+                      onChange={(e) => setCustomerInfo({...customerInfo, zipCode: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="order-summary">
+                <h3>Resumo do Pedido</h3>
+                <div className="summary-items">
+                  {cart.map(item => (
+                    <div key={item.id} className="summary-item">
+                      <span>{item.name} x{item.quantity}</span>
+                      <span>{(parsePrice(item.price) * item.quantity).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="summary-total">
+                  <strong>Total: {getCartTotal().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+                </div>
+              </div>
+              
+              <div className="checkout-actions">
+                <button 
+                  className="finish-order-button"
+                  onClick={finishOrder}
+                  disabled={!customerInfo.name || !customerInfo.phone || !customerInfo.address || !customerInfo.city || !customerInfo.zipCode}
+                >
+                  Enviar Pedido via WhatsApp
+                </button>                
+                {/* Botão Continuar compra para forma de pagamento */}
+                <button 
+                  className="continue-purchase-payment-btn"
+                  onClick={() => {
+                    setIsPaymentModalOpen(true);
+                  }}
+                >
+                  💳 Continuar compra
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Sucesso do Pagamento */}
+      {isPaymentSuccess && (
         <div className="modal-overlay">
-          <div className="modal-content cart-modal">
-            <button className="close-button" onClick={() => setIsCartOpen(false)}>×</button>
-            <h2>Meu Carrinho</h2>
-            {cart.length === 0 ? (
-              <p>Seu carrinho está vazio.</p>
+          <div className="success-modal">
+            <div className="success-content">
+              <div className="success-icon">✅</div>
+              <h2>Pagamento efetuado com sucesso!</h2>
+              <p>Obrigado pela sua compra. Seu pedido foi processado com sucesso.</p>
+              <div className="success-animation">
+                <div className="checkmark">
+                  <div className="checkmark-circle"></div>
+                  <div className="checkmark-stem"></div>
+                  <div className="checkmark-kick"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Formas de Pagamento */}
+      {isPaymentModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsPaymentModalOpen(false)}>
+          <div className="payment-modal" onClick={(e) => e.stopPropagation()}>
+            {!isPaymentDetailsOpen ? (
+              <>
+                <div className="payment-header">
+                  <h2>💳 Escolha a Forma de Pagamento</h2>
+                  <button className="close-button" onClick={() => setIsPaymentModalOpen(false)}>✕</button>
+                </div>
+                
+                <div className="payment-content">
+                  <div className="payment-options">
+                    <div 
+                      className={`payment-option ${selectedPaymentMethod === 'pix' ? 'selected' : ''}`}
+                      onClick={() => setSelectedPaymentMethod('pix')}
+                    >
+                      <div className="payment-icon">🏦</div>
+                      <div className="payment-info">
+                        <h3>PIX</h3>
+                        <p>Pagamento instantâneo</p>
+                        <span className="payment-benefit">Sem taxas</span>
+                      </div>
+                      <div className="payment-check">
+                        {selectedPaymentMethod === 'pix' && '✓'}
+                      </div>
+                    </div>
+                    
+                    <div 
+                      className={`payment-option ${selectedPaymentMethod === 'credit' ? 'selected' : ''}`}
+                      onClick={() => setSelectedPaymentMethod('credit')}
+                    >
+                      <div className="payment-icon">💳</div>
+                      <div className="payment-info">
+                        <h3>Cartão de Crédito</h3>
+                        <p>Parcelamento disponível</p>
+                        <span className="payment-benefit">Até 12x sem juros</span>
+                      </div>
+                      <div className="payment-check">
+                        {selectedPaymentMethod === 'credit' && '✓'}
+                      </div>
+                    </div>
+                    
+                    <div 
+                      className={`payment-option ${selectedPaymentMethod === 'debit' ? 'selected' : ''}`}
+                      onClick={() => setSelectedPaymentMethod('debit')}
+                    >
+                      <div className="payment-icon">💰</div>
+                      <div className="payment-info">
+                        <h3>Cartão de Débito</h3>
+                        <p>Débito direto na conta</p>
+                        <span className="payment-benefit">Aprovação imediata</span>
+                      </div>
+                      <div className="payment-check">
+                        {selectedPaymentMethod === 'debit' && '✓'}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="payment-actions">
+                    <button 
+                      className="back-button"
+                      onClick={() => setIsPaymentModalOpen(false)}
+                    >
+                      Voltar
+                    </button>
+                    <button 
+                      className="confirm-payment-button"
+                      onClick={() => {
+                        if (selectedPaymentMethod) {
+                          setIsPaymentDetailsOpen(true);
+                          if (selectedPaymentMethod === 'pix') {
+                            // Iniciar countdown do PIX
+                            const timer = setInterval(() => {
+                              setPixExpirationTime(prev => {
+                                if (prev <= 1) {
+                                  clearInterval(timer);
+                                  return 0;
+                                }
+                                return prev - 1;
+                              });
+                            }, 60000); // Decrementa a cada minuto
+                          }
+                        }
+                      }}
+                      disabled={!selectedPaymentMethod}
+                    >
+                      Confirmar Pagamento
+                    </button>
+                  </div>
+                </div>
+              </>
             ) : (
               <>
-                {cart.map(item => (
-                  <div key={item.id} className="cart-item">
-                    <div className="cart-item-image">{item.image}</div>
-                    <div className="cart-item-details">
-                      <p>{item.name}</p>
-                      <p>{item.price}</p>
+                {/* Interface PIX */}
+                {selectedPaymentMethod === 'pix' && (
+                  <>
+                    <div className="payment-header">
+                      <h2>🏦 Pagamento via PIX</h2>
+                      <button className="close-button" onClick={() => {
+                        setIsPaymentModalOpen(false);
+                        setIsPaymentDetailsOpen(false);
+                        setPixExpirationTime(15);
+                      }}>✕</button>
                     </div>
-                    <div className="cart-item-quantity">
-                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                      <span>{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                    
+                    <div className="pix-payment-content">
+                      <div className="pix-timer">
+                        <h3>⏰ Tempo para pagamento: {pixExpirationTime} minutos</h3>
+                        {pixExpirationTime === 0 && (
+                          <p className="expired-message">QR Code expirado. Gere um novo código.</p>
+                        )}
+                      </div>
+                      
+                      <div className="pix-qr-section">
+                        <div className="qr-code-placeholder">
+                          <div className="qr-code">
+                            {/* Aqui seria o QR Code real */}
+                            <div className="qr-pattern">
+                              <div className="qr-square"></div>
+                              <div className="qr-square"></div>
+                              <div className="qr-square"></div>
+                              <div className="qr-square"></div>
+                            </div>
+                          </div>
+                        </div>
+                        <p>Escaneie o QR Code com seu banco</p>
+                      </div>
+                      
+                      <div className="pix-key-section">
+                        <h4>Ou copie a chave PIX:</h4>
+                        <div className="pix-key-container">
+                          <input 
+                            type="text" 
+                            value="00020126580014BR.GOV.BCB.PIX013636c4b8c4-4c4c-4c4c-4c4c-4c4c4c4c4c4c5204000053039865802BR5925CASA DOS GATOS LAGES6009Lages62070503***6304ABCD"
+                            readOnly
+                            className="pix-key-input"
+                          />
+                          <button 
+                            className="copy-button"
+                            onClick={() => {
+                              navigator.clipboard.writeText("00020126580014BR.GOV.BCB.PIX013636c4b8c4-4c4c-4c4c-4c4c-4c4c4c4c4c4c5204000053039865802BR5925CASA DOS GATOS LAGES6009Lages62070503***6304ABCD");
+                              alert('Chave PIX copiada!');
+                            }}
+                          >
+                            📋 Copiar
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div className="pix-actions">
+                        <button 
+                          className="back-button"
+                          onClick={() => setIsPaymentDetailsOpen(false)}
+                        >
+                          Voltar
+                        </button>
+                        <button 
+                          className="confirm-payment-button"
+                          onClick={() => {
+                            handlePaymentSuccess('pix');
+                          }}
+                        >
+                          Confirmar Pagamento
+                        </button>
+                      </div>
                     </div>
-                    <button className="remove-button" onClick={() => removeFromCart(item.id)}>Remover</button>
-                  </div>
-                ))}
-                <div className="cart-total">
-                  <h3>Total: {getCartTotal().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h3>
-                </div>
-                <button className="checkout-button" onClick={() => { setIsCartOpen(false); setIsCheckoutOpen(true); }}>Finalizar Compra</button>
+                  </>
+                )}
+                
+                {/* Interface Cartão de Crédito */}
+                {selectedPaymentMethod === 'credit' && (
+                  <>
+                    <div className="payment-header">
+                      <h2>💳 Cartão de Crédito</h2>
+                      <button className="close-button" onClick={() => {
+                        setIsPaymentModalOpen(false);
+                        setIsPaymentDetailsOpen(false);
+                        setCardData({ number: '', name: '', expiry: '', cvv: '', installments: '1' });
+                      }}>✕</button>
+                    </div>
+                    
+                    <div className="card-payment-content">
+                      <form className="card-form">
+                        <div className="form-group">
+                          <label>Número do Cartão</label>
+                          <input 
+                            type="text" 
+                            placeholder="0000 0000 0000 0000"
+                            value={cardData.number}
+                            onChange={(e) => {
+                              let value = e.target.value.replace(/\D/g, '');
+                              value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+                              if (value.length <= 19) {
+                                setCardData({...cardData, number: value});
+                              }
+                            }}
+                            maxLength={19}
+                          />
+                        </div>
+                        
+                        <div className="form-group">
+                          <label>Nome no Cartão</label>
+                          <input 
+                            type="text" 
+                            placeholder="Nome como está no cartão"
+                            value={cardData.name}
+                            onChange={(e) => setCardData({...cardData, name: e.target.value.toUpperCase()})}
+                          />
+                        </div>
+                        
+                        <div className="form-row">
+                          <div className="form-group">
+                            <label>Validade</label>
+                            <input 
+                              type="text" 
+                              placeholder="MM/AA"
+                              value={cardData.expiry}
+                              onChange={(e) => {
+                                let value = e.target.value.replace(/\D/g, '');
+                                if (value.length >= 2) {
+                                  value = value.substring(0,2) + '/' + value.substring(2,4);
+                                }
+                                if (value.length <= 5) {
+                                  setCardData({...cardData, expiry: value});
+                                }
+                              }}
+                              maxLength={5}
+                            />
+                          </div>
+                          
+                          <div className="form-group">
+                            <label>CVV</label>
+                            <input 
+                              type="text" 
+                              placeholder="000"
+                              value={cardData.cvv}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '');
+                                if (value.length <= 3) {
+                                  setCardData({...cardData, cvv: value});
+                                }
+                              }}
+                              maxLength={3}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="form-group">
+                          <label>Parcelas</label>
+                          <select 
+                            value={cardData.installments}
+                            onChange={(e) => setCardData({...cardData, installments: e.target.value})}
+                          >
+                            <option value="1">1x sem juros</option>
+                            <option value="2">2x sem juros</option>
+                            <option value="3">3x sem juros</option>
+                            <option value="4">4x sem juros</option>
+                            <option value="5">5x sem juros</option>
+                            <option value="6">6x sem juros</option>
+                            <option value="7">7x sem juros</option>
+                            <option value="8">8x sem juros</option>
+                            <option value="9">9x sem juros</option>
+                            <option value="10">10x sem juros</option>
+                            <option value="11">11x sem juros</option>
+                            <option value="12">12x sem juros</option>
+                          </select>
+                        </div>
+                      </form>
+                      
+                      <div className="card-actions">
+                        <button 
+                          className="back-button"
+                          onClick={() => setIsPaymentDetailsOpen(false)}
+                        >
+                          Voltar
+                        </button>
+                        <button 
+                          className="confirm-payment-button"
+                          onClick={() => {
+                            if (cardData.number && cardData.name && cardData.expiry && cardData.cvv) {
+                              handlePaymentSuccess('credit', `Cartão: ****${cardData.number.slice(-4)} - ${cardData.installments}x`);
+                            } else {
+                              alert('Por favor, preencha todos os campos do cartão.');
+                            }
+                          }}
+                          disabled={!cardData.number || !cardData.name || !cardData.expiry || !cardData.cvv}
+                        >
+                          Confirmar Pagamento
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+                
+                {/* Interface Cartão de Débito */}
+                {selectedPaymentMethod === 'debit' && (
+                  <>
+                    <div className="payment-header">
+                      <h2>💰 Cartão de Débito</h2>
+                      <button className="close-button" onClick={() => {
+                        setIsPaymentModalOpen(false);
+                        setIsPaymentDetailsOpen(false);
+                        setCardData({ number: '', name: '', expiry: '', cvv: '', installments: '1' });
+                      }}>✕</button>
+                    </div>
+                    
+                    <div className="card-payment-content">
+                      <form className="card-form">
+                        <div className="form-group">
+                          <label>Número do Cartão</label>
+                          <input 
+                            type="text" 
+                            placeholder="0000 0000 0000 0000"
+                            value={cardData.number}
+                            onChange={(e) => {
+                              let value = e.target.value.replace(/\D/g, '');
+                              value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+                              if (value.length <= 19) {
+                                setCardData({...cardData, number: value});
+                              }
+                            }}
+                            maxLength={19}
+                          />
+                        </div>
+                        
+                        <div className="form-group">
+                          <label>Nome no Cartão</label>
+                          <input 
+                            type="text" 
+                            placeholder="Nome como está no cartão"
+                            value={cardData.name}
+                            onChange={(e) => setCardData({...cardData, name: e.target.value.toUpperCase()})}
+                          />
+                        </div>
+                        
+                        <div className="form-row">
+                          <div className="form-group">
+                            <label>Validade</label>
+                            <input 
+                              type="text" 
+                              placeholder="MM/AA"
+                              value={cardData.expiry}
+                              onChange={(e) => {
+                                let value = e.target.value.replace(/\D/g, '');
+                                if (value.length >= 2) {
+                                  value = value.substring(0,2) + '/' + value.substring(2,4);
+                                }
+                                if (value.length <= 5) {
+                                  setCardData({...cardData, expiry: value});
+                                }
+                              }}
+                              maxLength={5}
+                            />
+                          </div>
+                          
+                          <div className="form-group">
+                            <label>CVV</label>
+                            <input 
+                              type="text" 
+                              placeholder="000"
+                              value={cardData.cvv}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '');
+                                if (value.length <= 3) {
+                                  setCardData({...cardData, cvv: value});
+                                }
+                              }}
+                              maxLength={3}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="debit-info">
+                          <p>💡 O valor será debitado imediatamente da sua conta</p>
+                        </div>
+                      </form>
+                      
+                      <div className="card-actions">
+                        <button 
+                          className="back-button"
+                          onClick={() => setIsPaymentDetailsOpen(false)}
+                        >
+                          Voltar
+                        </button>
+                        <button 
+                          className="confirm-payment-button"
+                          onClick={() => {
+                            if (cardData.number && cardData.name && cardData.expiry && cardData.cvv) {
+                              handlePaymentSuccess('debit', `Cartão: ****${cardData.number.slice(-4)}`);
+                            } else {
+                              alert('Por favor, preencha todos os campos do cartão.');
+                            }
+                          }}
+                          disabled={!cardData.number || !cardData.name || !cardData.expiry || !cardData.cvv}
+                        >
+                          Confirmar Pagamento
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </>
             )}
           </div>
         </div>
       )}
 
-      {/* Modal de Checkout */}
-      {isCheckoutOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content checkout-modal">
-            <button className="close-button" onClick={() => setIsCheckoutOpen(false)}>×</button>
-            <h2>Checkout</h2>
-            <form onSubmit={(e) => { e.preventDefault(); setIsPaymentModalOpen(true); }}>
-              <h3>Informações do Cliente</h3>
-              <input type="text" placeholder="Nome Completo" value={customerInfo.name} onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })} required />
-              <input type="tel" placeholder="Telefone (com DDD)" value={customerInfo.phone} onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value })} required />
-              <input type="email" placeholder="Email" value={customerInfo.email} onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })} required />
-              <input type="text" placeholder="Endereço" value={customerInfo.address} onChange={(e) => setCustomerInfo({ ...customerInfo, address: e.target.value })} required />
-              <input type="text" placeholder="Cidade" value={customerInfo.city} onChange={(e) => setCustomerInfo({ ...customerInfo, city: e.target.value })} required />
-              <input type="text" placeholder="CEP" value={customerInfo.zipCode} onChange={(e) => setCustomerInfo({ ...customerInfo, zipCode: e.target.value })} required />
-              
-              <h3>Resumo do Pedido</h3>
-              {cart.map(item => (
-                <div key={item.id} className="summary-item">
-                  <span>{item.name} (x{item.quantity})</span>
-                  <span>{(parsePrice(item.price) * item.quantity).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                </div>
-              ))}
-              <div className="summary-total">
-                <strong>Total: {getCartTotal().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
-              </div>
-
-              <button type="submit" className="payment-button">Ir para Pagamento</button>
-              <button type="button" className="whatsapp-order-button" onClick={finishOrder}>Finalizar Pedido via WhatsApp</button>
-            </form>
+      {/* Rodapé */}
+      <footer className="footer">
+        <div className="container">
+          <div className="footer-content">
+                      <div className="footer-logo logo">
+            <img src="/logo editada.png" alt="Logo" className="logo-icon" />
+            <h1>A CASA DOS GATOS</h1>
           </div>
-        </div>
-      )}
-
-      {/* Modal de Pagamento */}
-      {isPaymentModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content payment-modal">
-            <button className="close-button" onClick={() => setIsPaymentModalOpen(false)}>×</button>
-            <h2>Escolha a Forma de Pagamento</h2>
-            <div className="payment-options">
-              <button onClick={() => { setSelectedPaymentMethod('pix'); setIsPaymentDetailsOpen(true); }}>PIX</button>
-              <button onClick={() => { setSelectedPaymentMethod('card'); setIsPaymentDetailsOpen(true); }}>Cartão de Crédito</button>
+            
+            <div className="footer-social">
+              <button onClick={() => sendWhatsApp()}>
+                <img src={`${process.env.PUBLIC_URL}/whats.png`} alt="WhatsApp" />
+              </button>
+              <button onClick={() => window.open(instagramUrl, '_blank')}>
+                <img src={`${process.env.PUBLIC_URL}/insta.png`} alt="Instagram" />
+              </button>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Modal de Detalhes do Pagamento */}
-      {isPaymentDetailsOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content payment-details-modal">
-            <button className="close-button" onClick={() => { setIsPaymentDetailsOpen(false); setSelectedPaymentMethod(''); }}>×</button>
-            {selectedPaymentMethod === 'pix' && (
-              <div className="pix-details">
-                <h3>Pagamento com PIX</h3>
-                <p>Escaneie o QR Code abaixo para pagar:</p>
-                <img src="/qr-code-pix.png" alt="QR Code PIX" className="pix-qrcode" />
-                <p>Ou use a chave PIX: <strong>{whatsappNumber}</strong></p>
-                <p>Tempo restante para pagar: <strong>{Math.floor(pixExpirationTime / 60)}:{('0' + pixExpirationTime % 60).slice(-2)}</strong></p>
-                <button onClick={() => handlePaymentSuccess('pix')}>Confirmar Pagamento</button>
-              </div>
-            )}
-            {selectedPaymentMethod === 'card' && (
-              <div className="card-details">
-                <h3>Pagamento com Cartão de Crédito</h3>
-                <input type="text" placeholder="Número do Cartão" value={cardData.number} onChange={(e) => setCardData({...cardData, number: e.target.value})} />
-                <input type="text" placeholder="Nome no Cartão" value={cardData.name} onChange={(e) => setCardData({...cardData, name: e.target.value})} />
-                <input type="text" placeholder="Validade (MM/AA)" value={cardData.expiry} onChange={(e) => setCardData({...cardData, expiry: e.target.value})} />
-                <input type="text" placeholder="CVV" value={cardData.cvv} onChange={(e) => setCardData({...cardData, cvv: e.target.value})} />
-                <select value={cardData.installments} onChange={(e) => setCardData({...cardData, installments: e.target.value})}>
-                  <option value="1">1x de {getCartTotal().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</option>
-                  <option value="2">2x de {(getCartTotal() / 2).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</option>
-                  <option value="3">3x de {(getCartTotal() / 3).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</option>
-                </select>
-                <button onClick={() => handlePaymentSuccess('card')}>Pagar com Cartão</button>
-              </div>
-            )}
+          
+          <div className="footer-bottom">
+            <p>&copy; 2024 A Casa dos Gatos. Todos os direitos reservados.</p>
+            <p>Clínica veterinária exclusiva para felinos - Lages/SC</p>
           </div>
         </div>
-      )}
-
-      {/* Modal de Sucesso no Pagamento */}
-      {isPaymentSuccess && (
-        <div className="modal-overlay">
-          <div className="modal-content success-modal">
-            <h2>Pagamento Aprovado!</h2>
-            <p>Seu pedido foi recebido e está sendo preparado.</p>
-            <p>Obrigado por comprar na A Casa dos Gatos! 😻</p>
-          </div>
-        </div>
-      )}
+      </footer>
     </div>
   );
 };
