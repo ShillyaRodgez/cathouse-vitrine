@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/vitrine_ecommerce/static/css/main.c8b5ec68.css",
-    "main.js": "/vitrine_ecommerce/static/js/main.a8373c8d.js",
-    "static/js/453.b2c80d39.chunk.js": "/vitrine_ecommerce/static/js/453.b2c80d39.chunk.js",
-    "static/media/Patas.png": "/vitrine_ecommerce/static/media/Patas.5da2e4068e27024f0fc6.png",
-    "index.html": "/vitrine_ecommerce/index.html",
-    "main.c8b5ec68.css.map": "/vitrine_ecommerce/static/css/main.c8b5ec68.css.map",
-    "main.a8373c8d.js.map": "/vitrine_ecommerce/static/js/main.a8373c8d.js.map",
-    "453.b2c80d39.chunk.js.map": "/vitrine_ecommerce/static/js/453.b2c80d39.chunk.js.map"
+    "main.css": "/cathouse-vitrine/static/css/main.3ab3fcb3.css",
+    "main.js": "/cathouse-vitrine/static/js/main.ed380ce8.js",
+    "static/js/453.b2c80d39.chunk.js": "/cathouse-vitrine/static/js/453.b2c80d39.chunk.js",
+    "static/media/Patas.png": "/cathouse-vitrine/static/media/Patas.5da2e4068e27024f0fc6.png",
+    "index.html": "/cathouse-vitrine/index.html",
+    "main.3ab3fcb3.css.map": "/cathouse-vitrine/static/css/main.3ab3fcb3.css.map",
+    "main.ed380ce8.js.map": "/cathouse-vitrine/static/js/main.ed380ce8.js.map",
+    "453.b2c80d39.chunk.js.map": "/cathouse-vitrine/static/js/453.b2c80d39.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.c8b5ec68.css",
-    "static/js/main.a8373c8d.js"
+    "static/css/main.3ab3fcb3.css",
+    "static/js/main.ed380ce8.js"
   ]
 }
