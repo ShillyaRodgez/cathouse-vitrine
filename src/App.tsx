@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 
 // Interfaces para tipagem
@@ -35,7 +36,6 @@ interface CustomerInfo {
 }
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState('inicio');
   const [isCatshopMenuOpen, setCatshopMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   
@@ -118,16 +118,7 @@ const App: React.FC = () => {
     }
   }, [orders, isCartLoaded]);
 
-  // Função para navegar entre páginas
-  const navigateToPage = (page: string, category?: string) => {
-    setCurrentPage(page);
-    if (page === 'catshop' && category) {
-      setSelectedCategory(category);
-    }
-    setIsCartOpen(false);
-    setIsCheckoutOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+
 
   const whatsappNumber = '5549998380557';
   const instagramUrl = 'https://www.instagram.com/acasadosgatos.lages/';
