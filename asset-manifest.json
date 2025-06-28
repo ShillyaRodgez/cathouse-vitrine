@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/cathouse-vitrine-2/static/css/main.b5307960.css",
+    "main.js": "/cathouse-vitrine-2/static/js/main.532b39a5.js",
+    "static/js/453.b2c80d39.chunk.js": "/cathouse-vitrine-2/static/js/453.b2c80d39.chunk.js",
+    "static/media/Patas.png": "/cathouse-vitrine-2/static/media/Patas.5da2e4068e27024f0fc6.png",
+    "index.html": "/cathouse-vitrine-2/index.html",
+    "main.b5307960.css.map": "/cathouse-vitrine-2/static/css/main.b5307960.css.map",
+    "main.532b39a5.js.map": "/cathouse-vitrine-2/static/js/main.532b39a5.js.map",
+    "453.b2c80d39.chunk.js.map": "/cathouse-vitrine-2/static/js/453.b2c80d39.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b5307960.css",
+    "static/js/main.532b39a5.js"
+  ]
+}
