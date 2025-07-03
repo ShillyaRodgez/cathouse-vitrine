@@ -1,17 +1,26 @@
 {
   "files": {
     "main.css": "/cathouse-vitrine/static/css/main.3ab3fcb3.css",
-    "main.js": "/cathouse-vitrine/static/js/main.7425ed64.js",
+    "main.js": "/cathouse-vitrine/static/js/main.b28510e7.js",
     "static/js/453.b2c80d39.chunk.js": "/cathouse-vitrine/static/js/453.b2c80d39.chunk.js",
+    "static/media/veterinaria.png": "/cathouse-vitrine/static/media/veterinaria.d16a0555ddcdfb8536f8.png",
     "static/media/Patas.png": "/cathouse-vitrine/static/media/Patas.5da2e4068e27024f0fc6.png",
+    "static/media/humanizado.png": "/cathouse-vitrine/static/media/humanizado.352e38b6db20edc9ef72.png",
+    "static/media/cuidado.png": "/cathouse-vitrine/static/media/cuidado.5f42eada6641b3b6139a.png",
+    "static/media/veterinario.png": "/cathouse-vitrine/static/media/veterinario.ed08bb89f5839885aa2d.png",
+    "static/media/whats.png": "/cathouse-vitrine/static/media/whats.b04fe8e9a6348710fde9.png",
+    "static/media/gatinho.png": "/cathouse-vitrine/static/media/gatinho.71bac76e5f12133d83c3.png",
+    "static/media/catshop.png": "/cathouse-vitrine/static/media/catshop.57e36e27411886d6a72f.png",
+    "static/media/insta.png": "/cathouse-vitrine/static/media/insta.a430ae39fec4fb199720.png",
+    "static/media/acolhedor.png": "/cathouse-vitrine/static/media/acolhedor.91612a0faf1bec08bda6.png",
     "static/media/logo.svg": "/cathouse-vitrine/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/cathouse-vitrine/index.html",
     "main.3ab3fcb3.css.map": "/cathouse-vitrine/static/css/main.3ab3fcb3.css.map",
-    "main.7425ed64.js.map": "/cathouse-vitrine/static/js/main.7425ed64.js.map",
+    "main.b28510e7.js.map": "/cathouse-vitrine/static/js/main.b28510e7.js.map",
     "453.b2c80d39.chunk.js.map": "/cathouse-vitrine/static/js/453.b2c80d39.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.3ab3fcb3.css",
-    "static/js/main.7425ed64.js"
+    "static/js/main.b28510e7.js"
   ]
 }
