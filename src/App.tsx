@@ -1441,7 +1441,7 @@ const App: React.FC = () => {
       <header className="header">
         <div className="container">
           <div className="logo">
-            <img src={`${process.env.PUBLIC_URL}/logo-editada.png`} alt="Logo A Casa dos Gatos" className="logo-icon" />
+            <img src={`${process.env.PUBLIC_URL}/logo%20editada.png`} alt="Logo A Casa dos Gatos" className="logo-icon" />
             <h1>A CASA DOS GATOS</h1>
           </div>
           <nav className="nav">
@@ -2107,7 +2107,7 @@ const App: React.FC = () => {
         <div className="container">
           <div className="footer-content">
                       <div className="footer-logo logo">
-            <img src={`${process.env.PUBLIC_URL}/logo-editada.png`} alt="Logo" className="logo-icon" />
+            <img src={`${process.env.PUBLIC_URL}/logo%20editada.png`} alt="Logo" className="logo-icon" />
             <h1>A CASA DOS GATOS</h1>
           </div>
             
