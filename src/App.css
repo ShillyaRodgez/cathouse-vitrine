@@ -257,7 +257,7 @@ main {
 
 /* Hero Section */
 .hero {
-  background: url('Patas.png') center/cover, linear-gradient(135deg, rgba(230, 230, 250, 0.8) 0%, rgba(173, 216, 230, 0.8) 50%, rgba(255, 192, 203, 0.8) 100%);
+  background: url('./assets/Patas.png') center/cover, linear-gradient(135deg, rgba(230, 230, 250, 0.8) 0%, rgba(173, 216, 230, 0.8) 50%, rgba(255, 192, 203, 0.8) 100%);
   background-blend-mode: overlay;
   background-attachment: fixed; /* Fixa o background durante a rolagem */
   padding: var(--spacing-md) 0 var(--spacing-xl);

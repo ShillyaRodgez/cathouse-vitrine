@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import logo from './logo-editada.png';
 import './App.css';
+import gatinho from './assets/gatinho.png';
+import veterinario from './assets/veterinario.png';
+import catshop from './assets/catshop.png';
+import humanizado from './assets/humanizado.png';
+import acolhedor from './assets/acolhedor.png';
+import cuidado from './assets/cuidado.png';
+import veterinaria from './assets/veterinaria.png';
+import whats from './assets/whats.png';
+import insta from './assets/insta.png';
 
 // Interfaces para tipagem
 interface Product {
@@ -1161,7 +1171,7 @@ const App: React.FC = () => {
     <section className="hero">
       <div className="container">
         <div className="hero-image">
-          <img src={`${process.env.PUBLIC_URL}/gatinho.png`} alt="Gatinho" className="cat-image" />
+          <img src={gatinho} alt="Gatinho" className="cat-image" />
         </div>
         <div className="hero-content">
           <h2>A clínica e loja perfeita para quem ama gatos!</h2>
@@ -1186,27 +1196,27 @@ const App: React.FC = () => {
             </p>
             <div className="features">
               <div className="feature">
-                <img src={`${process.env.PUBLIC_URL}/veterinario.png`} alt="Clínica Especializada" />
+                <img src={veterinario} alt="Clínica Especializada" />
                 <h3>Clínica Especializada</h3>
                 <p>Atendimento exclusivo para felinos</p>
               </div>
               <div className="feature">
-                <img src={`${process.env.PUBLIC_URL}/catshop.png`} alt="Catshop Completa" />
+                <img src={catshop} alt="Catshop Completa" />
                 <h3>Catshop Completa</h3>
                 <p>Produtos selecionados para gatos</p>
               </div>
               <div className="feature">
-                <img src={`${process.env.PUBLIC_URL}/humanizado.png`} alt="Cuidado Humanizado" />
+                <img src={humanizado} alt="Cuidado Humanizado" />
                 <h3>Cuidado Humanizado</h3>
                 <p>Tratamento com carinho e respeito</p>
               </div>
               <div className="feature">
-                <img src={`${process.env.PUBLIC_URL}/acolhedor.png`} alt="Ambiente acolhedor" />
+                <img src={acolhedor} alt="Ambiente acolhedor" />
                 <h3>Ambiente acolhedor</h3>
                 <p>Espaço confortável para os felinos</p>
               </div>
               <div className="feature">
-                <img src={`${process.env.PUBLIC_URL}/cuidado.png`} alt="Gatos bem cuidados" />
+                <img src={cuidado} alt="Gatos bem cuidados" />
                 <h3>Gatos bem cuidados</h3>
                 <p>Cuidado especial com cada gatinho</p>
               </div>
@@ -1277,7 +1287,7 @@ const App: React.FC = () => {
 
         <div className="vet-section">
           <div className="vet-photo">
-            <img src={`${process.env.PUBLIC_URL}/veterinária.png`} alt="Dra. Fulana de Tal" className="vet-photo" />
+            <img src={veterinaria} alt="Dra. Fulana de Tal" className="vet-photo" />
           </div>
           <div className="vet-info">
             <h4>Dra. Manuela da Silva Casa</h4>
@@ -1333,7 +1343,7 @@ const App: React.FC = () => {
             </div>
             <div className="contact-methods">
               <div className="contact-method">
-                <img src={`${process.env.PUBLIC_URL}/whats.png`} alt="WhatsApp" className="method-icon" />
+                <img src={whats} alt="WhatsApp" className="method-icon" />
                 <div className="method-info">
                   <h4>WhatsApp</h4>
                   <p>(49) 99838-0557</p>
@@ -1344,7 +1354,7 @@ const App: React.FC = () => {
               </div>
               
               <div className="contact-method">
-                <img src={`${process.env.PUBLIC_URL}/insta.png`} alt="Instagram" className="method-icon" />
+                <img src={insta} alt="Instagram" className="method-icon" />
                 <div className="method-info">
                   <h4>Instagram</h4>
                   <p>@acasadosgatos.lages</p>
@@ -1441,7 +1451,7 @@ const App: React.FC = () => {
       <header className="header">
         <div className="container">
           <div className="logo">
-            <img src={`${process.env.PUBLIC_URL}/logo%20editada.png`} alt="Logo A Casa dos Gatos" className="logo-icon" />
+            <img src={logo} alt="Logo A Casa dos Gatos" className="logo-icon" />
             <h1>A CASA DOS GATOS</h1>
           </div>
           <nav className="nav">
@@ -2107,16 +2117,16 @@ const App: React.FC = () => {
         <div className="container">
           <div className="footer-content">
                       <div className="footer-logo logo">
-            <img src={`${process.env.PUBLIC_URL}/logo%20editada.png`} alt="Logo" className="logo-icon" />
+            <img src={logo} alt="Logo" className="logo-icon" />
             <h1>A CASA DOS GATOS</h1>
           </div>
             
             <div className="footer-social">
               <button onClick={() => sendWhatsApp()}>
-                <img src={`${process.env.PUBLIC_URL}/whats.png`} alt="WhatsApp" />
+                <img src={whats} alt="WhatsApp" />
               </button>
               <button onClick={() => window.open(instagramUrl, '_blank')}>
-                <img src={`${process.env.PUBLIC_URL}/insta.png`} alt="Instagram" />
+                <img src={insta} alt="Instagram" />
               </button>
             </div>
           </div>
