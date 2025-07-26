@@ -66,6 +66,62 @@ const App: React.FC = () => {
     zipCode: ''
   });
 
+  // Dados dos depoimentos
+  const testimonials = [
+    {
+      id: 1,
+      name: "Maria Silva",
+      text: "A Dra. Manuela é incrível! Minha gatinha Luna foi muito bem cuidada. O ambiente é super acolhedor e especializado em felinos.",
+      rating: 5,
+      date: "Dezembro 2023"
+    },
+    {
+      id: 2,
+      name: "João Santos",
+      text: "Produtos de excelente qualidade na Catshop! Meu gato Mimi adora os brinquedos que comprei aqui. Recomendo muito!",
+      rating: 5,
+      date: "Janeiro 2024"
+    },
+    {
+      id: 3,
+      name: "Ana Costa",
+      text: "Atendimento excepcional! A clínica realmente entende de gatos. Meu Félix ficou super calmo durante a consulta.",
+      rating: 5,
+      date: "Novembro 2023"
+    }
+  ];
+
+  // Dados do FAQ
+  const faqData = [
+    {
+      id: 1,
+      question: "Vocês atendem emergências?",
+      answer: "Não, nossa clínica não atende emergências. Trabalhamos apenas com consultas agendadas para oferecer o melhor atendimento possível."
+    },
+    {
+      id: 2,
+      question: "Qual a idade mínima para vacinar meu gatinho?",
+      answer: "A primeira vacinação pode ser feita a partir de 6-8 semanas de idade. Agende uma consulta para avaliarmos o protocolo ideal para seu felino."
+    },
+    {
+      id: 3,
+      question: "Vocês fazem entrega dos produtos?",
+      answer: "Sim! Entre em contato via WhatsApp para verificar a disponibilidade de entrega na sua região e os valores."
+    },
+    {
+      id: 4,
+      question: "Como agendar uma consulta?",
+      answer: "Você pode agendar pelo WhatsApp ou telefone. Trabalhamos com horários marcados para garantir um atendimento tranquilo para seu gato."
+    },
+    {
+      id: 5,
+      question: "Vocês atendem outros animais além de gatos?",
+      answer: "Não, somos especializados exclusivamente em felinos. Isso nos permite oferecer um cuidado mais especializado e um ambiente adequado para gatos."
+    }
+  ];
+
+  const [openFaqId, setOpenFaqId] = useState<number | null>(null);
+
   // Carregar dados do localStorage
   useEffect(() => {
     try {
@@ -1284,6 +1340,94 @@ const App: React.FC = () => {
     </section>
   );
 
+  // Componente da página Depoimentos
+  const DepoimentosPage = () => (
+    <section className="testimonials">
+      <div className="container">
+        <h2>💬 O que nossos clientes dizem</h2>
+        <p className="section-subtitle">Depoimentos reais de tutores que confiam em nosso trabalho</p>
+        
+        <div className="testimonials-grid">
+          {testimonials.map(testimonial => (
+            <div key={testimonial.id} className="testimonial-card">
+              <div className="testimonial-header">
+                <div className="customer-info">
+                  <h4>{testimonial.name}</h4>
+                  <span className="date">{testimonial.date}</span>
+                </div>
+                <div className="rating">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <span key={i} className="star">⭐</span>
+                  ))}
+                </div>
+              </div>
+              <p className="testimonial-text">"{testimonial.text}"</p>
+            </div>
+          ))}
+        </div>
+        
+        <div className="testimonial-cta">
+          <p>Quer compartilhar sua experiência conosco?</p>
+          <button 
+            className="whatsapp-button"
+            onClick={() => {
+              const message = "Olá! Gostaria de deixar um depoimento sobre minha experiência na Casa dos Gatos.";
+              const encodedMessage = encodeURIComponent(message);
+              const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+              window.open(whatsappUrl, '_blank');
+            }}
+          >
+            📱 Envie seu depoimento
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+
+  // Componente da página FAQ
+  const FaqPage = () => (
+    <section className="faq">
+      <div className="container">
+        <h2>❓ Perguntas Frequentes</h2>
+        <p className="section-subtitle">Tire suas dúvidas sobre nossos serviços e cuidados felinos</p>
+        
+        <div className="faq-list">
+          {faqData.map(faq => (
+            <div key={faq.id} className="faq-item">
+              <button 
+                className={`faq-question ${openFaqId === faq.id ? 'active' : ''}`}
+                onClick={() => setOpenFaqId(openFaqId === faq.id ? null : faq.id)}
+              >
+                <span>{faq.question}</span>
+                <span className="faq-icon">{openFaqId === faq.id ? '−' : '+'}</span>
+              </button>
+              {openFaqId === faq.id && (
+                <div className="faq-answer">
+                  <p>{faq.answer}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        
+        <div className="faq-cta">
+          <p>Não encontrou a resposta que procurava?</p>
+          <button 
+            className="whatsapp-button"
+            onClick={() => {
+              const message = "Olá! Tenho uma dúvida que não encontrei no FAQ do site.";
+              const encodedMessage = encodeURIComponent(message);
+              const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+              window.open(whatsappUrl, '_blank');
+            }}
+          >
+            📱 Fale conosco
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+
   // Componente da página Contato
   const ContatoPage = () => (
     <section id="contact" className="contact-section">
@@ -1397,6 +1541,10 @@ const App: React.FC = () => {
         return <CatshopPage categories={['Todos', ...Array.from(new Set(products.map(p => p.category))).filter((c): c is string => c !== undefined)]} />;
       case 'clinica':
         return <ClinicaPage />;
+      case 'depoimentos':
+        return <DepoimentosPage />;
+      case 'faq':
+        return <FaqPage />;
       case 'contato':
         return <ContatoPage />;
       default:
@@ -1459,6 +1607,18 @@ const App: React.FC = () => {
               onClick={() => navigateToPage('clinica')}
             >
               Clínica
+            </button>
+            <button 
+              className={currentPage === 'depoimentos' ? 'active' : ''}
+              onClick={() => navigateToPage('depoimentos')}
+            >
+              Depoimentos
+            </button>
+            <button 
+              className={currentPage === 'faq' ? 'active' : ''}
+              onClick={() => navigateToPage('faq')}
+            >
+              FAQ
             </button>
             <button 
               className={currentPage === 'contato' ? 'active' : ''}
