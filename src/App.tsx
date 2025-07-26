@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import logo from './logo-editada.png';
 import './App.css';
 import gatinho from './assets/gatinho.png';
@@ -121,6 +121,8 @@ const App: React.FC = () => {
   ];
 
   const [openFaqId, setOpenFaqId] = useState<number | null>(null);
+
+
 
   // Carregar dados do localStorage
   useEffect(() => {
@@ -1248,6 +1250,8 @@ const App: React.FC = () => {
         <div className="container">
           <h2>Catshop - Produtos Exclusivos</h2>
           <p className="section-subtitle">Tudo que seu gatinho precisa em um só lugar</p>
+
+
 
           <div className="category-filters">
             {categories.map(category => (

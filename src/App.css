@@ -3596,6 +3596,8 @@ section {
   box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
 }
 
+/* Estilos para Carrossel de Produtos em Destaque - Removido */
+
 /* Responsividade para Depoimentos e FAQ */
 @media (max-width: 768px) {
   .testimonials-grid {
