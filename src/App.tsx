@@ -54,20 +54,9 @@ const App: React.FC = () => {
   const [isCartLoaded, setIsCartLoaded] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
-  const [isPaymentDetailsOpen, setIsPaymentDetailsOpen] = useState(false);
-  const [pixExpirationTime, setPixExpirationTime] = useState(15);
-  const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
-  const [cardData, setCardData] = useState({
-    number: '',
-    name: '',
-    expiry: '',
-    cvv: '',
-    installments: '1'
-  });
+
   const [orders, setOrders] = useState<Order[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
     name: '',
     phone: '',
@@ -190,29 +179,7 @@ const App: React.FC = () => {
     return cart.reduce((total, item) => total + item.quantity, 0);
   };
 
-  // Função para processar pagamento com sucesso
-  const handlePaymentSuccess = (paymentMethod: string, details?: string) => {
-    // Limpar carrinho
-    setCart([]);
-    
-    // Fechar todos os modais
-    setIsPaymentModalOpen(false);
-    setIsPaymentDetailsOpen(false);
-    setIsCheckoutOpen(false);
-    
-    // Resetar estados
-    setSelectedPaymentMethod('');
-    setPixExpirationTime(15);
-    setCardData({ number: '', name: '', expiry: '', cvv: '', installments: '1' });
-    
-    // Mostrar modal de sucesso
-    setIsPaymentSuccess(true);
-    
-    // Fechar modal de sucesso após 3 segundos
-    setTimeout(() => {
-      setIsPaymentSuccess(false);
-    }, 3000);
-  };
+
 
   // Função para finalizar pedido
   const finishOrder = () => {
@@ -266,13 +233,7 @@ const App: React.FC = () => {
     alert('Pedido enviado com sucesso! Você será redirecionado para o WhatsApp.');
   };
 
-  // Função WhatsApp individual (mantida para compatibilidade)
-  const handleWhatsAppPurchase = (productName: string, productPrice: string) => {
-    const message = `Olá! Tenho interesse no produto: ${productName}, no valor de ${productPrice}.`;
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
-  };
+
 
   const products = [
     {
@@ -1157,14 +1118,7 @@ const App: React.FC = () => {
     }
   ];
 
-  const sendWhatsApp = (productName?: string) => {
-    const message = productName 
-      ? `Olá! Vi esse produto na vitrine online e gostaria de saber mais: ${productName}`
-      : 'Olá! Gostaria de saber mais sobre os serviços da Casa dos Gatos!';
-    
-    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-  };
+
 
   // Componente da página Início
   const InicioPage = () => (
@@ -1264,7 +1218,12 @@ const App: React.FC = () => {
                   <button onClick={() => addToCart(product)} className="add-to-cart-button">
                     Adicionar ao Carrinho
                   </button>
-                  <button onClick={() => handleWhatsAppPurchase(product.name, product.price)} className="buy-button">
+                  <button onClick={() => {
+                    const message = `Olá! Tenho interesse no produto: ${product.name}, no valor de ${product.price}.`;
+                    const encodedMessage = encodeURIComponent(message);
+                    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+                    window.open(whatsappUrl, '_blank');
+                  }} className="buy-button">
                     Comprar pelo WhatsApp
                   </button>
                 </div>
@@ -1668,446 +1627,9 @@ const App: React.FC = () => {
                   disabled={!customerInfo.name || !customerInfo.phone || !customerInfo.address || !customerInfo.city || !customerInfo.zipCode}
                 >
                   Enviar Pedido via WhatsApp
-                </button>                
-                {/* Botão Continuar compra para forma de pagamento */}
-                <button 
-                  className="continue-purchase-payment-btn"
-                  onClick={() => {
-                    setIsPaymentModalOpen(true);
-                  }}
-                >
-                  💳 Continuar compra
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de Sucesso do Pagamento */}
-      {isPaymentSuccess && (
-        <div className="modal-overlay">
-          <div className="success-modal">
-            <div className="success-content">
-              <div className="success-icon">✅</div>
-              <h2>Pagamento efetuado com sucesso!</h2>
-              <p>Obrigado pela sua compra. Seu pedido foi processado com sucesso.</p>
-              <div className="success-animation">
-                <div className="checkmark">
-                  <div className="checkmark-circle"></div>
-                  <div className="checkmark-stem"></div>
-                  <div className="checkmark-kick"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de Formas de Pagamento */}
-      {isPaymentModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsPaymentModalOpen(false)}>
-          <div className="payment-modal" onClick={(e) => e.stopPropagation()}>
-            {!isPaymentDetailsOpen ? (
-              <>
-                <div className="payment-header">
-                  <h2>💳 Escolha a Forma de Pagamento</h2>
-                  <button className="close-button" onClick={() => setIsPaymentModalOpen(false)}>✕</button>
-                </div>
-                
-                <div className="payment-content">
-                  <div className="payment-options">
-                    <div 
-                      className={`payment-option ${selectedPaymentMethod === 'pix' ? 'selected' : ''}`}
-                      onClick={() => setSelectedPaymentMethod('pix')}
-                    >
-                      <div className="payment-icon">🏦</div>
-                      <div className="payment-info">
-                        <h3>PIX</h3>
-                        <p>Pagamento instantâneo</p>
-                        <span className="payment-benefit">Sem taxas</span>
-                      </div>
-                      <div className="payment-check">
-                        {selectedPaymentMethod === 'pix' && '✓'}
-                      </div>
-                    </div>
-                    
-                    <div 
-                      className={`payment-option ${selectedPaymentMethod === 'credit' ? 'selected' : ''}`}
-                      onClick={() => setSelectedPaymentMethod('credit')}
-                    >
-                      <div className="payment-icon">💳</div>
-                      <div className="payment-info">
-                        <h3>Cartão de Crédito</h3>
-                        <p>Parcelamento disponível</p>
-                        <span className="payment-benefit">Até 12x sem juros</span>
-                      </div>
-                      <div className="payment-check">
-                        {selectedPaymentMethod === 'credit' && '✓'}
-                      </div>
-                    </div>
-                    
-                    <div 
-                      className={`payment-option ${selectedPaymentMethod === 'debit' ? 'selected' : ''}`}
-                      onClick={() => setSelectedPaymentMethod('debit')}
-                    >
-                      <div className="payment-icon">💰</div>
-                      <div className="payment-info">
-                        <h3>Cartão de Débito</h3>
-                        <p>Débito direto na conta</p>
-                        <span className="payment-benefit">Aprovação imediata</span>
-                      </div>
-                      <div className="payment-check">
-                        {selectedPaymentMethod === 'debit' && '✓'}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="payment-actions">
-                    <button 
-                      className="back-button"
-                      onClick={() => setIsPaymentModalOpen(false)}
-                    >
-                      Voltar
-                    </button>
-                    <button 
-                      className="confirm-payment-button"
-                      onClick={() => {
-                        if (selectedPaymentMethod) {
-                          setIsPaymentDetailsOpen(true);
-                          if (selectedPaymentMethod === 'pix') {
-                            // Iniciar countdown do PIX
-                            const timer = setInterval(() => {
-                              setPixExpirationTime(prev => {
-                                if (prev <= 1) {
-                                  clearInterval(timer);
-                                  return 0;
-                                }
-                                return prev - 1;
-                              });
-                            }, 60000); // Decrementa a cada minuto
-                          }
-                        }
-                      }}
-                      disabled={!selectedPaymentMethod}
-                    >
-                      Confirmar Pagamento
-                    </button>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                {/* Interface PIX */}
-                {selectedPaymentMethod === 'pix' && (
-                  <>
-                    <div className="payment-header">
-                      <h2>🏦 Pagamento via PIX</h2>
-                      <button className="close-button" onClick={() => {
-                        setIsPaymentModalOpen(false);
-                        setIsPaymentDetailsOpen(false);
-                        setPixExpirationTime(15);
-                      }}>✕</button>
-                    </div>
-                    
-                    <div className="pix-payment-content">
-                      <div className="pix-timer">
-                        <h3>⏰ Tempo para pagamento: {pixExpirationTime} minutos</h3>
-                        {pixExpirationTime === 0 && (
-                          <p className="expired-message">QR Code expirado. Gere um novo código.</p>
-                        )}
-                      </div>
-                      
-                      <div className="pix-qr-section">
-                        <div className="qr-code-placeholder">
-                          <div className="qr-code">
-                            {/* Aqui seria o QR Code real */}
-                            <div className="qr-pattern">
-                              <div className="qr-square"></div>
-                              <div className="qr-square"></div>
-                              <div className="qr-square"></div>
-                              <div className="qr-square"></div>
-                            </div>
-                          </div>
-                        </div>
-                        <p>Escaneie o QR Code com seu banco</p>
-                      </div>
-                      
-                      <div className="pix-key-section">
-                        <h4>Ou copie a chave PIX:</h4>
-                        <div className="pix-key-container">
-                          <input 
-                            type="text" 
-                            value="00020126580014BR.GOV.BCB.PIX013636c4b8c4-4c4c-4c4c-4c4c-4c4c4c4c4c4c5204000053039865802BR5925CASA DOS GATOS LAGES6009Lages62070503***6304ABCD"
-                            readOnly
-                            className="pix-key-input"
-                          />
-                          <button 
-                            className="copy-button"
-                            onClick={() => {
-                              navigator.clipboard.writeText("00020126580014BR.GOV.BCB.PIX013636c4b8c4-4c4c-4c4c-4c4c-4c4c4c4c4c4c5204000053039865802BR5925CASA DOS GATOS LAGES6009Lages62070503***6304ABCD");
-                              alert('Chave PIX copiada!');
-                            }}
-                          >
-                            📋 Copiar
-                          </button>
-                        </div>
-                      </div>
-                      
-                      <div className="pix-actions">
-                        <button 
-                          className="back-button"
-                          onClick={() => setIsPaymentDetailsOpen(false)}
-                        >
-                          Voltar
-                        </button>
-                        <button 
-                          className="confirm-payment-button"
-                          onClick={() => {
-                            handlePaymentSuccess('pix');
-                          }}
-                        >
-                          Confirmar Pagamento
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
-                
-                {/* Interface Cartão de Crédito */}
-                {selectedPaymentMethod === 'credit' && (
-                  <>
-                    <div className="payment-header">
-                      <h2>💳 Cartão de Crédito</h2>
-                      <button className="close-button" onClick={() => {
-                        setIsPaymentModalOpen(false);
-                        setIsPaymentDetailsOpen(false);
-                        setCardData({ number: '', name: '', expiry: '', cvv: '', installments: '1' });
-                      }}>✕</button>
-                    </div>
-                    
-                    <div className="card-payment-content">
-                      <form className="card-form">
-                        <div className="form-group">
-                          <label>Número do Cartão</label>
-                          <input 
-                            type="text" 
-                            placeholder="0000 0000 0000 0000"
-                            value={cardData.number}
-                            onChange={(e) => {
-                              let value = e.target.value.replace(/\D/g, '');
-                              value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
-                              if (value.length <= 19) {
-                                setCardData({...cardData, number: value});
-                              }
-                            }}
-                            maxLength={19}
-                          />
-                        </div>
-                        
-                        <div className="form-group">
-                          <label>Nome no Cartão</label>
-                          <input 
-                            type="text" 
-                            placeholder="Nome como está no cartão"
-                            value={cardData.name}
-                            onChange={(e) => setCardData({...cardData, name: e.target.value.toUpperCase()})}
-                          />
-                        </div>
-                        
-                        <div className="form-row">
-                          <div className="form-group">
-                            <label>Validade</label>
-                            <input 
-                              type="text" 
-                              placeholder="MM/AA"
-                              value={cardData.expiry}
-                              onChange={(e) => {
-                                let value = e.target.value.replace(/\D/g, '');
-                                if (value.length >= 2) {
-                                  value = value.substring(0,2) + '/' + value.substring(2,4);
-                                }
-                                if (value.length <= 5) {
-                                  setCardData({...cardData, expiry: value});
-                                }
-                              }}
-                              maxLength={5}
-                            />
-                          </div>
-                          
-                          <div className="form-group">
-                            <label>CVV</label>
-                            <input 
-                              type="text" 
-                              placeholder="000"
-                              value={cardData.cvv}
-                              onChange={(e) => {
-                                const value = e.target.value.replace(/\D/g, '');
-                                if (value.length <= 3) {
-                                  setCardData({...cardData, cvv: value});
-                                }
-                              }}
-                              maxLength={3}
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="form-group">
-                          <label>Parcelas</label>
-                          <select 
-                            value={cardData.installments}
-                            onChange={(e) => setCardData({...cardData, installments: e.target.value})}
-                          >
-                            <option value="1">1x sem juros</option>
-                            <option value="2">2x sem juros</option>
-                            <option value="3">3x sem juros</option>
-                            <option value="4">4x sem juros</option>
-                            <option value="5">5x sem juros</option>
-                            <option value="6">6x sem juros</option>
-                            <option value="7">7x sem juros</option>
-                            <option value="8">8x sem juros</option>
-                            <option value="9">9x sem juros</option>
-                            <option value="10">10x sem juros</option>
-                            <option value="11">11x sem juros</option>
-                            <option value="12">12x sem juros</option>
-                          </select>
-                        </div>
-                      </form>
-                      
-                      <div className="card-actions">
-                        <button 
-                          className="back-button"
-                          onClick={() => setIsPaymentDetailsOpen(false)}
-                        >
-                          Voltar
-                        </button>
-                        <button 
-                          className="confirm-payment-button"
-                          onClick={() => {
-                            if (cardData.number && cardData.name && cardData.expiry && cardData.cvv) {
-                              handlePaymentSuccess('credit', `Cartão: ****${cardData.number.slice(-4)} - ${cardData.installments}x`);
-                            } else {
-                              alert('Por favor, preencha todos os campos do cartão.');
-                            }
-                          }}
-                          disabled={!cardData.number || !cardData.name || !cardData.expiry || !cardData.cvv}
-                        >
-                          Confirmar Pagamento
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
-                
-                {/* Interface Cartão de Débito */}
-                {selectedPaymentMethod === 'debit' && (
-                  <>
-                    <div className="payment-header">
-                      <h2>💰 Cartão de Débito</h2>
-                      <button className="close-button" onClick={() => {
-                        setIsPaymentModalOpen(false);
-                        setIsPaymentDetailsOpen(false);
-                        setCardData({ number: '', name: '', expiry: '', cvv: '', installments: '1' });
-                      }}>✕</button>
-                    </div>
-                    
-                    <div className="card-payment-content">
-                      <form className="card-form">
-                        <div className="form-group">
-                          <label>Número do Cartão</label>
-                          <input 
-                            type="text" 
-                            placeholder="0000 0000 0000 0000"
-                            value={cardData.number}
-                            onChange={(e) => {
-                              let value = e.target.value.replace(/\D/g, '');
-                              value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
-                              if (value.length <= 19) {
-                                setCardData({...cardData, number: value});
-                              }
-                            }}
-                            maxLength={19}
-                          />
-                        </div>
-                        
-                        <div className="form-group">
-                          <label>Nome no Cartão</label>
-                          <input 
-                            type="text" 
-                            placeholder="Nome como está no cartão"
-                            value={cardData.name}
-                            onChange={(e) => setCardData({...cardData, name: e.target.value.toUpperCase()})}
-                          />
-                        </div>
-                        
-                        <div className="form-row">
-                          <div className="form-group">
-                            <label>Validade</label>
-                            <input 
-                              type="text" 
-                              placeholder="MM/AA"
-                              value={cardData.expiry}
-                              onChange={(e) => {
-                                let value = e.target.value.replace(/\D/g, '');
-                                if (value.length >= 2) {
-                                  value = value.substring(0,2) + '/' + value.substring(2,4);
-                                }
-                                if (value.length <= 5) {
-                                  setCardData({...cardData, expiry: value});
-                                }
-                              }}
-                              maxLength={5}
-                            />
-                          </div>
-                          
-                          <div className="form-group">
-                            <label>CVV</label>
-                            <input 
-                              type="text" 
-                              placeholder="000"
-                              value={cardData.cvv}
-                              onChange={(e) => {
-                                const value = e.target.value.replace(/\D/g, '');
-                                if (value.length <= 3) {
-                                  setCardData({...cardData, cvv: value});
-                                }
-                              }}
-                              maxLength={3}
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="debit-info">
-                          <p>💡 O valor será debitado imediatamente da sua conta</p>
-                        </div>
-                      </form>
-                      
-                      <div className="card-actions">
-                        <button 
-                          className="back-button"
-                          onClick={() => setIsPaymentDetailsOpen(false)}
-                        >
-                          Voltar
-                        </button>
-                        <button 
-                          className="confirm-payment-button"
-                          onClick={() => {
-                            if (cardData.number && cardData.name && cardData.expiry && cardData.cvv) {
-                              handlePaymentSuccess('debit', `Cartão: ****${cardData.number.slice(-4)}`);
-                            } else {
-                              alert('Por favor, preencha todos os campos do cartão.');
-                            }
-                          }}
-                          disabled={!cardData.number || !cardData.name || !cardData.expiry || !cardData.cvv}
-                        >
-                          Confirmar Pagamento
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </>
-            )}
           </div>
         </div>
       )}
@@ -2116,13 +1638,18 @@ const App: React.FC = () => {
       <footer className="footer">
         <div className="container">
           <div className="footer-content">
-                      <div className="footer-logo logo">
-            <img src={logo} alt="Logo" className="logo-icon" />
-            <h1>A CASA DOS GATOS</h1>
-          </div>
+            <div className="footer-logo logo">
+              <img src={logo} alt="Logo" className="logo-icon" />
+              <h1>A CASA DOS GATOS</h1>
+            </div>
             
             <div className="footer-social">
-              <button onClick={() => sendWhatsApp()}>
+              <button onClick={() => {
+                const message = 'Olá! Gostaria de mais informações sobre os serviços da Casa dos Gatos.';
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+                window.open(whatsappUrl, '_blank');
+              }}>
                 <img src={whats} alt="WhatsApp" />
               </button>
               <button onClick={() => window.open(instagramUrl, '_blank')}>
