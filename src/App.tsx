@@ -1245,25 +1245,26 @@ const App: React.FC = () => {
       ? products
       : products.filter(p => p.category === selectedCategory);
 
-    // Carrossel compacto de ofertas
+    // Carrossel compacto de ofertas modernizado
 const offerProducts = products.filter(p => [1, 4, 5].includes(p.id)); // Exemplo: ids de produtos em oferta
 const CompactOffersCarousel = () => (
-  <div className="compact-carousel" style={{ marginBottom: 32 }}>
-    <h3>Ofertas Especiais</h3>
-    <div className="compact-carousel-container">
-      <div className="compact-carousel-track" style={{ display: 'flex', gap: 16 }}>
-        {offerProducts.map(product => (
-          <div key={product.id} className="compact-product-card offer-highlight">
-            <div className="offer-badge">Oferta</div>
-            <div className="compact-product-image">{product.image}</div>
-            <h4>{product.name}</h4>
-            <div className="compact-product-price">{product.price}</div>
-            <button className="compact-add-btn" onClick={() => addToCart(product)}>
-              Adicionar ao Carrinho
-            </button>
+  <div className="compact-offers-carousel">
+    <h3>🎯 Ofertas Especiais</h3>
+    <div className="compact-products-grid">
+      {offerProducts.map(product => (
+        <div key={product.id} className="compact-product-card offer-highlight">
+          <div className="offer-badge">Oferta</div>
+          <div className="product-image">
+            <span>{product.image}</span>
           </div>
-        ))}
-      </div>
+          <h3>{product.name}</h3>
+          <p>{product.description}</p>
+          <div className="product-price">{product.price}</div>
+          <button className="buy-button" onClick={() => addToCart(product)}>
+            🛒 Adicionar ao Carrinho
+          </button>
+        </div>
+      ))}
     </div>
   </div>
 );
