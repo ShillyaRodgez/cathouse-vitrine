@@ -31,6 +31,26 @@
   --transition-slow: 0.8s ease;
 }
 
+/* Destaque para produtos em oferta no carrossel compacto */
+.compact-product-card.offer-highlight {
+  background: #fffbe6;
+  border: 2px solid #ffd700;
+  position: relative;
+}
+.offer-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #ffd700;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 8px;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
 * {
   margin: 0;
   padding: 0;

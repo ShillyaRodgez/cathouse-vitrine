@@ -1245,13 +1245,36 @@ const App: React.FC = () => {
       ? products
       : products.filter(p => p.category === selectedCategory);
 
-    return (
+    // Carrossel compacto de ofertas
+const offerProducts = products.filter(p => [1, 4, 5].includes(p.id)); // Exemplo: ids de produtos em oferta
+const CompactOffersCarousel = () => (
+  <div className="compact-carousel" style={{ marginBottom: 32 }}>
+    <h3>Ofertas Especiais</h3>
+    <div className="compact-carousel-container">
+      <div className="compact-carousel-track" style={{ display: 'flex', gap: 16 }}>
+        {offerProducts.map(product => (
+          <div key={product.id} className="compact-product-card offer-highlight">
+            <div className="offer-badge">Oferta</div>
+            <div className="compact-product-image">{product.image}</div>
+            <h4>{product.name}</h4>
+            <div className="compact-product-price">{product.price}</div>
+            <button className="compact-add-btn" onClick={() => addToCart(product)}>
+              Adicionar ao Carrinho
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+return (
       <section className="catshop">
         <div className="container">
           <h2>Catshop - Produtos Exclusivos</h2>
           <p className="section-subtitle">Tudo que seu gatinho precisa em um só lugar</p>
 
-
+          <CompactOffersCarousel />
 
           <div className="category-filters">
             {categories.map(category => (
