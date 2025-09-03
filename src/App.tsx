@@ -1569,8 +1569,7 @@ return (
         return <CatshopPage categories={['Todos', ...Array.from(new Set(products.map(p => p.category))).filter((c): c is string => c !== undefined)]} />;
       case 'clinica':
         return <ClinicaPage />;
-      case 'depoimentos':
-        return <DepoimentosPage />;
+
       case 'faq':
         return <FaqPage />;
       case 'contato':
@@ -1636,12 +1635,7 @@ return (
             >
               Clínica
             </button>
-            <button 
-              className={currentPage === 'depoimentos' ? 'active' : ''}
-              onClick={() => navigateToPage('depoimentos')}
-            >
-              Depoimentos
-            </button>
+
             <button 
               className={currentPage === 'faq' ? 'active' : ''}
               onClick={() => navigateToPage('faq')}
