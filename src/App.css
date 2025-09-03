@@ -2114,8 +2114,13 @@ main {
   color: white;
   font-size: 24px;
   cursor: pointer;
-  padding: 5px;
+  padding: 8px;
   border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: background 0.3s ease;
 }
 
@@ -2129,8 +2134,13 @@ main {
   color: white;
   font-size: 24px;
   cursor: pointer;
-  padding: 5px;
+  padding: 8px;
   border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: background 0.3s ease;
 }
 
