@@ -1657,8 +1657,9 @@ return (
             <button 
               className="cart-button"
               onClick={() => setIsCartOpen(true)}
+              aria-label={`Abrir carrinho com ${getCartItemsCount()} ${getCartItemsCount() === 1 ? 'item' : 'itens'}`}
             >
-              🛒 Carrinho ({getCartItemsCount()})
+              🛒 {getCartItemsCount() > 0 && (<span className="cart-count">{getCartItemsCount()}</span>)}
             </button>
           </nav>
         </div>
