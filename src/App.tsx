@@ -45,9 +45,23 @@ interface CustomerInfo {
 }
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState('inicio');
+  const [currentPage, setCurrentPage] = useState(() => {
+    try {
+      const savedPage = localStorage.getItem('currentPage');
+      return savedPage && savedPage !== 'undefined' ? savedPage : 'inicio';
+    } catch {
+      return 'inicio';
+    }
+  });
   const [isCatshopMenuOpen, setCatshopMenuOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    try {
+      const savedCategory = localStorage.getItem('selectedCategory');
+      return savedCategory && savedCategory !== 'undefined' ? savedCategory : 'Todos';
+    } catch {
+      return 'Todos';
+    }
+  });
   
   // Estados do E-commerce
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -174,6 +188,30 @@ const App: React.FC = () => {
       }
     }
   }, [orders, isCartLoaded]);
+
+  // Salvar página atual no localStorage
+  useEffect(() => {
+    if (isCartLoaded) {
+      try {
+        localStorage.setItem('currentPage', currentPage);
+        console.log('Página atual salva no localStorage:', currentPage);
+      } catch (error) {
+        console.error('Erro ao salvar página atual no localStorage:', error);
+      }
+    }
+  }, [currentPage, isCartLoaded]);
+
+  // Salvar categoria selecionada no localStorage
+  useEffect(() => {
+    if (isCartLoaded) {
+      try {
+        localStorage.setItem('selectedCategory', selectedCategory);
+        console.log('Categoria selecionada salva no localStorage:', selectedCategory);
+      } catch (error) {
+        console.error('Erro ao salvar categoria selecionada no localStorage:', error);
+      }
+    }
+  }, [selectedCategory, isCartLoaded]);
 
   // Função para navegar entre páginas
   const navigateToPage = (page: string, category?: string) => {
