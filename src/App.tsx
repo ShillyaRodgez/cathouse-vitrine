@@ -1880,7 +1880,7 @@ return (
           </div>
           
           <div className="footer-bottom">
-            <p>&copy; 2024 A Casa dos Gatos. Todos os direitos reservados.</p>
+            <p>&copy; 2025 A Casa dos Gatos. Todos os direitos reservados.</p>
             <p>Clínica veterinária exclusiva para felinos - Lages/SC</p>
           </div>
         </div>
