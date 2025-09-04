@@ -20,6 +20,9 @@ interface Product {
   price: string;
   category: string;
   priceNumber?: number;
+  inStock?: boolean;
+  discount?: number;
+  isSpecialOffer?: boolean;
 }
 
 interface CartItem extends Product {
@@ -44,11 +47,40 @@ interface CustomerInfo {
   zipCode: string;
 }
 
+interface AdminUser {
+  username: string;
+  password: string;
+}
+
+interface SpecialOffer {
+  id: number;
+  productId: number;
+  title: string;
+  description: string;
+  discountPercentage: number;
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+}
+
+interface Discount {
+  id: number;
+  code: string;
+  percentage: number;
+  description: string;
+  minValue: number;
+  maxUses: number;
+  currentUses: number;
+  isActive: boolean;
+  expiryDate: string;
+}
+
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(() => {
     try {
       const savedPage = localStorage.getItem('currentPage');
-      return savedPage && savedPage !== 'undefined' ? savedPage : 'inicio';
+      // Nunca carregar a página admin automaticamente por segurança
+      return savedPage && savedPage !== 'undefined' && savedPage !== 'admin' ? savedPage : 'inicio';
     } catch {
       return 'inicio';
     }
@@ -79,6 +111,24 @@ const App: React.FC = () => {
     city: '',
     zipCode: ''
   });
+
+  // Estados do Painel de Administração
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [adminProducts, setAdminProducts] = useState<Product[]>([]);
+  const [specialOffers, setSpecialOffers] = useState<SpecialOffer[]>([]);
+  const [discounts, setDiscounts] = useState<Discount[]>([]);
+  const [adminCurrentSection, setAdminCurrentSection] = useState('produtos');
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingOffer, setEditingOffer] = useState<SpecialOffer | null>(null);
+  const [editingDiscount, setEditingDiscount] = useState<Discount | null>(null);
+  const [appliedDiscount, setAppliedDiscount] = useState<Discount | null>(null);
+  const [discountCode, setDiscountCode] = useState('');
+
+  // Credenciais de administrador (em produção, isso deveria vir de um backend seguro)
+  const adminCredentials: AdminUser = {
+    username: 'admin',
+    password: 'catshop2025'
+  };
 
   // Dados dos depoimentos
   const testimonials = [
@@ -213,14 +263,69 @@ const App: React.FC = () => {
     }
   }, [selectedCategory, isCartLoaded]);
 
+  // Inicializar produtos administrativos
+  useEffect(() => {
+    if (adminProducts.length === 0) {
+      setAdminProducts(products.map(p => ({ ...p, inStock: true })));
+    }
+  }, [adminProducts.length]);
+
+  // Listener para combinação de teclas secreta para acessar admin (Ctrl+Shift+A)
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.shiftKey && event.key === 'A') {
+        event.preventDefault();
+        navigateToPage('admin');
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Verificar URL hash para acesso direto ao admin
+  useEffect(() => {
+    if (window.location.hash === '#admin') {
+      navigateToPage('admin');
+    }
+  }, []);
+
+  // Contador de cliques no logo para acesso admin
+  const [logoClickCount, setLogoClickCount] = useState(0);
+  const [logoClickTimer, setLogoClickTimer] = useState<NodeJS.Timeout | null>(null);
+
+  const handleLogoClick = () => {
+    const newCount = logoClickCount + 1;
+    setLogoClickCount(newCount);
+
+    if (logoClickTimer) {
+      clearTimeout(logoClickTimer);
+    }
+
+    if (newCount === 5) {
+      navigateToPage('admin');
+      setLogoClickCount(0);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setLogoClickCount(0);
+    }, 2000);
+    setLogoClickTimer(timer);
+  };
+
   // Função para navegar entre páginas
   const navigateToPage = (page: string, category?: string) => {
     setCurrentPage(page);
     if (page === 'catshop' && category) {
       setSelectedCategory(category);
     }
-    setIsCartOpen(false);
-    setIsCheckoutOpen(false);
+    if (page !== 'admin') {
+      setIsCartOpen(false);
+      setIsCheckoutOpen(false);
+      // Salvar página no localStorage apenas se não for admin
+      localStorage.setItem('currentPage', page);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -281,10 +386,12 @@ const App: React.FC = () => {
   const finishOrder = () => {
     if (cart.length === 0) return;
     
+    const finalTotal = calculateCartTotalWithDiscount();
+    
     const newOrder: Order = {
       id: Date.now().toString(),
       items: [...cart],
-      total: getCartTotal(),
+      total: finalTotal,
       customerInfo: { ...customerInfo },
       status: 'pending',
       date: new Date().toLocaleDateString('pt-BR')
@@ -292,30 +399,51 @@ const App: React.FC = () => {
     
     setOrders([...orders, newOrder]);
     
+    // Incrementar uso do cupom se aplicado
+    if (appliedDiscount) {
+      incrementDiscountUsage(appliedDiscount.id);
+    }
+    
     // Enviar pedido via WhatsApp
     const orderDetails = cart.map(item => 
       `${item.name} (Qtd: ${item.quantity}) - ${item.price}`
     ).join('\n');
     
-    const total = getCartTotal().toLocaleString('pt-BR', {
+    const subtotal = getCartTotal().toLocaleString('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     });
+    
+    const total = finalTotal.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    });
+    
+    let discountInfo = '';
+    if (appliedDiscount) {
+      const discountAmount = getDiscountAmount().toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+      discountInfo = `\n💰 *Subtotal:* ${subtotal}\n🎟️ *Desconto (${appliedDiscount.code}):* -${discountAmount}`;
+    }
     
     const message = `🛒 *NOVO PEDIDO - A Casa dos Gatos*\n\n` +
       `👤 *Cliente:* ${customerInfo.name}\n` +
       `📱 *Telefone:* ${customerInfo.phone}\n` +
       `📧 *Email:* ${customerInfo.email}\n` +
       `📍 *Endereço:* ${customerInfo.address}, ${customerInfo.city} - ${customerInfo.zipCode}\n\n` +
-      `🛍️ *Produtos:*\n${orderDetails}\n\n` +
-      `💰 *Total:* ${total}`;
+      `🛍️ *Produtos:*\n${orderDetails}${discountInfo}\n\n` +
+      `💰 *Total Final:* ${total}`;
     
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
     window.open(whatsappUrl, '_blank');
     
-    // Limpar carrinho e fechar checkout
+    // Limpar carrinho, desconto e fechar checkout
     setCart([]);
+    setAppliedDiscount(null);
+    setDiscountCode('');
     setIsCheckoutOpen(false);
     setCustomerInfo({
       name: '',
@@ -329,7 +457,151 @@ const App: React.FC = () => {
     alert('Pedido enviado com sucesso! Você será redirecionado para o WhatsApp.');
   };
 
+  // Funções do Painel de Administração
+  const adminLogin = (username: string, password: string): boolean => {
+    if (username === adminCredentials.username && password === adminCredentials.password) {
+      setIsAdminAuthenticated(true);
+      setCurrentPage('admin');
+      return true;
+    }
+    return false;
+  };
 
+  const adminLogout = () => {
+    setIsAdminAuthenticated(false);
+    setCurrentPage('inicio');
+    setAdminCurrentSection('produtos');
+    setEditingProduct(null);
+    setEditingOffer(null);
+  };
+
+  const addProduct = (product: Omit<Product, 'id'>) => {
+    const newProduct: Product = {
+      ...product,
+      id: Math.max(...adminProducts.map(p => p.id), 0) + 1,
+      inStock: true
+    };
+    setAdminProducts([...adminProducts, newProduct]);
+  };
+
+  const updateProduct = (updatedProduct: Product) => {
+    setAdminProducts(adminProducts.map(p => 
+      p.id === updatedProduct.id ? updatedProduct : p
+    ));
+    setEditingProduct(null);
+  };
+
+  const deleteProduct = (productId: number) => {
+    setAdminProducts(adminProducts.filter(p => p.id !== productId));
+  };
+
+  const toggleProductStock = (productId: number) => {
+    setAdminProducts(adminProducts.map(p => 
+      p.id === productId ? { ...p, inStock: !p.inStock } : p
+    ));
+  };
+
+  const addSpecialOffer = (offer: Omit<SpecialOffer, 'id'>) => {
+    const newOffer: SpecialOffer = {
+      ...offer,
+      id: Math.max(...specialOffers.map(o => o.id), 0) + 1
+    };
+    setSpecialOffers([...specialOffers, newOffer]);
+  };
+
+  const updateSpecialOffer = (updatedOffer: SpecialOffer) => {
+    setSpecialOffers(specialOffers.map(o => 
+      o.id === updatedOffer.id ? updatedOffer : o
+    ));
+    setEditingOffer(null);
+  };
+
+  const deleteSpecialOffer = (offerId: number) => {
+    setSpecialOffers(specialOffers.filter(o => o.id !== offerId));
+  };
+
+  const applyDiscount = (productId: number, discountPercentage: number) => {
+    setAdminProducts(adminProducts.map(p => 
+      p.id === productId ? { ...p, discount: discountPercentage } : p
+    ));
+  };
+
+  const calculateDiscountedPrice = (price: string, discount?: number): string => {
+    if (!discount) return price;
+    const numericPrice = parsePrice(price);
+    const discountedPrice = numericPrice * (1 - discount / 100);
+    return `R$ ${discountedPrice.toFixed(2).replace('.', ',')}`;
+  };
+
+  // Funções de gestão de descontos
+  const addDiscount = (discount: Omit<Discount, 'id'>) => {
+    const newDiscount: Discount = {
+      ...discount,
+      id: Math.max(...discounts.map(d => d.id), 0) + 1
+    };
+    setDiscounts([...discounts, newDiscount]);
+  };
+
+  const updateDiscount = (discountId: number, updatedDiscount: Discount) => {
+    setDiscounts(discounts.map(d => 
+      d.id === discountId ? updatedDiscount : d
+    ));
+  };
+
+  const deleteDiscount = (discountId: number) => {
+    setDiscounts(discounts.filter(d => d.id !== discountId));
+    if (appliedDiscount?.id === discountId) {
+      setAppliedDiscount(null);
+      setDiscountCode('');
+    }
+  };
+
+  const applyDiscountCode = (code: string): boolean => {
+    const discount = discounts.find(d => 
+      d.code.toUpperCase() === code.toUpperCase() && 
+      d.isActive &&
+      (!d.expiryDate || new Date() <= new Date(d.expiryDate)) &&
+      (d.maxUses === 0 || d.currentUses < d.maxUses)
+    );
+
+    if (discount) {
+      const cartTotal = getCartTotal();
+      if (cartTotal >= discount.minValue) {
+        setAppliedDiscount(discount);
+        setDiscountCode(code.toUpperCase());
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const removeDiscountCode = () => {
+    setAppliedDiscount(null);
+    setDiscountCode('');
+  };
+
+  const calculateCartTotalWithDiscount = (): number => {
+    const subtotal = getCartTotal();
+    if (appliedDiscount) {
+      const discountAmount = subtotal * (appliedDiscount.percentage / 100);
+      return Math.max(0, subtotal - discountAmount);
+    }
+    return subtotal;
+  };
+
+  const getDiscountAmount = (): number => {
+    if (appliedDiscount) {
+      const subtotal = getCartTotal();
+      return subtotal * (appliedDiscount.percentage / 100);
+    }
+    return 0;
+  };
+
+  const incrementDiscountUsage = (discountId: number) => {
+    setDiscounts(discounts.map(d => 
+      d.id === discountId ? { ...d, currentUses: d.currentUses + 1 } : d
+    ));
+  };
 
   const products = [
     {
@@ -338,7 +610,10 @@ const App: React.FC = () => {
       description: 'Ração seca sabor salmão para gatos castrados',
       image: '🍣',
       price: 'R$ 129,90',
-      category: 'Alimentação'
+      category: 'Alimentação',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 2,
@@ -346,7 +621,10 @@ const App: React.FC = () => {
       description: 'Arranhador grande com brinquedos e tocas',
       image: '🗼',
       price: 'R$ 249,90',
-      category: 'Brinquedos'
+      category: 'Brinquedos',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 3,
@@ -354,7 +632,10 @@ const App: React.FC = () => {
       description: 'Bebedouro com filtro para água sempre fresca',
       image: '💧',
       price: 'R$ 159,90',
-      category: 'Acessórios'
+      category: 'Acessórios',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 4,
@@ -362,7 +643,10 @@ const App: React.FC = () => {
       description: 'Cama redonda de pelúcia para máximo conforto',
       image: '☁️',
       price: 'R$ 89,90',
-      category: 'Conforto'
+      category: 'Conforto',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 5,
@@ -370,7 +654,10 @@ const App: React.FC = () => {
       description: 'Petisco natural de catnip para relaxamento',
       image: '🌿',
       price: 'R$ 24,90',
-      category: 'Alimentação'
+      category: 'Alimentação',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 6,
@@ -378,7 +665,10 @@ const App: React.FC = () => {
       description: 'Caixa de transporte com travas de segurança',
       image: '✈️',
       price: 'R$ 199,90',
-      category: 'Acessórios'
+      category: 'Acessórios',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 7,
@@ -386,7 +676,10 @@ const App: React.FC = () => {
       description: 'Brinquedo interativo para estimular o instinto de caça',
       image: '🎣',
       price: 'R$ 19,90',
-      category: 'Brinquedos'
+      category: 'Brinquedos',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 8,
@@ -394,7 +687,10 @@ const App: React.FC = () => {
       description: 'Areia sílica que elimina odores e absorve a umidade',
       image: '✨',
       price: 'R$ 49,90',
-      category: 'Higiene'
+      category: 'Higiene',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 9,
@@ -402,7 +698,10 @@ const App: React.FC = () => {
       description: 'Coleira com rastreador para segurança do seu gato',
       image: '🛰️',
       price: 'R$ 299,90',
-      category: 'Acessórios'
+      category: 'Acessórios',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 10,
@@ -410,7 +709,10 @@ const App: React.FC = () => {
       description: 'Túnel de tecido para diversão e esconderijo',
       image: '🚇',
       price: 'R$ 69,90',
-      category: 'Brinquedos'
+      category: 'Brinquedos',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 11,
@@ -418,7 +720,10 @@ const App: React.FC = () => {
       description: 'Túnel dobrável para diversão e exercícios',
       image: '🌀',
       price: 'R$ 89,90',
-      category: 'Brinquedos'
+      category: 'Brinquedos',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 12,
@@ -426,7 +731,10 @@ const App: React.FC = () => {
       description: 'Snacks naturais e saudáveis para recompensas',
       image: '🦴',
       price: 'R$ 34,90',
-      category: 'Alimentação'
+      category: 'Alimentação',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 13,
@@ -434,7 +742,10 @@ const App: React.FC = () => {
       description: 'Tapete absorvente para higiene e limpeza',
       image: '🧽',
       price: 'R$ 19,90',
-      category: 'Higiene'
+      category: 'Higiene',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 14,
@@ -442,7 +753,10 @@ const App: React.FC = () => {
       description: 'Bola com luzes LED para brincadeiras noturnas',
       image: '💡',
       price: 'R$ 39,90',
-      category: 'Brinquedos'
+      category: 'Brinquedos',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 15,
@@ -450,7 +764,10 @@ const App: React.FC = () => {
       description: 'Rede suspensa confortável para relaxamento',
       image: '🕸️',
       price: 'R$ 79,90',
-      category: 'Conforto'
+      category: 'Conforto',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 16,
@@ -458,7 +775,10 @@ const App: React.FC = () => {
       description: 'Spray natural para reduzir stress e ansiedade',
       image: '💨',
       price: 'R$ 54,90',
-      category: 'Saúde'
+      category: 'Saúde',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 17,
@@ -466,7 +786,10 @@ const App: React.FC = () => {
       description: 'Escova com cerdas macias para massagem relaxante',
       image: '🪮',
       price: 'R$ 29,90',
-      category: 'Higiene'
+      category: 'Higiene',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 18,
@@ -474,7 +797,10 @@ const App: React.FC = () => {
       description: 'Comedouro ergonômico em altura ideal',
       image: '🏔️',
       price: 'R$ 89,90',
-      category: 'Acessórios'
+      category: 'Acessórios',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 19,
@@ -482,7 +808,10 @@ const App: React.FC = () => {
       description: 'Manta aquecida para conforto nos dias frios',
       image: '🔥',
       price: 'R$ 119,90',
-      category: 'Conforto'
+      category: 'Conforto',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 20,
@@ -490,7 +819,10 @@ const App: React.FC = () => {
       description: 'Ponteiro laser para exercícios e diversão',
       image: '🔴',
       price: 'R$ 24,90',
-      category: 'Brinquedos'
+      category: 'Brinquedos',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 21,
@@ -498,7 +830,10 @@ const App: React.FC = () => {
       description: 'Suplemento vitamínico para saúde completa',
       image: '💊',
       price: 'R$ 64,90',
-      category: 'Saúde'
+      category: 'Saúde',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 22,
@@ -506,7 +841,10 @@ const App: React.FC = () => {
       description: 'Arranhador pequeno para espaços reduzidos',
       image: '📐',
       price: 'R$ 49,90',
-      category: 'Brinquedos'
+      category: 'Brinquedos',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 23,
@@ -514,7 +852,10 @@ const App: React.FC = () => {
       description: 'Caneca de cerâmica com estampa de gato preto.',
       image: '☕',
       price: 'R$ 39,90',
-      category: 'Para Donos'
+      category: 'Para Donos',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 24,
@@ -522,7 +863,10 @@ const App: React.FC = () => {
       description: 'Camiseta de algodão com estampa divertida.',
       image: '👕',
       price: 'R$ 59,90',
-      category: 'Para Donos'
+      category: 'Para Donos',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 25,
@@ -530,7 +874,10 @@ const App: React.FC = () => {
       description: 'Bolsa de algodão para compras.',
       image: '👜',
       price: 'R$ 29,90',
-      category: 'Para Donos'
+      category: 'Para Donos',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 26,
@@ -538,7 +885,10 @@ const App: React.FC = () => {
       description: 'Chaveiro de metal em formato de gato.',
       image: '🔑',
       price: 'R$ 19,90',
-      category: 'Para Donos'
+      category: 'Para Donos',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 27,
@@ -546,7 +896,10 @@ const App: React.FC = () => {
       description: 'Par de meias com estampa de patas de gato.',
       image: '🧦',
       price: 'R$ 24,90',
-      category: 'Para Donos'
+      category: 'Para Donos',
+      inStock: true,
+      discount: 0,
+      isSpecialOffer: false
     },
     {
       id: 28,
@@ -1279,33 +1632,97 @@ const App: React.FC = () => {
 
   // Componente da página Catshop
   const CatshopPage = ({ categories }: { categories: string[] }) => {
+    // Combinar produtos estáticos com produtos administrativos
+    const allProducts = [...products, ...adminProducts];
+    
     const filteredProducts = selectedCategory === 'Todos'
-      ? products
-      : products.filter(p => p.category === selectedCategory);
+      ? allProducts
+      : allProducts.filter(p => p.category === selectedCategory);
 
     // Carrossel compacto de ofertas modernizado
-const offerProducts = products.filter(p => [1, 4, 5].includes(p.id)); // Exemplo: ids de produtos em oferta
-const CompactOffersCarousel = () => (
-  <div className="compact-offers-carousel">
-    <h3>🎯 Ofertas Especiais</h3>
-    <div className="compact-products-grid">
-      {offerProducts.map(product => (
-        <div key={product.id} className="compact-product-card offer-highlight">
-          <div className="offer-badge">Oferta</div>
-          <div className="product-image">
-            <span>{product.image}</span>
+    const getActiveOffers = () => {
+      const now = new Date();
+      return specialOffers.filter(offer => 
+        offer.isActive && 
+        new Date(offer.startDate) <= now && 
+        new Date(offer.endDate) >= now
+      );
+    };
+    
+    const offerProducts = allProducts.filter(p => {
+      // Produtos marcados como oferta especial
+      if (p.isSpecialOffer) return true;
+      
+      // Produtos com ofertas ativas do sistema administrativo
+      const activeOffers = getActiveOffers();
+      return activeOffers.some(offer => offer.productId === p.id);
+    });
+    
+    const CompactOffersCarousel = () => {
+      if (offerProducts.length === 0) return null;
+      
+      return (
+        <div className="compact-offers-carousel">
+          <h3>🎯 Ofertas Especiais</h3>
+          <div className="compact-products-grid">
+            {offerProducts.map(product => {
+              // Verificar se há oferta administrativa ativa para este produto
+              const activeOffers = getActiveOffers();
+              const adminOffer = activeOffers.find(offer => offer.productId === product.id);
+              
+              // Calcular desconto (priorizar oferta administrativa)
+              const discountPercentage = adminOffer ? adminOffer.discountPercentage : (product.discount || 0);
+              const finalPrice = discountPercentage > 0 
+                ? calculateDiscountedPrice(product.price, discountPercentage)
+                : product.price;
+              
+              // Título da oferta (usar título administrativo se disponível)
+              const offerTitle = adminOffer ? adminOffer.title : 'Oferta Especial';
+              
+              return (
+                <div key={product.id} className={`compact-product-card offer-highlight ${!product.inStock ? 'out-of-stock' : ''}`}>
+                  <div className="offer-badge" title={adminOffer?.description || 'Produto em oferta'}>
+                    {adminOffer ? `${adminOffer.discountPercentage}% OFF` : 'Oferta'}
+                  </div>
+                  {adminOffer && (
+                    <div className="offer-title-badge">{offerTitle}</div>
+                  )}
+                  <div className="product-image">
+                    <span>{product.image}</span>
+                  </div>
+                  <h3>{product.name}</h3>
+                  <p>{product.description}</p>
+                  <div className="product-price">
+                    {discountPercentage > 0 ? (
+                      <>
+                        <span className="original-price">{product.price}</span>
+                        <span className="discounted-price">{finalPrice}</span>
+                        <span className="discount-badge">-{discountPercentage}%</span>
+                      </>
+                    ) : (
+                      <span>{finalPrice}</span>
+                    )}
+                  </div>
+                  {adminOffer && adminOffer.description && (
+                    <div className="offer-description-mini">{adminOffer.description}</div>
+                  )}
+                  {!product.inStock && (
+                    <div className="out-of-stock-badge">❌ Sem Estoque</div>
+                  )}
+                  <button 
+                    className="buy-button" 
+                    onClick={() => (product.inStock ?? true) && addToCart(product)}
+                    disabled={product.inStock === false}
+                  >
+                    {product.inStock !== false ? 'Adicionar ao Carrinho' : 'Indisponível'}
+                  </button>
+                </div>
+              );
+            })}
           </div>
-          <h3>{product.name}</h3>
-          <p>{product.description}</p>
-          <div className="product-price">{product.price}</div>
-          <button className="buy-button" onClick={() => addToCart(product)}>
-            🛒 Adicionar ao Carrinho
-          </button>
         </div>
-      ))}
-    </div>
-  </div>
-);
+      );
+    };
 
 return (
       <section className="catshop">
@@ -1328,29 +1745,54 @@ return (
           </div>
 
           <div className="products-grid">
-            {filteredProducts.map(product => (
-              <div key={product.id} className="product-card">
-                <div className="product-image">
-                  <span>{product.image}</span>
+            {filteredProducts.map(product => {
+              const finalPrice = product.discount && product.discount > 0 
+                ? calculateDiscountedPrice(product.price, product.discount)
+                : product.price;
+              
+              return (
+                <div key={product.id} className={`product-card ${!product.inStock ? 'out-of-stock' : ''}`}>
+                  <div className="product-image">
+                    <span>{product.image}</span>
+                  </div>
+                  <h3>{product.name}</h3>
+                  <p>{product.description}</p>
+                  <div className="product-price">
+                    {product.discount && product.discount > 0 ? (
+                      <>
+                        <span className="original-price">{product.price}</span>
+                        <span className="discounted-price">{finalPrice}</span>
+                        <span className="discount-badge">-{product.discount}%</span>
+                      </>
+                    ) : (
+                      <span>{product.price}</span>
+                    )}
+                  </div>
+                  {!product.inStock && (
+                    <div className="out-of-stock-badge">❌ Sem Estoque</div>
+                  )}
+                  <div className="product-actions">
+                    <button 
+                      onClick={() => (product.inStock ?? true) && addToCart(product)} 
+                      className="add-to-cart-button"
+                      disabled={product.inStock === false}
+                    >
+                      {product.inStock !== false ? 'Adicionar ao Carrinho' : 'Indisponível'}
+                    </button>
+                    <button onClick={() => {
+                      const message = `Olá! Tenho interesse no produto: ${product.name}, no valor de ${finalPrice}.`;
+                      const encodedMessage = encodeURIComponent(message);
+                      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+                      window.open(whatsappUrl, '_blank');
+                    }} className="buy-button"
+                    disabled={product.inStock === false}
+                    >
+                      Comprar pelo WhatsApp
+                    </button>
+                  </div>
                 </div>
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
-                <div className="product-price">{product.price}</div>
-                <div className="product-actions">
-                  <button onClick={() => addToCart(product)} className="add-to-cart-button">
-                    Adicionar ao Carrinho
-                  </button>
-                  <button onClick={() => {
-                    const message = `Olá! Tenho interesse no produto: ${product.name}, no valor de ${product.price}.`;
-                    const encodedMessage = encodeURIComponent(message);
-                    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-                    window.open(whatsappUrl, '_blank');
-                  }} className="buy-button">
-                    Comprar pelo WhatsApp
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -1596,6 +2038,749 @@ return (
     </section>
   );
 
+  // Componente do Painel de Administração
+  const AdminPanel = () => {
+    const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+    const [loginError, setLoginError] = useState('');
+
+    const handleLogin = (e: React.FormEvent) => {
+      e.preventDefault();
+      const success = adminLogin(loginForm.username, loginForm.password);
+      if (!success) {
+        setLoginError('Credenciais inválidas');
+      } else {
+        setLoginError('');
+        setLoginForm({ username: '', password: '' });
+      }
+    };
+
+    if (!isAdminAuthenticated) {
+      return (
+        <section className="admin-login">
+          <div className="container">
+            <div className="login-form-container">
+              <h2>🔐 Painel de Administração</h2>
+              <form onSubmit={handleLogin} className="login-form">
+                <div className="form-group">
+                  <label htmlFor="username">Usuário:</label>
+                  <input
+                    type="text"
+                    id="username"
+                    value={loginForm.username}
+                    onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="password">Senha:</label>
+                  <input
+                    type="password"
+                    id="password"
+                    value={loginForm.password}
+                    onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                    required
+                  />
+                </div>
+                {loginError && <div className="error-message">{loginError}</div>}
+                <button type="submit" className="login-button">Entrar</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    return (
+      <section className="admin-panel">
+        <div className="admin-container">
+          <div className="admin-header">
+            <h2>🛠️ Painel de Administração</h2>
+            <button onClick={adminLogout} className="logout-button">Sair</button>
+          </div>
+          
+          <div className="admin-layout">
+            <nav className="admin-sidebar">
+              <button 
+                className={adminCurrentSection === 'produtos' ? 'active' : ''}
+                onClick={() => setAdminCurrentSection('produtos')}
+              >
+                📦 Produtos
+              </button>
+              <button 
+                className={adminCurrentSection === 'ofertas' ? 'active' : ''}
+                onClick={() => setAdminCurrentSection('ofertas')}
+              >
+                🎯 Ofertas Especiais
+              </button>
+              <button 
+                className={adminCurrentSection === 'descontos' ? 'active' : ''}
+                onClick={() => setAdminCurrentSection('descontos')}
+              >
+                💰 Descontos
+              </button>
+              <button 
+                className={adminCurrentSection === 'configuracoes' ? 'active' : ''}
+                onClick={() => setAdminCurrentSection('configuracoes')}
+              >
+                ⚙️ Configurações
+              </button>
+            </nav>
+            
+            <main className="admin-content">
+              {adminCurrentSection === 'produtos' && (
+                <div className="admin-section">
+                  <div className="section-header">
+                    <h3>Gestão de Produtos</h3>
+                    <button 
+                      className="add-button"
+                      onClick={() => setEditingProduct({ id: 0, name: '', description: '', image: '', price: '', category: '', inStock: true, discount: 0, isSpecialOffer: false })}
+                    >
+                      ➕ Adicionar Produto
+                    </button>
+                  </div>
+                  
+                  {editingProduct && (
+                    <div className="product-form-modal">
+                      <div className="product-form">
+                        <div className="form-header">
+                          <h4>{editingProduct.id === 0 ? 'Adicionar Novo Produto' : 'Editar Produto'}</h4>
+                          <button className="close-form" onClick={() => setEditingProduct(null)}>✕</button>
+                        </div>
+                        
+                        <form onSubmit={(e) => {
+                          e.preventDefault();
+                          if (editingProduct.id === 0) {
+                            const newProduct = {
+                              ...editingProduct,
+                              id: Math.max(...adminProducts.map(p => p.id)) + 1
+                            };
+                            addProduct(newProduct);
+                          } else {
+                            updateProduct(editingProduct);
+                          }
+                          setEditingProduct(null);
+                        }}>
+                          <div className="form-grid">
+                            <div className="form-group">
+                              <label>Nome do Produto *</label>
+                              <input
+                                type="text"
+                                value={editingProduct.name}
+                                onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})}
+                                required
+                              />
+                            </div>
+                            
+                            <div className="form-group">
+                              <label>Categoria *</label>
+                              <select
+                                value={editingProduct.category}
+                                onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
+                                required
+                              >
+                                <option value="">Selecione uma categoria</option>
+                                <option value="Alimentação">Alimentação</option>
+                                <option value="Brinquedos">Brinquedos</option>
+                                <option value="Higiene">Higiene</option>
+                                <option value="Acessórios">Acessórios</option>
+                              </select>
+                            </div>
+                            
+                            <div className="form-group">
+                              <label>Preço *</label>
+                              <input
+                                type="text"
+                                value={editingProduct.price}
+                                onChange={(e) => setEditingProduct({...editingProduct, price: e.target.value})}
+                                placeholder="R$ 0,00"
+                                required
+                              />
+                            </div>
+                            
+                            <div className="form-group">
+                              <label>Emoji/Ícone *</label>
+                              <input
+                                type="text"
+                                value={editingProduct.image}
+                                onChange={(e) => setEditingProduct({...editingProduct, image: e.target.value})}
+                                placeholder="🐱"
+                                required
+                              />
+                            </div>
+                          </div>
+                          
+                          <div className="form-group full-width">
+                            <label>Descrição *</label>
+                            <textarea
+                              value={editingProduct.description}
+                              onChange={(e) => setEditingProduct({...editingProduct, description: e.target.value})}
+                              rows={3}
+                              required
+                            />
+                          </div>
+                          
+                          <div className="form-options">
+                            <label className="checkbox-label">
+                              <input
+                                type="checkbox"
+                                checked={editingProduct.inStock}
+                                onChange={(e) => setEditingProduct({...editingProduct, inStock: e.target.checked})}
+                              />
+                              Em estoque
+                            </label>
+                            
+                            <label className="checkbox-label">
+                              <input
+                                type="checkbox"
+                                checked={editingProduct.isSpecialOffer}
+                                onChange={(e) => setEditingProduct({...editingProduct, isSpecialOffer: e.target.checked})}
+                              />
+                              Oferta especial
+                            </label>
+                            
+                            <div className="form-group discount-group">
+                              <label>Desconto (%)</label>
+                              <input
+                                type="number"
+                                min="0"
+                                max="100"
+                                value={editingProduct.discount}
+                                onChange={(e) => setEditingProduct({...editingProduct, discount: Number(e.target.value)})}
+                              />
+                            </div>
+                          </div>
+                          
+                          <div className="form-actions">
+                            <button type="button" onClick={() => setEditingProduct(null)} className="cancel-button">
+                              Cancelar
+                            </button>
+                            <button type="submit" className="save-button">
+                              {editingProduct.id === 0 ? 'Adicionar' : 'Salvar'}
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="products-table">
+                    <div className="table-header">
+                      <span>Produto</span>
+                      <span>Categoria</span>
+                      <span>Preço</span>
+                      <span>Status</span>
+                      <span>Ações</span>
+                    </div>
+                    
+                    {adminProducts.map(product => (
+                      <div key={product.id} className={`table-row ${!product.inStock ? 'out-of-stock' : ''}`}>
+                        <div className="product-info">
+                          <span className="product-emoji">{product.image}</span>
+                          <div>
+                            <div className="product-name">{product.name}</div>
+                            <div className="product-description">{product.description}</div>
+                          </div>
+                        </div>
+                        <span className="product-category">{product.category}</span>
+                        <div className="product-price">
+                          {product.discount && product.discount > 0 ? (
+                            <>
+                              <span className="original-price">{product.price}</span>
+                              <span className="discounted-price">{calculateDiscountedPrice(product.price, product.discount)}</span>
+                              <span className="discount-badge">-{product.discount}%</span>
+                            </>
+                          ) : (
+                            <span>{product.price}</span>
+                          )}
+                        </div>
+                        <div className="product-status">
+                          <span className={`status-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}`}>
+                            {product.inStock ? '✅ Em estoque' : '❌ Sem estoque'}
+                          </span>
+                          {product.isSpecialOffer && <span className="offer-badge">🎯 Oferta</span>}
+                        </div>
+                        <div className="product-actions">
+                          <button 
+                            className="edit-button"
+                            onClick={() => setEditingProduct(product)}
+                            title="Editar produto"
+                          >
+                            ✏️
+                          </button>
+                          <button 
+                            className={`stock-button ${product.inStock ? 'in-stock' : 'out-of-stock'}`}
+                            onClick={() => toggleProductStock(product.id)}
+                            title={product.inStock ? 'Marcar sem estoque' : 'Marcar em estoque'}
+                          >
+                            {product.inStock ? '📦' : '📭'}
+                          </button>
+                          <button 
+                            className="delete-button"
+                            onClick={() => {
+                              if (window.confirm('Tem certeza que deseja excluir este produto?')) {
+                                deleteProduct(product.id);
+                              }
+                            }}
+                            title="Excluir produto"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    {adminProducts.length === 0 && (
+                      <div className="empty-state">
+                        <p>Nenhum produto cadastrado ainda.</p>
+                        <button 
+                          className="add-first-button"
+                          onClick={() => setEditingProduct({ id: 0, name: '', description: '', image: '', price: '', category: '', inStock: true, discount: 0, isSpecialOffer: false })}
+                        >
+                          ➕ Adicionar primeiro produto
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+              {adminCurrentSection === 'ofertas' && (
+                <div className="admin-section">
+                  <div className="section-header">
+                    <h3>Gestão de Ofertas Especiais</h3>
+                    <button 
+                      className="add-button"
+                      onClick={() => setEditingOffer({ id: 0, productId: 0, title: '', description: '', discountPercentage: 0, startDate: '', endDate: '', isActive: true })}
+                    >
+                      ➕ Criar Nova Oferta
+                    </button>
+                  </div>
+                  
+                  {editingOffer && (
+                    <div className="offer-form-modal">
+                      <div className="offer-form">
+                        <div className="form-header">
+                          <h4>{editingOffer.id === 0 ? 'Criar Nova Oferta' : 'Editar Oferta'}</h4>
+                          <button className="close-form" onClick={() => setEditingOffer(null)}>✕</button>
+                        </div>
+                        
+                        <form onSubmit={(e) => {
+                          e.preventDefault();
+                          if (editingOffer.id === 0) {
+                            addSpecialOffer(editingOffer);
+                          } else {
+                            updateSpecialOffer(editingOffer);
+                          }
+                          setEditingOffer(null);
+                        }}>
+                          <div className="form-grid">
+                            <div className="form-group">
+                              <label>Produto *</label>
+                              <select
+                                value={editingOffer.productId}
+                                onChange={(e) => setEditingOffer({...editingOffer, productId: Number(e.target.value)})}
+                                required
+                              >
+                                <option value={0}>Selecione um produto</option>
+                                {[...products, ...adminProducts].map(product => (
+                                  <option key={product.id} value={product.id}>{product.name}</option>
+                                ))}
+                              </select>
+                            </div>
+                            
+                            <div className="form-group">
+                              <label>Título da Oferta *</label>
+                              <input
+                                type="text"
+                                value={editingOffer.title}
+                                onChange={(e) => setEditingOffer({...editingOffer, title: e.target.value})}
+                                placeholder="Ex: Super Desconto de Verão"
+                                required
+                              />
+                            </div>
+                            
+                            <div className="form-group full-width">
+                              <label>Descrição</label>
+                              <textarea
+                                value={editingOffer.description}
+                                onChange={(e) => setEditingOffer({...editingOffer, description: e.target.value})}
+                                placeholder="Descreva os detalhes da oferta..."
+                                rows={3}
+                              />
+                            </div>
+                            
+                            <div className="form-group">
+                              <label>Desconto (%) *</label>
+                              <input
+                                type="number"
+                                min="1"
+                                max="90"
+                                value={editingOffer.discountPercentage}
+                                onChange={(e) => setEditingOffer({...editingOffer, discountPercentage: Number(e.target.value)})}
+                                required
+                              />
+                            </div>
+                            
+                            <div className="form-group">
+                              <label>Data de Início *</label>
+                              <input
+                                type="date"
+                                value={editingOffer.startDate}
+                                onChange={(e) => setEditingOffer({...editingOffer, startDate: e.target.value})}
+                                required
+                              />
+                            </div>
+                            
+                            <div className="form-group">
+                              <label>Data de Fim *</label>
+                              <input
+                                type="date"
+                                value={editingOffer.endDate}
+                                onChange={(e) => setEditingOffer({...editingOffer, endDate: e.target.value})}
+                                required
+                              />
+                            </div>
+                          </div>
+                          
+                          <div className="form-options">
+                            <label className="checkbox-label">
+                              <input
+                                type="checkbox"
+                                checked={editingOffer.isActive}
+                                onChange={(e) => setEditingOffer({...editingOffer, isActive: e.target.checked})}
+                              />
+                              Oferta ativa
+                            </label>
+                          </div>
+                          
+                          <div className="form-actions">
+                            <button type="button" className="cancel-button" onClick={() => setEditingOffer(null)}>
+                              Cancelar
+                            </button>
+                            <button type="submit" className="save-button">
+                              {editingOffer.id === 0 ? 'Criar Oferta' : 'Salvar Alterações'}
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="offers-table">
+                    {specialOffers.length > 0 ? (
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Produto</th>
+                            <th>Título</th>
+                            <th>Desconto</th>
+                            <th>Período</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {specialOffers.map(offer => {
+                            const product = [...products, ...adminProducts].find(p => p.id === offer.productId);
+                            const isActive = offer.isActive && new Date() >= new Date(offer.startDate) && new Date() <= new Date(offer.endDate);
+                            
+                            return (
+                              <tr key={offer.id}>
+                                <td>
+                                  <div className="offer-product-info">
+                                    <span className="product-emoji">{product?.image}</span>
+                                    <div>
+                                      <div className="product-name">{product?.name}</div>
+                                      <div className="product-category">{product?.category}</div>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="offer-title">{offer.title}</div>
+                                  {offer.description && <div className="offer-description">{offer.description}</div>}
+                                </td>
+                                <td>
+                                  <span className="discount-percentage">{offer.discountPercentage}%</span>
+                                </td>
+                                <td>
+                                  <div className="offer-period">
+                                    <div>{new Date(offer.startDate).toLocaleDateString('pt-BR')}</div>
+                                    <div>até {new Date(offer.endDate).toLocaleDateString('pt-BR')}</div>
+                                  </div>
+                                </td>
+                                <td>
+                                  <span className={`offer-status ${isActive ? 'active' : 'inactive'}`}>
+                                    {isActive ? '🟢 Ativa' : '🔴 Inativa'}
+                                  </span>
+                                </td>
+                                <td>
+                                  <div className="offer-actions">
+                                    <button 
+                                      className="edit-button"
+                                      onClick={() => setEditingOffer(offer)}
+                                      title="Editar oferta"
+                                    >
+                                      ✏️
+                                    </button>
+                                    <button 
+                                      className="delete-button"
+                                      onClick={() => deleteSpecialOffer(offer.id)}
+                                      title="Excluir oferta"
+                                    >
+                                      🗑️
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    ) : (
+                      <div className="empty-state">
+                        <p>Nenhuma oferta especial criada ainda.</p>
+                        <button 
+                          className="add-first-button"
+                          onClick={() => setEditingOffer({ id: 0, productId: 0, title: '', description: '', discountPercentage: 0, startDate: '', endDate: '', isActive: true })}
+                        >
+                          ➕ Criar primeira oferta
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+              {adminCurrentSection === 'descontos' && (
+                <div className="admin-section">
+                  <div className="section-header">
+                    <h3>Sistema de Descontos</h3>
+                    <button 
+                      className="add-button"
+                      onClick={() => setEditingDiscount({ id: 0, code: '', percentage: 0, description: '', minValue: 0, maxUses: 0, currentUses: 0, isActive: true, expiryDate: '' })}
+                    >
+                      ➕ Criar Novo Cupom
+                    </button>
+                  </div>
+                  
+                  {editingDiscount && (
+                    <div className="discount-form-modal">
+                      <div className="discount-form">
+                        <div className="form-header">
+                          <h4>{editingDiscount.id === 0 ? 'Criar Novo Cupom' : 'Editar Cupom'}</h4>
+                          <button className="close-button" onClick={() => setEditingDiscount(null)}>✕</button>
+                        </div>
+                        
+                        <form onSubmit={(e) => {
+                          e.preventDefault();
+                          if (editingDiscount.id === 0) {
+                            addDiscount(editingDiscount);
+                          } else {
+                            updateDiscount(editingDiscount.id, editingDiscount);
+                          }
+                          setEditingDiscount(null);
+                        }}>
+                          <div className="form-grid">
+                            <div className="form-group">
+                              <label>Código do Cupom *</label>
+                              <input
+                                type="text"
+                                value={editingDiscount.code}
+                                onChange={(e) => setEditingDiscount({...editingDiscount, code: e.target.value.toUpperCase()})}
+                                placeholder="Ex: DESCONTO10"
+                                required
+                              />
+                            </div>
+                            
+                            <div className="form-group">
+                              <label>Desconto (%) *</label>
+                              <input
+                                type="number"
+                                min="1"
+                                max="90"
+                                value={editingDiscount.percentage}
+                                onChange={(e) => setEditingDiscount({...editingDiscount, percentage: Number(e.target.value)})}
+                                required
+                              />
+                            </div>
+                            
+                            <div className="form-group full-width">
+                              <label>Descrição</label>
+                              <textarea
+                                value={editingDiscount.description}
+                                onChange={(e) => setEditingDiscount({...editingDiscount, description: e.target.value})}
+                                placeholder="Descreva o cupom de desconto..."
+                                rows={3}
+                              />
+                            </div>
+                            
+                            <div className="form-group">
+                              <label>Valor Mínimo (R$)</label>
+                              <input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={editingDiscount.minValue}
+                                onChange={(e) => setEditingDiscount({...editingDiscount, minValue: Number(e.target.value)})}
+                                placeholder="0.00"
+                              />
+                            </div>
+                            
+                            <div className="form-group">
+                              <label>Máximo de Usos</label>
+                              <input
+                                type="number"
+                                min="1"
+                                value={editingDiscount.maxUses}
+                                onChange={(e) => setEditingDiscount({...editingDiscount, maxUses: Number(e.target.value)})}
+                                placeholder="Ilimitado se vazio"
+                              />
+                            </div>
+                            
+                            <div className="form-group">
+                              <label>Data de Expiração</label>
+                              <input
+                                type="date"
+                                value={editingDiscount.expiryDate}
+                                onChange={(e) => setEditingDiscount({...editingDiscount, expiryDate: e.target.value})}
+                              />
+                            </div>
+                            
+                            <div className="form-group">
+                              <label className="checkbox-label">
+                                <input
+                                  type="checkbox"
+                                  checked={editingDiscount.isActive}
+                                  onChange={(e) => setEditingDiscount({...editingDiscount, isActive: e.target.checked})}
+                                />
+                                Cupom ativo
+                              </label>
+                            </div>
+                          </div>
+                          
+                          <div className="form-actions">
+                            <button type="button" className="cancel-button" onClick={() => setEditingDiscount(null)}>
+                              Cancelar
+                            </button>
+                            <button type="submit" className="save-button">
+                              {editingDiscount.id === 0 ? 'Criar Cupom' : 'Salvar Alterações'}
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {discounts.length > 0 ? (
+                    <div className="discounts-table">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Código</th>
+                            <th>Desconto</th>
+                            <th>Descrição</th>
+                            <th>Valor Mín.</th>
+                            <th>Usos</th>
+                            <th>Expiração</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {discounts.map(discount => {
+                            const isExpired = discount.expiryDate && new Date() > new Date(discount.expiryDate);
+                            const isMaxedOut = discount.maxUses > 0 && discount.currentUses >= discount.maxUses;
+                            const isActive = discount.isActive && !isExpired && !isMaxedOut;
+                            
+                            return (
+                              <tr key={discount.id}>
+                                <td>
+                                  <div className="discount-code">{discount.code}</div>
+                                </td>
+                                <td>
+                                  <span className="discount-percentage">{discount.percentage}%</span>
+                                </td>
+                                <td>
+                                  <div className="discount-description">{discount.description || '-'}</div>
+                                </td>
+                                <td>
+                                  <span className="min-value">
+                                    {discount.minValue > 0 ? `R$ ${discount.minValue.toFixed(2).replace('.', ',')}` : 'Sem mínimo'}
+                                  </span>
+                                </td>
+                                <td>
+                                  <div className="usage-info">
+                                    <span className="current-uses">{discount.currentUses}</span>
+                                    <span className="usage-separator">/</span>
+                                    <span className="max-uses">{discount.maxUses > 0 ? discount.maxUses : '∞'}</span>
+                                  </div>
+                                </td>
+                                <td>
+                                  <span className="expiry-date">
+                                    {discount.expiryDate ? new Date(discount.expiryDate).toLocaleDateString('pt-BR') : 'Sem expiração'}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className={`status-badge ${
+                                    isActive ? 'active' : 
+                                    isExpired ? 'expired' : 
+                                    isMaxedOut ? 'maxed-out' : 'inactive'
+                                  }`}>
+                                    {isActive ? '✅ Ativo' : 
+                                     isExpired ? '⏰ Expirado' : 
+                                     isMaxedOut ? '🚫 Esgotado' : '❌ Inativo'}
+                                  </span>
+                                </td>
+                                <td>
+                                  <div className="discount-actions">
+                                    <button 
+                                      className="edit-button"
+                                      onClick={() => setEditingDiscount(discount)}
+                                      title="Editar cupom"
+                                    >
+                                      ✏️
+                                    </button>
+                                    <button 
+                                      className="delete-button"
+                                      onClick={() => deleteDiscount(discount.id)}
+                                      title="Excluir cupom"
+                                    >
+                                      🗑️
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="empty-state">
+                      <div className="empty-icon">💰</div>
+                      <h4>Nenhum cupom de desconto criado</h4>
+                      <p>Crie cupons de desconto para oferecer promoções aos seus clientes.</p>
+                      <button 
+                        className="add-first-button"
+                        onClick={() => setEditingDiscount({ id: 0, code: '', percentage: 0, description: '', minValue: 0, maxUses: 0, currentUses: 0, isActive: true, expiryDate: '' })}
+                      >
+                        ➕ Criar primeiro cupom
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+              {adminCurrentSection === 'configuracoes' && (
+                <div className="admin-section">
+                  <h3>Configurações</h3>
+                  <p>Seção em desenvolvimento...</p>
+                </div>
+              )}
+            </main>
+          </div>
+        </div>
+      </section>
+    );
+  };
+
   // Função para renderizar a página atual
   const renderCurrentPage = () => {
     switch (currentPage) {
@@ -1604,10 +2789,12 @@ return (
       case 'sobre':
         return <SobrePage />;
       case 'catshop':
-        return <CatshopPage categories={['Todos', ...Array.from(new Set(products.map(p => p.category))).filter((c): c is string => c !== undefined)]} />;
+        const allProducts = [...products, ...adminProducts];
+        return <CatshopPage categories={['Todos', ...Array.from(new Set(allProducts.map(p => p.category))).filter((c): c is string => c !== undefined)]} />;
       case 'clinica':
         return <ClinicaPage />;
-
+      case 'admin':
+        return <AdminPanel />;
       case 'faq':
         return <FaqPage />;
       case 'contato':
@@ -1622,7 +2809,7 @@ return (
       {/* Header */}
       <header className="header">
         <div className="container">
-          <div className="logo">
+          <div className="logo" onClick={handleLogoClick} style={{cursor: 'pointer'}}>
             <img src={logo} alt="Logo A Casa dos Gatos" className="logo-icon" />
             <h1>A CASA DOS GATOS</h1>
           </div>
@@ -1652,7 +2839,10 @@ return (
               </button>
               {isCatshopMenuOpen && (
                 <div className="dropdown-menu">
-                  {['Todos', ...Array.from(new Set(products.map(p => p.category))).filter((c): c is string => c !== undefined)].map(category => (
+                  {(() => {
+                    const allProducts = [...products, ...adminProducts];
+                    return ['Todos', ...Array.from(new Set(allProducts.map(p => p.category))).filter((c): c is string => c !== undefined)];
+                  })().map(category => (
                     <button 
                       key={category} 
                       className={selectedCategory === category ? 'active' : ''}
@@ -1737,8 +2927,62 @@ return (
                   </div>
                   
                   <div className="cart-footer">
+                    {/* Seção de cupom de desconto */}
+                    <div className="discount-section">
+                      <div className="discount-input-group">
+                        <input
+                          type="text"
+                          placeholder="Código do cupom"
+                          value={discountCode}
+                          onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
+                          className="discount-input"
+                        />
+                        <button 
+                          className="apply-discount-btn"
+                          onClick={() => {
+                            if (discountCode.trim()) {
+                              const success = applyDiscountCode(discountCode.trim());
+                              if (!success) {
+                                alert('Cupom inválido, expirado ou não atende aos requisitos mínimos.');
+                              }
+                            }
+                          }}
+                          disabled={!discountCode.trim()}
+                        >
+                          Aplicar
+                        </button>
+                      </div>
+                      
+                      {appliedDiscount && (
+                        <div className="applied-discount">
+                          <div className="discount-info">
+                            <span className="discount-code-applied">💰 {appliedDiscount.code}</span>
+                            <span className="discount-value">-{appliedDiscount.percentage}%</span>
+                            <button 
+                              className="remove-discount-btn"
+                              onClick={removeDiscountCode}
+                              title="Remover cupom"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                          {appliedDiscount.description && (
+                            <div className="discount-description">{appliedDiscount.description}</div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    
                     <div className="cart-total">
-                      <strong>Total: {getCartTotal().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+                      {appliedDiscount ? (
+                        <>
+                          <div className="subtotal">Subtotal: {getCartTotal().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                          <div className="discount-amount">Desconto: -{getDiscountAmount().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                          <div className="final-total"><strong>Total: {calculateCartTotalWithDiscount().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong></div>
+                        </>
+                      ) : (
+                        <strong>Total: {getCartTotal().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+                      )}
                     </div>
                     
                     <div className="cart-actions">
