@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import logo from './logo-editada.png';
 import './App.css';
 import gatinho from './assets/gatinho.png';
@@ -120,6 +120,26 @@ const App: React.FC = () => {
   const [adminCurrentSection, setAdminCurrentSection] = useState('produtos');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editingOffer, setEditingOffer] = useState<SpecialOffer | null>(null);
+  // Estados locais do formulário de Oferta para evitar re-render global a cada tecla
+  const [titleValue, setTitleValue] = useState('');
+  const [descriptionValue, setDescriptionValue] = useState('');
+  const [discountValue, setDiscountValue] = useState(0);
+  const titleDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const descriptionDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const discountDebounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Sincroniza os estados locais quando a oferta sendo editada muda
+  useEffect(() => {
+    if (editingOffer) {
+      setTitleValue(editingOffer.title || '');
+      setDescriptionValue(editingOffer.description || '');
+      setDiscountValue(editingOffer.discountPercentage || 0);
+    } else {
+      setTitleValue('');
+      setDescriptionValue('');
+      setDiscountValue(0);
+    }
+  }, [editingOffer]);
   const [editingDiscount, setEditingDiscount] = useState<Discount | null>(null);
   const [appliedDiscount, setAppliedDiscount] = useState<Discount | null>(null);
   const [discountCode, setDiscountCode] = useState('');
@@ -328,6 +348,24 @@ const App: React.FC = () => {
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Função otimizada para atualizar editingOffer com debounce para descrição
+  const updateEditingOffer = useCallback((field: keyof SpecialOffer, value: any) => {
+    if (field === 'description') {
+      // Para o campo descrição, usar requestAnimationFrame para suavizar as atualizações
+      requestAnimationFrame(() => {
+        setEditingOffer(prev => {
+          if (!prev) return null;
+          return { ...prev, [field]: value };
+        });
+      });
+    } else {
+      setEditingOffer(prev => {
+        if (!prev) return null;
+        return { ...prev, [field]: value };
+      });
+    }
+  }, []);
 
   const whatsappNumber = '5549998380557';
   const instagramUrl = 'https://www.instagram.com/acasadosgatos.lages/';
@@ -2356,15 +2394,29 @@ return (
                   </div>
                   
                   {editingOffer && (
-                    <div className="offer-form-modal">
-                      <div className="offer-form">
-                        <div className="form-header">
-                          <h4>{editingOffer.id === 0 ? 'Criar Nova Oferta' : 'Editar Oferta'}</h4>
-                          <button className="close-form" onClick={() => setEditingOffer(null)}>✕</button>
+                    <div className="modern-offer-modal">
+                      <div className="modern-offer-form">
+                        <div className="modern-form-header">
+                          <div className="header-content">
+                            <div className="header-icon">🎯</div>
+                            <div>
+                              <h3>{editingOffer.id === 0 ? 'Criar Nova Oferta' : 'Editar Oferta'}</h3>
+                              <p className="header-subtitle">Configure uma oferta especial para seus produtos</p>
+                            </div>
+                          </div>
+                          <button className="modern-close-btn" onClick={() => setEditingOffer(null)}>✕</button>
                         </div>
                         
                         <form onSubmit={(e) => {
                           e.preventDefault();
+                          if (editingOffer.productId === 0) {
+                            alert('Por favor, selecione um produto para a oferta.');
+                            return;
+                          }
+                          if (new Date(editingOffer.startDate) >= new Date(editingOffer.endDate)) {
+                            alert('A data de início deve ser anterior à data de fim.');
+                            return;
+                          }
                           if (editingOffer.id === 0) {
                             addSpecialOffer(editingOffer);
                           } else {
@@ -2372,91 +2424,171 @@ return (
                           }
                           setEditingOffer(null);
                         }}>
-                          <div className="form-grid">
-                            <div className="form-group">
-                              <label>Produto *</label>
-                              <select
-                                value={editingOffer.productId}
-                                onChange={(e) => setEditingOffer({...editingOffer, productId: Number(e.target.value)})}
-                                required
-                              >
-                                <option value={0}>Selecione um produto</option>
-                                {[...products, ...adminProducts].map(product => (
-                                  <option key={product.id} value={product.id}>{product.name}</option>
-                                ))}
-                              </select>
+                          <div className="modern-form-content">
+                            {/* Seção de Produto */}
+                            <div className="form-section">
+                              <h4 className="section-title">Produto</h4>
+                              <div className="product-selector">
+                                <select
+                                  value={editingOffer.productId}
+                                  onChange={(e) => updateEditingOffer('productId', Number(e.target.value))}
+                                  required
+                                  className="modern-select"
+                                >
+                                  <option value={0}>Selecione um produto</option>
+                                  {[...products, ...adminProducts].map(product => (
+                                    <option key={product.id} value={product.id}>
+                                      {product.image} {product.name} - {product.price}
+                                    </option>
+                                  ))}
+                                </select>
+                                {editingOffer.productId > 0 && (() => {
+                                  const selectedProduct = [...products, ...adminProducts].find(p => p.id === editingOffer.productId);
+                                  return selectedProduct ? (
+                                    <div className="product-preview">
+                                      <div className="product-preview-card">
+                                        <span className="product-emoji">{selectedProduct.image}</span>
+                                        <div className="product-info">
+                                          <h5>{selectedProduct.name}</h5>
+                                          <p className="product-category">{selectedProduct.category}</p>
+                                          <p className="product-price">{selectedProduct.price}</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ) : null;
+                                })()}
+                              </div>
                             </div>
-                            
-                            <div className="form-group">
-                              <label>Título da Oferta *</label>
-                              <input
-                                type="text"
-                                value={editingOffer.title}
-                                onChange={(e) => setEditingOffer({...editingOffer, title: e.target.value})}
-                                placeholder="Ex: Super Desconto de Verão"
-                                required
-                              />
+
+                            {/* Seção de Detalhes da Oferta */}
+                            <div className="form-section">
+                              <h4 className="section-title">✨ Detalhes da Oferta</h4>
+                              <div className="form-row">
+                                <div className="form-group flex-2">
+                                  <label>Título da Oferta *</label>
+                                  <input
+                                    type="text"
+                                    value={titleValue}
+                                    onChange={(e) => {
+                                      const v = e.target.value;
+                                      setTitleValue(v);
+                                      if (titleDebounceRef.current) clearTimeout(titleDebounceRef.current);
+                                      titleDebounceRef.current = setTimeout(() => {
+                                        updateEditingOffer('title', v);
+                                      }, 100);
+                                    }}
+                                    placeholder="Ex: Super Desconto de Verão"
+                                    required
+                                    className="modern-input"
+                                  />
+                                </div>
+                                <div className="form-group flex-1">
+                                  <label>Desconto (%) *</label>
+                                  <div className="discount-input-wrapper">
+                                    <input
+                                      type="number"
+                                      min="1"
+                                      max="90"
+                                      value={editingOffer.discountPercentage}
+                                      onChange={(e) => updateEditingOffer('discountPercentage', Number(e.target.value))}
+                                      required
+                                      className="modern-input discount-input"
+                                    />
+                                    <span className="discount-badge">{editingOffer.discountPercentage}% OFF</span>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <div className="form-group">
+                                <label>Descrição</label>
+                                <textarea
+                                  key="description-field"
+                                  value={descriptionValue}
+                                  onChange={(e) => {
+                                    const newValue = e.target.value;
+                                    setDescriptionValue(newValue);
+                                    // Debounce a atualização do editingOffer
+                                    setTimeout(() => {
+                                      updateEditingOffer('description', newValue);
+                                    }, 100);
+                                  }}
+                                  placeholder="Descreva os detalhes da oferta..."
+                                  rows={3}
+                                  className="modern-textarea"
+                                  style={{ resize: 'vertical' }}
+                                />
+                              </div>
                             </div>
-                            
-                            <div className="form-group full-width">
-                              <label>Descrição</label>
-                              <textarea
-                                value={editingOffer.description}
-                                onChange={(e) => setEditingOffer({...editingOffer, description: e.target.value})}
-                                placeholder="Descreva os detalhes da oferta..."
-                                rows={3}
-                              />
+
+                            {/* Seção de Período */}
+                            <div className="form-section">
+                              <h4 className="section-title">Período da Oferta</h4>
+                              <div className="form-row">
+                                <div className="form-group">
+                                  <label>Data de Início *</label>
+                                  <input
+                                    type="date"
+                                    value={editingOffer.startDate}
+                                    onChange={(e) => updateEditingOffer('startDate', e.target.value)}
+                                    min={new Date().toISOString().split('T')[0]}
+                                    required
+                                    className="modern-input"
+                                  />
+                                </div>
+                                
+                                <div className="form-group">
+                                  <label>Data de Fim *</label>
+                                  <input
+                                    type="date"
+                                    value={editingOffer.endDate}
+                                    onChange={(e) => updateEditingOffer('endDate', e.target.value)}
+                                    min={editingOffer.startDate || new Date().toISOString().split('T')[0]}
+                                    required
+                                    className="modern-input"
+                                  />
+                                </div>
+                              </div>
+                              
+                              {editingOffer.startDate && editingOffer.endDate && (
+                                  <div className="period-preview">
+                                    <span className="period-info">
+                                      Duração: {(() => {
+                                         const start = new Date(editingOffer.startDate);
+                                         const end = new Date(editingOffer.endDate);
+                                         const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+                                         return days;
+                                       })()} dias
+                                    </span>
+                                  </div>
+                                )}
                             </div>
-                            
-                            <div className="form-group">
-                              <label>Desconto (%) *</label>
-                              <input
-                                type="number"
-                                min="1"
-                                max="90"
-                                value={editingOffer.discountPercentage}
-                                onChange={(e) => setEditingOffer({...editingOffer, discountPercentage: Number(e.target.value)})}
-                                required
-                              />
-                            </div>
-                            
-                            <div className="form-group">
-                              <label>Data de Início *</label>
-                              <input
-                                type="date"
-                                value={editingOffer.startDate}
-                                onChange={(e) => setEditingOffer({...editingOffer, startDate: e.target.value})}
-                                required
-                              />
-                            </div>
-                            
-                            <div className="form-group">
-                              <label>Data de Fim *</label>
-                              <input
-                                type="date"
-                                value={editingOffer.endDate}
-                                onChange={(e) => setEditingOffer({...editingOffer, endDate: e.target.value})}
-                                required
-                              />
+
+                            {/* Seção de Configurações */}
+                            <div className="form-section">
+                              <h4 className="section-title">Configurações</h4>
+                              <div className="modern-checkbox-group">
+                                <label className="modern-checkbox">
+                                  <input
+                                    type="checkbox"
+                                    checked={editingOffer.isActive}
+                                    onChange={(e) => updateEditingOffer('isActive', e.target.checked)}
+                                  />
+                                  <span className="checkmark"></span>
+                                  <div className="checkbox-content">
+                                    <span className="checkbox-title">Oferta ativa</span>
+                                    <span className="checkbox-description">A oferta será exibida no site quando ativa</span>
+                                  </div>
+                                </label>
+                              </div>
                             </div>
                           </div>
                           
-                          <div className="form-options">
-                            <label className="checkbox-label">
-                              <input
-                                type="checkbox"
-                                checked={editingOffer.isActive}
-                                onChange={(e) => setEditingOffer({...editingOffer, isActive: e.target.checked})}
-                              />
-                              Oferta ativa
-                            </label>
-                          </div>
-                          
-                          <div className="form-actions">
-                            <button type="button" className="cancel-button" onClick={() => setEditingOffer(null)}>
+                          <div className="modern-form-actions">
+                            <button type="button" className="modern-cancel-btn" onClick={() => setEditingOffer(null)}>
                               Cancelar
                             </button>
-                            <button type="submit" className="save-button">
+                            <button type="submit" className="modern-save-btn">
+                              <span className="btn-icon">{editingOffer.id === 0 ? '+' : '✓'}</span>
                               {editingOffer.id === 0 ? 'Criar Oferta' : 'Salvar Alterações'}
                             </button>
                           </div>
