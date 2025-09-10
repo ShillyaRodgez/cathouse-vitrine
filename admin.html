@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Cathouse Vitrine</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="public/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <img src="public/Patas.png" alt="Logo" class="login-logo">
+                <h1>Painel Administrativo</h1>
+                <p>Cathouse Vitrine</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="input-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-btn">Entrar</button>
+                <div id="loginError" class="error-message" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Principal -->
+    <div id="adminDashboard" class="admin-dashboard" style="display: none;">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="public/Patas.png" alt="Logo" class="header-logo">
+                    <h1>Painel Administrativo</h1>
+                </div>
+                <div class="header-actions">
+                    <span class="admin-user">👤 Admin</span>
+                    <button id="logoutBtn" class="logout-btn">Sair</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navegação -->
+        <nav class="admin-nav">
+            <button class="nav-btn active" data-section="products">📦 Produtos</button>
+            <button class="nav-btn" data-section="offers">🎯 Ofertas</button>
+            <button class="nav-btn" data-section="orders">📋 Pedidos</button>
+            <button class="nav-btn" data-section="settings">⚙️ Configurações</button>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <main class="admin-main">
+            <!-- Seção de Produtos -->
+            <section id="productsSection" class="admin-section active">
+                <div class="section-header">
+                    <h2>Gerenciamento de Produtos</h2>
+                    <div class="section-actions">
+                        <div class="search-box">
+                            <input type="text" id="productSearch" placeholder="Buscar produtos...">
+                            <button id="searchBtn">🔍</button>
+                        </div>
+                        <select id="categoryFilter">
+                            <option value="">Todas as categorias</option>
+                        </select>
+                        <button id="addProductBtn" class="primary-btn">➕ Novo Produto</button>
+                    </div>
+                </div>
+
+                <div class="products-grid" id="productsGrid">
+                    <!-- Produtos serão carregados aqui -->
+                </div>
+            </section>
+
+            <!-- Seção de Ofertas -->
+            <section id="offersSection" class="admin-section">
+                <div class="section-header">
+                    <h2>Gerenciamento de Ofertas</h2>
+                    <button id="addOfferBtn" class="primary-btn">➕ Nova Oferta</button>
+                </div>
+
+                <div class="offers-grid" id="offersGrid">
+                    <!-- Ofertas serão carregadas aqui -->
+                </div>
+            </section>
+
+            <!-- Seção de Pedidos -->
+            <section id="ordersSection" class="admin-section">
+                <div class="section-header">
+                    <h2>Pedidos Recebidos</h2>
+                    <div class="section-actions">
+                        <select id="orderStatusFilter">
+                            <option value="">Todos os status</option>
+                            <option value="pending">Pendente</option>
+                            <option value="confirmed">Confirmado</option>
+                            <option value="delivered">Entregue</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="orders-list" id="ordersList">
+                    <!-- Pedidos serão carregados aqui -->
+                </div>
+            </section>
+
+            <!-- Seção de Configurações -->
+            <section id="settingsSection" class="admin-section">
+                <div class="section-header">
+                    <h2>Configurações</h2>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3>Exportar/Importar Dados</h3>
+                        <div class="settings-actions">
+                            <button id="exportBtn" class="secondary-btn">📤 Exportar JSON</button>
+                            <input type="file" id="importFile" accept=".json" style="display: none;">
+                            <button id="importBtn" class="secondary-btn">📥 Importar JSON</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3>Estatísticas</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-number" id="totalProducts">0</span>
+                                <span class="stat-label">Produtos</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="activeOffers">0</span>
+                                <span class="stat-label">Ofertas Ativas</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="totalOrders">0</span>
+                                <span class="stat-label">Pedidos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal para Adicionar/Editar Produto -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="productModalTitle">Novo Produto</h3>
+                <button class="close-btn" id="closeProductModal">&times;</button>
+            </div>
+            <form id="productForm" class="modal-form">
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="productName">Nome do Produto</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="productPrice">Preço</label>
+                        <input type="text" id="productPrice" placeholder="R$ 0,00" required>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="productDescription">Descrição</label>
+                    <textarea id="productDescription" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="productCategory">Categoria</label>
+                        <select id="productCategory" required>
+                            <option value="">Selecione uma categoria</option>
+                            <option value="Alimentação">Alimentação</option>
+                            <option value="Brinquedos">Brinquedos</option>
+                            <option value="Acessórios">Acessórios</option>
+                            <option value="Conforto">Conforto</option>
+                            <option value="Higiene">Higiene</option>
+                            <option value="Saúde">Saúde</option>
+                            <option value="Para Donos">Para Donos</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="productEmoji">Emoji/Ícone</label>
+                        <input type="text" id="productEmoji" placeholder="🐱" maxlength="2">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="productInStock" checked>
+                            <span class="checkmark"></span>
+                            Produto em estoque
+                        </label>
+                    </div>
+                    <div class="input-group">
+                        <label for="productDiscount">Desconto (%)</label>
+                        <input type="number" id="productDiscount" min="0" max="100" value="0">
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="secondary-btn" id="cancelProductBtn">Cancelar</button>
+                    <button type="submit" class="primary-btn">Salvar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Adicionar/Editar Oferta -->
+    <div id="offerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="offerModalTitle">Nova Oferta</h3>
+                <button class="close-btn" id="closeOfferModal">&times;</button>
+            </div>
+            <form id="offerForm" class="modal-form">
+                <div class="input-group">
+                    <label for="offerProduct">Produto</label>
+                    <select id="offerProduct" required>
+                        <option value="">Selecione um produto</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="offerTitle">Título da Oferta</label>
+                    <input type="text" id="offerTitle" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="offerDescription">Descrição</label>
+                    <textarea id="offerDescription" rows="3"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="offerDiscount">Desconto (%)</label>
+                        <input type="number" id="offerDiscount" min="1" max="90" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="offerActive" checked>
+                            <span class="checkmark"></span>
+                            Oferta ativa
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="offerStartDate">Data de Início</label>
+                        <input type="date" id="offerStartDate" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="offerEndDate">Data de Fim</label>
+                        <input type="date" id="offerEndDate" required>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="secondary-btn" id="cancelOfferBtn">Cancelar</button>
+                    <button type="submit" class="primary-btn">Salvar Oferta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>Confirmar Ação</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Tem certeza que deseja realizar esta ação?</p>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" id="cancelConfirm">Cancelar</button>
+                <button type="button" class="danger-btn" id="confirmAction">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de Notificação -->
+    <div id="toast" class="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>
