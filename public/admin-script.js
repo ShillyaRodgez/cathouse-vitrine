@@ -1,7 +1,7 @@
 // Configurações e dados
 const ADMIN_CREDENTIALS = {
     username: 'admin',
-    password: 'admin123'
+    password: 'catshop2025'
 };
 
 // Dados simulados (localStorage)
