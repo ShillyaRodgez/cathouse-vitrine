@@ -290,49 +290,8 @@ const App: React.FC = () => {
     }
   }, [adminProducts.length]);
 
-  // Listener para combinação de teclas secreta para acessar admin (Ctrl+Shift+A)
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.shiftKey && event.key === 'A') {
-        event.preventDefault();
-        navigateToPage('admin');
-      }
-    };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
-  // Verificar URL hash para acesso direto ao admin
-  useEffect(() => {
-    if (window.location.hash === '#admin') {
-      navigateToPage('admin');
-    }
-  }, []);
-
-  // Contador de cliques no logo para acesso admin
-  const [logoClickCount, setLogoClickCount] = useState(0);
-  const [logoClickTimer, setLogoClickTimer] = useState<NodeJS.Timeout | null>(null);
-
-  const handleLogoClick = () => {
-    const newCount = logoClickCount + 1;
-    setLogoClickCount(newCount);
-
-    if (logoClickTimer) {
-      clearTimeout(logoClickTimer);
-    }
-
-    if (newCount === 5) {
-      navigateToPage('admin');
-      setLogoClickCount(0);
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      setLogoClickCount(0);
-    }, 2000);
-    setLogoClickTimer(timer);
-  };
 
   // Função para navegar entre páginas
   const navigateToPage = (page: string, category?: string) => {
@@ -2941,7 +2900,7 @@ return (
       {/* Header */}
       <header className="header">
         <div className="container">
-          <div className="logo" onClick={handleLogoClick} style={{cursor: 'pointer'}}>
+          <div className="logo">
             <img src={logo} alt="Logo A Casa dos Gatos" className="logo-icon" />
             <h1>A CASA DOS GATOS</h1>
           </div>
